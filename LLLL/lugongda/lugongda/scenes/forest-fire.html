@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>森林火灾及气象场景 - 泛在物联网管控系统</title>
+
+    <!-- 样式文件 -->
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/forest-fire.css" />
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+
+    <!-- 整个背景 -->
+    <div class="screen-bg">
+
+        <!-- 返回按钮 -->
+        <a href="#" class="back-button">
+            <span class="back-button-icon">←</span>
+            <span>返回主页面</span>
+        </a>
+
+        <!-- 顶部 HAND 图片 + 标题 -->
+        <div class="header">
+            <img src="../images/hand.png" class="hand-img" />
+            <div class="scene-page-title"><span>森林火灾及气象场景</span></div>
+        </div>
+
+        <!-- 地区切换按钮 -->
+        <div class="fire-action-buttons">
+            <span class="fire-action-label">监控地点</span>
+            <button class="fire-action-btn active" id="btn-nanjing">南京溧水</button>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="fire-scene-grid">
+            
+            <!-- 1. 摄像头检测画面 - 最大区域 -->
+            <div class="fire-panel camera-detection">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">📹</span>
+                    <span>摄像头检测画面</span>
+                    <div class="comm-method-selector">
+                        <span class="comm-label">通信方式</span>
+                        <div class="comm-method-list" aria-label="通信方式状态">
+                            <span class="comm-method-item">
+                                <span class="comm-indicator online" id="comm-indicator-5g"></span>
+                                <span class="comm-name">5G</span>
+                            </span>
+                            <span class="comm-method-item">
+                                <span class="comm-indicator" id="comm-indicator-tiantong"></span>
+                                <span class="comm-name">天通</span>
+                            </span>
+                            <span class="comm-method-item">
+                                <span class="comm-indicator" id="comm-indicator-shortwave"></span>
+                                <span class="comm-name">短波</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="fire-panel-content" id="camera-view">
+                    <div class="camera-placeholder" id="camera-placeholder">
+                        <div class="camera-icon">🎥</div>
+                        <div class="camera-text">摄像头画面加载中...</div>
+                        <div class="camera-status">等待连接设备</div>
+                    </div>
+                    <canvas id="streamCanvas" class="stream-canvas" style="display: none; width: 100%; height: 100%; object-fit: contain;"></canvas>
+                </div>
+                <!-- 操作按钮区域 -->
+                <div class="camera-action-buttons">
+                    <button class="camera-action-btn" id="btn-start-detect">▶ 开始检测</button>
+                    <button class="camera-action-btn" id="btn-show-result">📊 显示检测结果</button>
+                    <button class="camera-action-btn" id="btn-stop-detect">⏹ 结束检测</button>
+                </div>
+            </div>
+
+            <!-- 2. 实时抓拍截图 -->
+            <div class="fire-panel real-time-capture">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">📸</span>
+                    <span>实时抓拍截图</span>
+                </div>
+                <div class="fire-panel-content" id="capture-view">
+                    <div class="capture-placeholder" id="capture-placeholder">
+                        <div class="capture-icon">🖼️</div>
+                        <div class="capture-text" id="capture-text">未检测到火情</div>
+                        <div class="capture-hint">检测到火情时将自动抓拍</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 三级火灾警报框 -->
+            <div class="fire-panel fire-alert-box">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">🚨</span>
+                    <span>火灾预警等级</span>
+                </div>
+                <div class="fire-panel-content">
+                    <div class="alert-level-display" id="alert-level-display">
+                        <!-- 等级指示器 -->
+                        <div class="level-gauge">
+                            <div class="level-bar level-low" id="level-bar-low">
+                                <span class="level-label">低</span>
+                            </div>
+                            <div class="level-bar level-medium" id="level-bar-medium">
+                                <span class="level-label">中</span>
+                            </div>
+                            <div class="level-bar level-high" id="level-bar-high">
+                                <span class="level-label">高</span>
+                            </div>
+                        </div>
+                        <!-- 当前等级显示 -->
+                        <div class="current-level" id="current-level">
+                            <div class="level-icon" id="level-icon">✓</div>
+                            <div class="level-text" id="level-text">无警报</div>
+                        </div>
+                        <!-- 等级说明 -->
+                        <div class="level-desc" id="level-desc">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 实时检测结果 -->
+            <div class="fire-panel real-time-detection">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">🔍</span>
+                    <span>实时检测结果</span>
+                </div>
+                <div class="fire-panel-content">
+                    <div class="detection-log-container" id="detection-log">
+                        <!-- 从接口动态加载数据 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 温湿度传感器 -->
+            <div class="fire-panel sensor-temperature">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">🌡️</span>
+                    <span>温湿度数据</span>
+                    <button class="sensor-ctrl-btn" title="反馈控制">
+                        <span class="ctrl-icon">⚙</span>
+                        <span>调控</span>
+                    </button>
+                </div>
+                <div class="fire-panel-content" id="temperature-chart"></div>
+            </div>
+
+            <!-- 6. 烟感传感器 -->
+            <div class="fire-panel sensor-smoke">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">💨</span>
+                    <span>烟感数据</span>
+                    <button class="sensor-ctrl-btn" title="反馈控制">
+                        <span class="ctrl-icon">⚙</span>
+                        <span>调控</span>
+                    </button>
+                </div>
+                <div class="fire-panel-content" id="smoke-chart"></div>
+            </div>
+
+            <!-- 7. 光照传感器 - 使用仪表盘图表 -->
+            <div class="fire-panel sensor-light">
+                <div class="fire-panel-title">
+                    <span class="fire-panel-icon">☀️</span>
+                    <span>光照/风速数据</span>
+                    <button class="sensor-ctrl-btn" title="反馈控制">
+                        <span class="ctrl-icon">⚙</span>
+                        <span>调控</span>
+                    </button>
+                </div>
+                <div class="fire-panel-content dual-chart-container">
+                    <div class="dual-chart" id="light-chart"></div>
+                    <div class="dual-chart" id="wind-chart"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 传感器控制抽屉 -->
+    <div class="sensor-drawer-overlay" id="sensor-drawer-overlay"></div>
+    <div class="sensor-drawer" id="sensor-drawer">
+        <!-- A. 顶部信息区（只读） -->
+        <div class="drawer-info-section">
+            <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
+            <div class="drawer-info-header">
+                <div class="drawer-info-main">
+                    <span class="drawer-sensor-name" id="drawer-sensor-name">温湿度传感器</span>
+                    <span class="drawer-sensor-type" id="drawer-sensor-type">环境监测</span>
+                </div>
+                <span class="drawer-status online" id="drawer-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">通信正常</span>
+                </span>
+            </div>
+            <div class="drawer-device-id" id="drawer-device-id">设备ID: SENSOR-TH-001</div>
+            <!-- IP地址选择器 -->
+            <div class="drawer-ip-selector">
+                <span class="ip-label">连接地址</span>
+                <select class="ip-select" id="drawer-ip-select">
+                    <option value="192.168.1.101">192.168.1.101</option>
+                    <option value="192.168.1.102">192.168.1.102</option>
+                    <option value="192.168.1.103">192.168.1.103</option>
+                    <option value="10.0.0.50">10.0.0.50</option>
+                </select>
+                <button class="ip-connect-btn" id="ip-connect-btn">连接</button>
+            </div>
+            <!-- 传感器切换器 (仅光照/风速使用) -->
+            <div class="sensor-switcher" id="sensor-switcher" style="display: none;">
+                <button class="sensor-switch-btn active" data-sensor="light">
+                    <span class="switch-icon">☀</span>
+                    <span class="switch-label">光照传感器</span>
+                </button>
+                <button class="sensor-switch-btn" data-sensor="wind">
+                    <span class="switch-icon">🌬</span>
+                    <span class="switch-label">风速传感器</span>
+                </button>
+            </div>
+            
+            <!-- 单值显示区 (烟感等) -->
+            <div class="drawer-current-value" id="single-value-display">
+                <div class="current-value-box">
+                    <span class="current-label">当前值</span>
+                    <span class="current-number" id="drawer-current-value">26.5</span>
+                    <span class="current-unit" id="drawer-current-unit">°C</span>
+                </div>
+                <div class="current-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">最近更新</span>
+                        <span class="meta-value" id="drawer-update-time">10:42:35</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">信号强度</span>
+                        <span class="meta-value" id="drawer-signal">-65 dBm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 双值显示区 (温湿度) -->
+            <div class="drawer-dual-value" id="dual-value-display" style="display: none;">
+                <div class="dual-value-row">
+                    <div class="dual-value-box temperature">
+                        <span class="dual-value-icon">🌡</span>
+                        <div class="dual-value-content">
+                            <span class="dual-value-label">温度</span>
+                            <div class="dual-value-data">
+                                <span class="dual-value-number" id="drawer-temp-value">26.5</span>
+                                <span class="dual-value-unit">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dual-value-box humidity">
+                        <span class="dual-value-icon">💧</span>
+                        <div class="dual-value-content">
+                            <span class="dual-value-label">湿度</span>
+                            <div class="dual-value-data">
+                                <span class="dual-value-number" id="drawer-humidity-value">65.0</span>
+                                <span class="dual-value-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="current-meta dual-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">最近更新</span>
+                        <span class="meta-value" id="drawer-update-time-dual">10:42:35</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">信号强度</span>
+                        <span class="meta-value" id="drawer-signal-dual">-65 dBm</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label sync-indicator">
+                            <span class="sync-dot"></span>实时同步
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. 参数编辑区 -->
+        <div class="drawer-content" id="drawer-content">
+            <!-- 参数1: 工作频率 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">工作频率</span>
+                    <span class="param-group-desc">配置传感器采样频率，影响数据精度与设备功耗</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">采样频率</span>
+                            <span class="param-hint">可选: 0.5 / 1 / 2 / 5 / 10 Hz</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-frequency" data-default="1" data-field="sampleFrequency">
+                                <option value="0.5">0.5</option>
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                            </select>
+                            <span class="param-unit">Hz</span>
+                            <span class="param-tooltip" data-tip="传感器每秒采样次数。高频率提升精度但增加功耗，低频率适合长期监测">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row slider-row">
+                        <div class="param-slider-wrap">
+                            <input type="range" class="param-slider" id="param-frequency-slider" min="0" max="4" step="1" value="1">
+                            <div class="slider-marks">
+                                <span>0.5</span><span>1</span><span>2</span><span>5</span><span>10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 参数2: 上报周期 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">上报周期</span>
+                    <span class="param-group-desc">配置数据上传到服务器的时间间隔</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">上传间隔</span>
+                            <span class="param-hint">预设: 1/3/5/10/30/60 s，支持自定义</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-interval-select" data-field="uploadInterval">
+                                <option value="1">1</option>
+                                <option value="3">3</option>
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                                <option value="custom">自定义...</option>
+                            </select>
+                            <span class="param-unit">s</span>
+                            <span class="param-tooltip" data-tip="数据上报服务器的间隔时间。间隔越短实时性越好，但会增加网络流量">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row custom-input-row" id="interval-custom-row" style="display: none;">
+                        <div class="param-info">
+                            <span class="param-label">自定义间隔</span>
+                            <span class="param-hint warning">范围: 1-300 s，整数</span>
+                        </div>
+                        <div class="param-control">
+                            <input type="number" class="param-input" id="param-interval" value="5" min="1" max="300" step="1" data-default="5" data-field="uploadInterval">
+                            <span class="param-unit">s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 参数3: 心跳周期 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">心跳周期</span>
+                    <span class="param-group-desc">用于在线状态判断与链路保活，在网关/平台侧生效</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">心跳间隔</span>
+                            <span class="param-hint">范围: 1-600 s，正整数</span>
+                        </div>
+                        <div class="param-control">
+                            <input type="number" class="param-input" id="param-heartbeat" value="30" min="1" max="600" step="1" data-default="30" data-field="heartbeatPeriod">
+                            <span class="param-unit">s</span>
+                            <span class="param-tooltip" data-tip="设备向平台发送心跳包的时间间隔。用于判断设备在线状态，建议不超过上报周期的2倍">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">离线判定阈值</span>
+                            <span class="param-hint">连续丢失心跳次数后判定离线</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-offline-threshold" data-default="3" data-field="offlineThreshold">
+                                <option value="2">2 次</option>
+                                <option value="3" selected>3 次</option>
+                                <option value="5">5 次</option>
+                                <option value="10">10 次</option>
+                            </select>
+                            <span class="param-unit">次</span>
+                            <span class="param-tooltip" data-tip="连续丢失多少次心跳后判定设备离线。阈值越高容错性越强，但离线检测延迟增加">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row" id="heartbeat-warning-row" style="display: none;">
+                        <div class="param-warning">
+                            <span class="warning-icon">⚠</span>
+                            <span class="warning-text" id="heartbeat-warning-text">心跳周期建议不超过上报周期的2倍</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C. 底部操作区 -->
+        <div class="drawer-footer">
+            <div class="footer-actions-row">
+                <button class="drawer-btn btn-secondary" id="drawer-btn-read">
+                    <span class="btn-icon">↓</span>读取配置
+                </button>
+                <button class="drawer-btn btn-secondary" id="drawer-btn-reset">
+                    <span class="btn-icon">↻</span>恢复默认
+                </button>
+            </div>
+            <div class="footer-actions-row primary-actions">
+                <button class="drawer-btn btn-cancel" id="drawer-btn-cancel">取消</button>
+                <button class="drawer-btn btn-apply" id="drawer-btn-apply">应用</button>
+                <button class="drawer-btn btn-send" id="drawer-btn-send">下发</button>
+            </div>
+            <div class="footer-result" id="footer-result">
+                <span class="result-icon">✓</span>
+                <span class="result-text">参数下发成功</span>
+                <span class="result-time">10:42:38</span>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../js/scenePage.js"></script>
+    <script src="../js/forest-fire.js?v=20260527-alert-ui-polish"></script>
+
+</body>
+</html>

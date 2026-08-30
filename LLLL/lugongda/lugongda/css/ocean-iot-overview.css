@@ -1,0 +1,362 @@
+/**
+ * 远海远域物联通信场景 - 主页面概览样式
+ */
+
+.ocean-overview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 8px;
+    overflow: hidden;
+}
+
+/* ===== 地点 ===== */
+.ocean-location-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 14px;
+    background: linear-gradient(135deg, rgba(0, 50, 100, 0.32), rgba(0, 25, 55, 0.25));
+    border: 1px solid rgba(0, 212, 255, 0.22);
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.ocean-loc-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e8f0ff;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+
+.ocean-loc-value {
+    font-size: 17px;
+    font-weight: 700;
+    color: #00eaff;
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+    padding: 4px 14px;
+    background: rgba(0, 234, 255, 0.08);
+    border: 1px solid rgba(0, 234, 255, 0.3);
+    border-radius: 4px;
+}
+
+/* ===== 核心网关 ===== */
+.ocean-gw-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 14px;
+    background: linear-gradient(135deg, rgba(0, 55, 110, 0.3), rgba(0, 30, 60, 0.22));
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.ocean-gw-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e8f0ff;
+    letter-spacing: 1px;
+}
+
+.ocean-gw-status {
+    font-size: 17px;
+    font-weight: 700;
+    color: #10b981;
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 4px;
+}
+
+/* ===== 区块标题公用 ===== */
+.ocean-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(180, 215, 255, 0.9);
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+    padding-left: 2px;
+}
+
+/* ===== 关键传感器 — 2×2 网格 ===== */
+.ocean-sensor-section {
+    background: rgba(0, 15, 40, 0.28);
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    border-radius: 6px;
+    padding: 10px 12px;
+    flex: 2;
+    min-height: 0;
+}
+
+.ocean-sensor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 6px;
+    height: calc(100% - 22px);
+}
+
+/* 传感器单元格 */
+.os-cell {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 5px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    transition: all 0.25s;
+}
+
+.os-cell:hover {
+    border-color: rgba(0, 234, 255, 0.4);
+    background: rgba(0, 234, 255, 0.06);
+}
+
+.os-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.os-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(200, 225, 248, 0.85);
+    flex-shrink: 0;
+    min-width: 40px;
+}
+
+.os-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
+    text-align: right;
+    flex: 1;
+}
+
+.os-unit {
+    font-size: 12px;
+    color: rgba(180, 215, 255, 0.55);
+    flex-shrink: 0;
+    font-weight: 600;
+}
+
+.os-sub {
+    font-size: 13px;
+    color: #a78bfa;
+    font-weight: 600;
+    width: 100%;
+    text-align: right;
+    padding-right: 2px;
+    margin-top: -2px;
+}
+
+/* ===== RFID核验 ===== */
+.ocean-rfid-section {
+    background: rgba(0, 15, 40, 0.28);
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    border-radius: 6px;
+    padding: 10px 12px;
+    flex: 1;
+    min-height: 0;
+}
+
+.ocean-rfid-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: calc(100% - 22px);
+}
+
+.rfid-main-stat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rfid-big-icon {
+    font-size: 22px;
+}
+
+.rfid-big-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(180, 215, 255, 0.8);
+}
+
+.rfid-big-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #10b981;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
+    line-height: 1;
+}
+
+.rfid-big-suffix {
+    font-size: 12px;
+    color: rgba(180, 215, 255, 0.55);
+    align-self: flex-end;
+    padding-bottom: 3px;
+}
+
+/* 实时运行徽章 */
+.rfid-run-badge {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 20px;
+}
+
+.rfid-run-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+    animation: rfid-run-pulse 1.5s infinite;
+}
+
+@keyframes rfid-run-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.rfid-run-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: #10b981;
+    letter-spacing: 1px;
+}
+
+/* ===== 通信链路 ===== */
+.ocean-comm-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 9px 14px;
+    background: rgba(0, 45, 95, 0.28);
+    border: 1px solid rgba(0, 212, 255, 0.18);
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.ocean-comm-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #e8f0ff;
+    letter-spacing: 1px;
+    flex-shrink: 0;
+}
+
+.ocean-comm-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+    transition: all 0.3s ease;
+}
+
+.ocean-comm-tag.is-online {
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.5);
+    background: rgba(16, 185, 129, 0.12);
+}
+
+.ocean-comm-tag.is-offline {
+    color: #ef4444;
+    border-color: rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.ocean-comm-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ocean-comm-tag.is-online .ocean-comm-dot {
+    background: #10b981;
+    box-shadow: 0 0 7px rgba(16, 185, 129, 0.6);
+    animation: dot-pulse 2s infinite;
+}
+
+.ocean-comm-tag.is-offline .ocean-comm-dot {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.45);
+}
+
+@keyframes dot-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+/* ===== 响应式 ===== */
+@media (max-height: 800px) {
+    .ocean-overview { gap: 5px; padding: 6px; }
+
+    .ocean-location-row, .ocean-gw-row, .ocean-comm-row {
+        padding: 6px 10px;
+    }
+
+    .ocean-loc-label, .ocean-gw-label, .ocean-comm-label,
+    .ocean-loc-value, .ocean-gw-status {
+        font-size: 13px;
+    }
+
+    .ocean-sensor-section, .ocean-rfid-section {
+        padding: 7px 9px;
+    }
+
+    .os-icon { font-size: 17px; }
+    .os-name { font-size: 11px; }
+    .os-value { font-size: 18px; }
+
+    .rfid-big-value { font-size: 24px; }
+    .rfid-run-text { font-size: 12px; }
+
+    .ocean-comm-tag { font-size: 12px; padding: 5px 12px; }
+}
+
+@media (max-height: 700px) {
+    .ocean-overview { gap: 4px; padding: 5px; }
+
+    .ocean-location-row, .ocean-gw-row, .ocean-comm-row {
+        padding: 5px 8px;
+    }
+
+    .ocean-section-title { font-size: 11px; margin-bottom: 4px; }
+
+    .os-icon { font-size: 15px; }
+    .os-name { font-size: 10px; }
+    .os-value { font-size: 16px; }
+    .os-unit { font-size: 10px; }
+    .os-sub { font-size: 11px; }
+
+    .rfid-big-icon { font-size: 18px; }
+    .rfid-big-value { font-size: 20px; }
+    .rfid-run-badge { padding: 5px 10px; }
+    .rfid-run-text { font-size: 11px; }
+
+    .ocean-comm-tag { font-size: 11px; padding: 4px 10px; }
+}

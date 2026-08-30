@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧工厂子场景-应急救援场景 - 泛在物联网管控系统</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/yingjijiuyuan.css?v=20260527-device-fire-access" />
+    <link rel="stylesheet" href="../css/modify.css" />
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+            <div class="screen-bg">
+                <a href="../main.html" class="back-button">
+                    <span class="back-button-icon">←</span>
+                    <span>返回主页面</span>
+                </a>
+                <div class="header">
+                    <img src="../images/hand.png" class="hand-img" />
+                    <div class="scene-page-title"><span>智慧工厂子场景-应急救援场景</span></div>
+                </div>
+
+                <div class="yjy-scene-grid">
+                    <div class="yjy-panel yjy-video-panel">
+                        <div class="yjy-panel-title">
+                            <span>火灾应急检测</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-fire-video">
+                            <div class="yjy-video-content">
+                                <div class="yjy-video-stage">
+                                    <video id="yjy-fire-video-player" class="yjy-video-player" controls playsinline></video>
+                                    <img id="yjy-fire-ws-frame" class="yjy-ws-frame" />
+                                    <button class="yjy-video-select-btn" id="yjy-fire-video-select" type="button">选择文件</button>
+                                    <input class="yjy-video-file" id="yjy-fire-video-file" type="file" accept="video/*" />
+                                    <div class="yjy-placeholder" id="yjy-fire-video-placeholder">
+                                        <div class="yjy-placeholder-icon">🎥</div>
+                                        <div class="yjy-placeholder-text">接入指定IP摄像头实时流</div>
+                                        <div class="yjy-placeholder-hint">选择本地视频文件</div>
+                                    </div>
+                                </div>
+                                <div class="yjy-video-bar">
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-fire-btn-start" type="button">开始火灾检测</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-fire-btn-stop" type="button">结束火灾检测</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-capture-panel">
+                        <div class="yjy-panel-title">
+                            <span>火灾检测数据</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-fire-capture">
+                            <div class="yjy-capture-layout">
+                                <div class="yjy-capture-stage">
+                                    <img class="yjy-capture-image" id="yjy-capture-image" />
+                                    <div class="yjy-capture-data-list" id="yjy-capture-data-list"></div>
+                                    <div class="yjy-capture-placeholder" id="yjy-capture-placeholder">
+                                        <div class="yjy-placeholder-icon">📷</div>
+                                        <div class="yjy-placeholder-text">实时火灾截图</div>
+                                        <div class="yjy-placeholder-hint"></div>
+                                    </div>
+                                </div>
+                                <div class="yjy-capture-actions">
+                                    <button class="yjy-ctrl-btn" id="yjy-btn-toggle-mode" type="button">显示火灾数据</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-btn-start-all" type="button">开始显示</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-btn-stop-all" type="button">结束显示</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-overview-panel">
+                        <div class="yjy-panel-title">
+                            <span>应急救援画面</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-global-overview">
+                            <div class="yjy-video-content">
+                                <div class="yjy-video-stage">
+                                    <video id="yjy-overview-video-player" class="yjy-video-player" controls playsinline></video>
+                                    <img id="yjy-overview-ws-frame" class="yjy-ws-frame" />
+                                    <button class="yjy-video-select-btn" id="yjy-overview-video-select" type="button">选择文件</button>
+                                    <input class="yjy-video-file" id="yjy-overview-video-file" type="file" accept="video/*" />
+                                    <div class="yjy-placeholder" id="yjy-overview-video-placeholder">
+                                        <div class="yjy-placeholder-icon">🎥</div>
+                                        <div class="yjy-placeholder-text">接入指定IP摄像头实时流</div>
+                                        <div class="yjy-placeholder-hint">选择本地视频文件</div>
+                                    </div>
+                                </div>
+                                <div class="yjy-video-bar">
+                                    <select class="yjy-overview-mode-select" id="yjy-overview-mode-select" aria-label="应急救援画面来源">
+                                        <option value="factory" selected>开启工厂全局画面</option>
+                                        <option value="device">设备管控联动</option>
+                                    </select>
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-overview-btn-start" type="button">开启工厂全局画面</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-overview-btn-stop" type="button">结束总览画面</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-info-panel">
+                        <div class="yjy-panel-title">
+                            <span id="yjy-env-panel-title">工厂传感器检测数据</span>
+                            <span class="yjy-data-badge" id="yjy-data-badge">
+                                <span class="yjy-badge-source">实时</span>
+                                <span class="yjy-badge-interval">3s</span>
+                            </span>
+                            <button class="yjy-title-switch" id="yjy-env-panel-switch" type="button" title="切换" aria-label="切换检测数据面板">⇄</button>
+                        </div>
+                        <div class="yjy-panel-content yjy-log-panel">
+                            <div class="yjy-sensor-chart-container" id="yjy-temp-humi-view">
+                                <div class="yjy-env-summary" id="yjy-env-summary">
+                                    <div class="yjy-env-card"><span class="yjy-env-label">温度</span><strong id="yjy-env-temp">--</strong></div>
+                                    <div class="yjy-env-card"><span class="yjy-env-label">湿度</span><strong id="yjy-env-humi">--</strong></div>
+                                    <div class="yjy-env-card"><span class="yjy-env-label">烟感</span><strong id="yjy-env-smoke">--</strong></div>
+                                </div>
+                                <div id="yjy-sensor-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="yjy-sensor-chart-container" id="yjy-smoke-view">
+                                <div id="yjy-smoke-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="yjy-device-pass-view" id="yjy-device-pass-view" style="display: none;">
+                                <div class="yjy-device-log-list" id="yjy-device-pass-log">
+                                    <div class="yjy-pass-log-item info">[--:--:--] 等待设备管控日志...</div>
+                                </div>
+                            </div>
+                            <div class="yjy-sensor-actions">
+                                <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-env-btn-start" type="button">开始接收数据</button>
+                                <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-env-btn-stop" type="button">结束数据保留</button>
+                            </div>
+                            <div class="yjy-log-list" id="yjy-fire-info-list" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-linkage-panel">
+                        <div class="yjy-panel-title">
+                            <span>救援设备</span>
+                        </div>
+                        <div class="yjy-panel-content">
+                            <div class="yjy-linkage-list">
+                                <div class="yjy-linkage-card" data-device="beacon">
+                                    <div class="yjy-linkage-card-header"><span class="yjy-linkage-name">报警灯</span></div>
+                                    <div class="yjy-linkage-options">
+                                        <div class="yjy-linkage-option" data-state="on"><span class="yjy-linkage-text">开启</span><span class="yjy-linkage-check">✓</span></div>
+                                        <div class="yjy-linkage-option active" data-state="off"><span class="yjy-linkage-text">关闭</span><span class="yjy-linkage-check">✓</span></div>
+                                    </div>
+                                </div>
+                                <div class="yjy-linkage-card" data-device="valve">
+                                    <div class="yjy-linkage-card-header"><span class="yjy-linkage-name">水阀</span></div>
+                                    <div class="yjy-linkage-options">
+                                        <div class="yjy-linkage-option" data-state="on"><span class="yjy-linkage-text">开启</span><span class="yjy-linkage-check">✓</span></div>
+                                        <div class="yjy-linkage-option active" data-state="off"><span class="yjy-linkage-text">关闭</span><span class="yjy-linkage-check">✓</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/scenePage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../js/yingjijiuyuan.js?v=20260527-device-fire-access"></script>
+    <script src="../js/modify.js"></script>
+
+</body>
+</html>

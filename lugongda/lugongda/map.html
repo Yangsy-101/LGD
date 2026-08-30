@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D 中国地图·科技大屏</title>
+  <link rel="stylesheet" href="map.css?v=20260709d" />
+</head>
+
+<body>
+  <div id="screen-scale-wrapper">
+    <div id="screen-root">
+      <div class="map-stage hud-frame">
+        <canvas id="main-canvas" class="main-canvas"></canvas>
+        <div id="globe-wrapper" class="globe-wrapper">
+          <div class="globe-label">天启卫星</div>
+          <div id="globe-container" class="globe-container">
+            <canvas id="globe-canvas"></canvas>
+          </div>
+        </div>
+        <div id="tooltip" class="tooltip" style="display:none"></div>
+      </div>
+
+      <div id="hainan-panel" class="side-panel side-panel--left hud-panel">
+        <div class="hud-panel__header">
+          <div class="hud-panel__title">海南省网关分布</div>
+        </div>
+        <button type="button" class="hud-panel__edge-toggle" data-slide-panel="#hainan-panel" aria-label="将海南省网关分布面板隐藏到左侧边缘" title="隐藏/展开"></button>
+        <div class="hud-panel__body">
+          <div class="hainan-map" aria-label="海南省行政区划地图">
+            <svg id="hainan-map-svg" class="hainan-map__svg" viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+          </div>
+        </div>
+      </div>
+
+      <div id="nanjing-panel" class="side-panel side-panel--right hud-panel">
+        <div class="hud-panel__header">
+          <div class="hud-panel__title">南京市网关分布图</div>
+        </div>
+        <button type="button" class="hud-panel__edge-toggle" data-slide-panel="#nanjing-panel" aria-label="将南京市网关分布图面板隐藏到左侧边缘" title="隐藏/展开"></button>
+        <div class="hud-panel__body">
+          <div class="hainan-map" aria-label="南京市行政区划地图">
+            <svg id="nanjing-map-svg" class="hainan-map__svg" viewBox="0 0 320 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/china.js?v=20260528"></script>
+  <script src="data/hainan.js?v=20260528"></script>
+  <script src="data/nanjing.js?v=20260528"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/build/three.module.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import * as THREE_NS from 'three';
+
+    import { OrbitControls } from './vendor/three/examples/jsm/controls/OrbitControls.js';
+
+    import { EffectComposer } from './vendor/three/examples/jsm/postprocessing/EffectComposer.js';
+    import { RenderPass } from './vendor/three/examples/jsm/postprocessing/RenderPass.js';
+    import { ShaderPass } from './vendor/three/examples/jsm/postprocessing/ShaderPass.js';
+    import { UnrealBloomPass } from './vendor/three/examples/jsm/postprocessing/UnrealBloomPass.js';
+    import { FilmPass } from './vendor/three/examples/jsm/postprocessing/FilmPass.js';
+
+    import { CopyShader } from './vendor/three/examples/jsm/shaders/CopyShader.js';
+    import { ConvolutionShader } from './vendor/three/examples/jsm/shaders/ConvolutionShader.js';
+    import { LuminosityHighPassShader } from './vendor/three/examples/jsm/shaders/LuminosityHighPassShader.js';
+    import { FilmShader } from './vendor/three/examples/jsm/shaders/FilmShader.js';
+    import { FXAAShader } from './vendor/three/examples/jsm/shaders/FXAAShader.js';
+
+    const THREE = {
+      ...THREE_NS,
+      OrbitControls,
+      EffectComposer,
+      RenderPass,
+      ShaderPass,
+      UnrealBloomPass,
+      FilmPass,
+      CopyShader,
+      ConvolutionShader,
+      LuminosityHighPassShader,
+      FilmShader,
+      FXAAShader,
+    };
+
+    window.THREE = THREE;
+
+    if (!window.__MAP_APP_LOADED__) {
+      window.__MAP_APP_LOADED__ = true;
+      const s = document.createElement('script');
+      s.src = 'map.js?v=20260709';
+      document.body.appendChild(s);
+    }
+  </script>
+  <script src="globe.js?v=20260710_return_to_main"></script>
+</body>
+</html>

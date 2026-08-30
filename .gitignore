@@ -1,0 +1,28 @@
+# Local editor and agent state
+**/.claude/settings.local.json
+**/.playwright-cli/
+
+# Generated browser-test artifacts
+**/output/playwright/
+
+# Python caches and virtual environments
+**/__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# JavaScript dependencies
+node_modules/
+
+# Runtime logs and temporary database files
+*.log
+*.err
+*.db-shm
+*.db-wal
+
+# Local archive backups
+*.7z
+
+# Operating-system files
+.DS_Store
+Thumbs.db

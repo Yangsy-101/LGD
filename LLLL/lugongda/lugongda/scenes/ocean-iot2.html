@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>远海远域物联通信场景 - 泛在物联网管控系统</title>
+
+    <!-- 样式文件 -->
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/ocean-iot.css" />
+    <style>
+        /* ========== RFID核验 — 双面板布局 ========== */
+        .rfid-verify-merged .ocean-panel-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 2px 2px 2px 4px;
+            box-sizing: border-box;
+        }
+        /* -- 子面板 A：白名单核验结果 -- */
+        .whitelist-panel {
+            flex: 1 1 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(0, 212, 255, 0.12);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .whitelist-panel-header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: rgba(0, 80, 140, 0.18);
+            border-bottom: 1px solid rgba(0, 234, 255, 0.12);
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+        .whitelist-panel-header .wl-title {
+            font-weight: 600;
+            color: #5eead4;
+        }
+        .whitelist-panel-header .wl-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.55);
+        }
+        .whitelist-table-wrap {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .whitelist-table-wrap::-webkit-scrollbar { width: 4px; }
+        .whitelist-table-wrap::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 2px; }
+        .whitelist-table-wrap::-webkit-scrollbar-thumb { background: rgba(0, 234, 255, 0.25); border-radius: 2px; }
+        .whitelist-table-wrap::-webkit-scrollbar-thumb:hover { background: rgba(0, 234, 255, 0.45); }
+
+        .wl-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-size: 12px;
+            color: #d6eaff;
+        }
+        .wl-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            background: linear-gradient(180deg, rgba(0, 60, 100, 0.92), rgba(0, 30, 60, 0.92));
+            color: #00eaff;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            padding: 7px 6px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+            text-shadow: 0 0 4px rgba(0, 234, 255, 0.4);
+            font-size: 12px;
+        }
+        .wl-table tbody tr { transition: background 0.2s ease; }
+        .wl-table tbody tr:nth-child(even) { background: rgba(0, 234, 255, 0.03); }
+        .wl-table tbody tr:hover { background: rgba(0, 234, 255, 0.10); }
+        .wl-table tbody td {
+            padding: 6px 6px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 234, 255, 0.08);
+        }
+        .wl-table .sensor-name-cell {
+            color: #e6f4ff;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            font-size: 12px;
+            text-align: left;
+            padding-left: 8px;
+        }
+        .wl-table .sensor-location {
+            display: block;
+            font-size: 10px;
+            color: rgba(103, 197, 255, 0.55);
+            margin-top: 1px;
+        }
+        .wl-table .access-tag {
+            display: inline-block;
+            min-width: 48px;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        /* 复用现有接入方式颜色 */
+        .wl-table .access-5g   { color: #ffb84d; background: rgba(255, 184, 77, 0.12); border: 1px solid rgba(255, 184, 77, 0.5); }
+        .wl-table .access-sub1g{ color: #b388ff; background: rgba(179, 136, 255, 0.12); border: 1px solid rgba(179, 136, 255, 0.5); }
+        .wl-table .access-wifi { color: #00eaff; background: rgba(0, 234, 255, 0.12); border: 1px solid rgba(0, 234, 255, 0.5); }
+        .wl-table .access-ble  { color: #34d399; background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.5); }
+
+        /* 核验状态 */
+        .verify-passed {
+            color: #00ff88;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+            font-size: 13px;
+        }
+        .verify-passed::before {
+            content: "●";
+            margin-right: 3px;
+            color: #00ff88;
+            animation: verifyPulse 1.6s infinite;
+        }
+        .verify-failed {
+            color: #ef4444;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+            font-size: 13px;
+        }
+        .verify-failed::before {
+            content: "●";
+            margin-right: 3px;
+            color: #ef4444;
+            animation: verifyBlink 0.8s infinite;
+        }
+        .verify-warning {
+            color: #fbbf24;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+        }
+        .verify-warning::before {
+            content: "●";
+            margin-right: 3px;
+            color: #fbbf24;
+            animation: verifyPulse 1.2s infinite;
+        }
+        @keyframes verifyPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        @keyframes verifyBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        /* -- 子面板 B：黑名单告警 -- */
+        .blacklist-panel {
+            flex: 0 0 auto;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.0);
+            border-radius: 6px;
+        }
+        .blacklist-panel.expanded {
+            max-height: 300px;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .blacklist-panel-inner {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .blacklist-panel-header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: rgba(239, 68, 68, 0.12);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+            font-size: 12px;
+            color: #fca5a5;
+            font-weight: 600;
+        }
+        .blacklist-panel-header .bl-count {
+            font-size: 11px;
+            color: #ef4444;
+        }
+        .blacklist-alert-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px 6px;
+            max-height: 200px;
+        }
+        .blacklist-alert-list::-webkit-scrollbar { width: 3px; }
+        .blacklist-alert-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .blacklist-alert-list::-webkit-scrollbar-thumb { background: rgba(239, 68, 68, 0.25); border-radius: 2px; }
+        .blacklist-alert-list::-webkit-scrollbar-thumb:hover { background: rgba(239, 68, 68, 0.45); }
+
+        .blacklist-alert-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding: 8px 10px;
+            margin-bottom: 4px;
+            border-radius: 6px;
+            background: rgba(239, 68, 68, 0.10);
+            border-left: 3px solid rgba(239, 68, 68, 0.6);
+            animation: blAlertIn 0.35s ease;
+        }
+        .blacklist-alert-item.level-high {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.14);
+        }
+        .blacklist-alert-item.level-medium {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.10);
+        }
+        .blacklist-alert-item.level-low {
+            border-left-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.08);
+        }
+        .blacklist-alert-item:last-child { margin-bottom: 0; }
+        @keyframes blAlertIn {
+            from { opacity: 0; transform: translateX(8px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .bl-alert-time {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Consolas', monospace;
+        }
+        .bl-alert-main {
+            font-size: 12px;
+            color: #fca5a5;
+            font-weight: 500;
+        }
+        .bl-alert-detail {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Consolas', monospace;
+        }
+        .bl-alert-empty {
+            text-align: center;
+            padding: 12px 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* -- 底部操作栏 -- */
+        .rfid-demo-row {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 6px;
+            padding: 4px 0 2px 0;
+        }
+        .rfid-demo-btn-small {
+            flex: 1;
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 212, 255, 0.18);
+            background: rgba(148, 163, 184, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .rfid-demo-btn-small:hover {
+            border-color: rgba(0, 212, 255, 0.35);
+            background: rgba(148, 163, 184, 0.14);
+            color: #fff;
+        }
+        .rfid-demo-btn-small.danger {
+            border-color: rgba(239, 68, 68, 0.25);
+        }
+        .rfid-demo-btn-small.danger:hover {
+            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(239, 68, 68, 0.12);
+        }
+        .rfid-demo-btn-small.clear-btn {
+            border-color: rgba(251, 191, 36, 0.25);
+        }
+        .rfid-demo-btn-small.clear-btn:hover {
+            border-color: rgba(251, 191, 36, 0.5);
+            background: rgba(251, 191, 36, 0.10);
+        }
+        .rfid-demo-btn-small.rfid-scan-start {
+            border-color: rgba(52, 211, 153, 0.35);
+            color: #34d399;
+            font-weight: 600;
+        }
+        .rfid-demo-btn-small.rfid-scan-start:hover {
+            border-color: rgba(52, 211, 153, 0.6);
+            background: rgba(52, 211, 153, 0.15);
+            color: #6ee7b7;
+            box-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
+        }
+        .rfid-demo-btn-small.rfid-scan-stop {
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+            font-weight: 600;
+        }
+        .rfid-demo-btn-small.rfid-scan-stop:hover:not(:disabled) {
+            border-color: rgba(239, 68, 68, 0.55);
+            background: rgba(239, 68, 68, 0.14);
+            color: #fca5a5;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+        }
+        .rfid-demo-btn-small.rfid-scan-stop:disabled {
+            border-color: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.25);
+            cursor: not-allowed;
+            background: rgba(148, 163, 184, 0.04);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+
+    <!-- 整个背景 -->
+    <div class="screen-bg">
+
+        <!-- 返回按钮 -->
+        <a href="../main.html" class="back-button">
+            <span class="back-button-icon">←</span>
+            <span>返回主页面</span>
+        </a>
+
+        <!-- 顶部 HAND 图片 + 标题 -->
+        <div class="header">
+            <img src="../images/hand.png" class="hand-img" />
+            <div class="scene-page-title"><span>远海远域物联通信场景</span></div>
+        </div>
+
+        <!-- 场景网格布局 -->
+        <div class="ocean-scene-grid">
+            
+            <!-- 1. 摄像头检测画面 - 左侧大区域 -->
+            <div class="ocean-panel camera-monitor">
+                <!-- 地点选择区域 -->
+                <div class="ocean-location-bar">
+                    <span class="ocean-location-title">地点:</span>
+                    <span class="ocean-location-value">海口环海公路</span>
+                </div>
+                <div class="ocean-panel-title">
+                    <span class="ocean-panel-icon">📹</span>
+                    <span>摄像头检测画面</span>
+                    <div class="ocean-comm-selector">
+                        <span class="ocean-comm-label">通信方式</span>
+                        <div class="ocean-comm-method-list" aria-label="通信方式状态">
+                            <span class="ocean-comm-method-item">
+                                <span class="ocean-comm-indicator online" id="ocean-comm-indicator-5g"></span>
+                                <span class="ocean-comm-name">5G</span>
+                            </span>
+                            <span class="ocean-comm-method-item">
+                                <span class="ocean-comm-indicator" id="ocean-comm-indicator-shortwave"></span>
+                                <span class="ocean-comm-name">短波</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ocean-panel-content" id="ocean-camera-view">
+                    <canvas id="ocean-stream-canvas" class="ocean-stream-canvas"></canvas>
+                    <div class="camera-placeholder" id="ocean-camera-placeholder">
+                        <div class="camera-icon">🎥</div>
+                        <div class="camera-text">摄像头画面加载中...</div>
+                        <div class="camera-status">等待连接设备</div>
+                    </div>
+                    <div class="ocean-result-overlay" id="ocean-result-overlay" style="display: none;">
+                        <div class="result-title">检测结果</div>
+                        <div class="result-item">状态: <span id="ocean-result-status">未启动</span></div>
+                        <div class="result-item">通信: <span id="ocean-result-comm">5G</span></div>
+                        <div class="result-item">更新时间: <span id="ocean-result-time">--:--:--</span></div>
+                    </div>
+                </div>
+                <!-- 操作按钮区域 -->
+                <div class="ocean-camera-buttons">
+                    <button class="ocean-camera-btn" id="btn-ocean-start">▶ 开始检测</button>
+                    <button class="ocean-camera-btn" id="btn-ocean-result">📊 显示检测结果</button>
+                    <button class="ocean-camera-btn" id="btn-ocean-stop">⏹ 结束检测</button>
+                </div>
+            </div>
+
+            <!-- 2. 中列合并：上下分区传感器曲线 -->
+            <div class="ocean-panel middle-sensor-column">
+                <div class="middle-sensor-sections">
+                    <div class="middle-sensor-section upper-sensor-section">
+                        <div class="ocean-panel-title compact-title">
+                            <span>光照与响度感知数据</span>
+                            <!--
+                            <div class="sensor-badge" id="light-sound-badge">
+                                <span class="badge-source">实时</span>
+                                <span class="badge-interval">4s</span>
+                            </div>
+                            <button class="sensor-ctrl-btn" title="反馈控制">
+                                <span class="ctrl-icon">⚙</span>
+                                <span>调控</span>
+                            </button>
+                            -->
+                        </div>
+                        <div class="section-panel-content">
+                            <div class="sensor-chart-container">
+                                <div id="light-sound-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="sensor-current-cards">
+                                <div class="sensor-card" id="sensor-light">
+                                    <div class="sensor-icon">☀️</div>
+                                    <div class="sensor-info">
+                                        <div class="sensor-name">光照</div>
+                                        <div class="sensor-value"><span id="val-light">7200</span>Lux</div>
+                                    </div>
+                                </div>
+                                <div class="sensor-card" id="sensor-loudness">
+                                    <div class="sensor-icon">🔊</div>
+                                    <div class="sensor-info">
+                                        <div class="sensor-name">响度</div>
+                                        <div class="sensor-value"><span id="val-loudness">56</span>dB</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="middle-sensor-section lower-sensor-section">
+                        <div class="ocean-panel-title compact-title">
+                            <span class="ocean-panel-icon">🔬</span>
+                            <span>温湿度数据检测</span>
+                            <!--
+                            <div class="sensor-badge" id="sensor-badge">
+                                <span class="badge-source">实时</span>
+                                <span class="badge-interval">3s</span>
+                            </div>
+                            <button class="sensor-ctrl-btn" title="反馈控制">
+                                <span class="ctrl-icon">⚙</span>
+                                <span>调控</span>
+                            </button>
+                            -->
+                        </div>
+                        <div class="section-panel-content">
+                            <div class="sensor-chart-container">
+                                <div id="sensor-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="sensor-current-cards">
+                                <div class="sensor-card" id="sensor-temp">
+                                    <div class="sensor-icon">🌡️</div>
+                                    <div class="sensor-info">
+                                        <div class="sensor-name">温度</div>
+                                        <div class="sensor-value"><span id="val-temp">26.5</span>°C</div>
+                                    </div>
+                                </div>
+                                <div class="sensor-card" id="sensor-humidity">
+                                    <div class="sensor-icon">💧</div>
+                                    <div class="sensor-info">
+                                        <div class="sensor-name">湿度</div>
+                                        <div class="sensor-value"><span id="val-humidity">68</span>%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. RFID核验 - 白名单/黑名单双面板 -->
+            <div class="ocean-panel rfid-verify-merged">
+                <div class="ocean-panel-title">
+                    <span class="ocean-panel-icon">&#9673;</span>
+                    <span>RFID核验</span>
+                </div>
+                <div class="ocean-panel-content" id="rfid-verify-content">
+                    <!-- 子面板 A：白名单核验结果 -->
+                    <div class="whitelist-panel" id="whitelist-panel">
+                        <div class="whitelist-panel-header">
+                            <span class="wl-title">白名单核验结果</span>
+                            <span class="wl-meta">
+                                设备: <strong id="wl-device-count">20</strong> &nbsp;
+                                最后更新: <strong id="wl-last-update">--:--:--</strong>
+                            </span>
+                        </div>
+                        <div class="whitelist-table-wrap">
+                            <table class="wl-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50%;">传感器名称</th>
+                                        <th style="width: 26%;">接入方式</th>
+                                        <th style="width: 24%;">核验结果</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="wl-table-body">
+                                    <!-- JS 动态渲染 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 子面板 B：黑名单告警 -->
+                    <div class="blacklist-panel" id="blacklist-panel">
+                        <div class="blacklist-panel-inner">
+                            <div class="blacklist-panel-header">
+                                <span>黑名单告警</span>
+                                <span class="bl-count">告警总数: <strong id="bl-alert-count">0</strong></span>
+                            </div>
+                            <div class="blacklist-alert-list" id="bl-alert-list">
+                                <div class="bl-alert-empty">暂无异常数据</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 底部RFID扫描操作栏 -->
+                    <div class="rfid-demo-row">
+                        <button class="rfid-demo-btn-small rfid-scan-start" id="btn-rfid-scan-start">
+                            📡 开启RFID实时扫描
+                        </button>
+                        <button class="rfid-demo-btn-small rfid-scan-stop" id="btn-rfid-scan-stop" disabled>
+                            ⏹ 结束扫描
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 极地风力监测数据 -->
+            <div class="ocean-panel wind-monitor">
+                <div class="ocean-panel-title">
+                    <span class="ocean-panel-icon">🌬️</span>
+                    <span>极地风力监测数据</span>
+                    <!--
+                    <div class="wind-badge">
+                        <span class="badge-source">实时</span>
+                        <span class="badge-interval">5s</span>
+                    </div>
+                    <button class="sensor-ctrl-btn" title="反馈控制">
+                        <span class="ctrl-icon">⚙</span>
+                        <span>调控</span>
+                    </button>
+                    -->
+                </div>
+                <div class="ocean-panel-content">
+                    <div class="wind-chart-container">
+                        <div id="wind-chart" style="width: 100%; height: 100%;"></div>
+                    </div>
+                    <div class="wind-current-card">
+                        <div class="wind-card-row">
+                            <div class="wind-icon">🌬️</div>
+                            <div class="wind-info">
+                                <div class="wind-name">当前风速</div>
+                                <div class="wind-value"><span id="val-wind">12.5</span> m/s</div>
+                            </div>
+                            <div class="wind-level">
+                                <span class="wind-level-label">风力等级</span>
+                                <span class="wind-level-value" id="wind-level">6级</span>
+                            </div>
+                        </div>
+                        <div class="wind-card-row wind-direction-row">
+                            <div class="wind-compass" id="wind-compass">
+                                <svg viewBox="0 0 24 24" class="compass-icon">
+                                    <circle cx="12" cy="12" r="10" class="compass-ring"/>
+                                    <path d="M12 2 L14 10 L12 8 L10 10 Z" class="compass-needle" id="compass-needle"/>
+                                </svg>
+                            </div>
+                            <div class="wind-info">
+                                <div class="wind-name">当前风向</div>
+                                <div class="wind-direction-value">
+                                    <span id="val-wind-dir-text">NW</span>
+                                    <span id="val-wind-dir-deg">315</span>°
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 传感器控制抽屉 -->
+    <div class="sensor-drawer-overlay" id="sensor-drawer-overlay"></div>
+    <div class="sensor-drawer" id="sensor-drawer">
+        <!-- A. 顶部信息区（只读） -->
+        <div class="drawer-info-section">
+            <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
+            <div class="drawer-info-header">
+                <div class="drawer-info-main">
+                    <span class="drawer-sensor-name" id="drawer-sensor-name">关键传感器</span>
+                    <span class="drawer-sensor-type" id="drawer-sensor-type">环境监测</span>
+                </div>
+                <span class="drawer-status online" id="drawer-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">通信正常</span>
+                </span>
+            </div>
+            <div class="drawer-device-id" id="drawer-device-id">设备ID: SENSOR-OC-001</div>
+            <!-- IP地址选择器 -->
+            <div class="drawer-ip-selector">
+                <span class="ip-label">连接地址</span>
+                <select class="ip-select" id="drawer-ip-select">
+                    <option value="10.20.1.101">10.20.1.101</option>
+                    <option value="10.20.1.102">10.20.1.102</option>
+                    <option value="10.20.1.103">10.20.1.103</option>
+                    <option value="192.168.50.10">192.168.50.10</option>
+                </select>
+                <button class="ip-connect-btn" id="ip-connect-btn">连接</button>
+            </div>
+            <!-- 传感器切换器 (仅特定传感器使用) -->
+            <div class="sensor-switcher" id="sensor-switcher" style="display: none;">
+                <button class="sensor-switch-btn active" data-sensor="light">
+                    <span class="switch-icon">☀</span>
+                    <span class="switch-label">光照传感器</span>
+                </button>
+                <button class="sensor-switch-btn" data-sensor="loudness">
+                    <span class="switch-icon">🔊</span>
+                    <span class="switch-label">响度传感器</span>
+                </button>
+            </div>
+            
+            <!-- 单值显示区 -->
+            <div class="drawer-current-value" id="single-value-display">
+                <div class="current-value-box">
+                    <span class="current-label">当前值</span>
+                    <span class="current-number" id="drawer-current-value">26.5</span>
+                    <span class="current-unit" id="drawer-current-unit">°C</span>
+                </div>
+                <div class="current-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">最近更新</span>
+                        <span class="meta-value" id="drawer-update-time">10:42:35</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">信号强度</span>
+                        <span class="meta-value" id="drawer-signal">-65 dBm</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 双值显示区 (温湿度等) -->
+            <div class="drawer-dual-value" id="dual-value-display" style="display: none;">
+                <div class="dual-value-row">
+                    <div class="dual-value-box temperature">
+                        <span class="dual-value-icon">🌡</span>
+                        <div class="dual-value-content">
+                            <span class="dual-value-label">温度</span>
+                            <div class="dual-value-data">
+                                <span class="dual-value-number" id="drawer-temp-value">26.5</span>
+                                <span class="dual-value-unit">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dual-value-box humidity">
+                        <span class="dual-value-icon">💧</span>
+                        <div class="dual-value-content">
+                            <span class="dual-value-label">湿度</span>
+                            <div class="dual-value-data">
+                                <span class="dual-value-number" id="drawer-humidity-value">65.0</span>
+                                <span class="dual-value-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="current-meta dual-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">最近更新</span>
+                        <span class="meta-value" id="drawer-update-time-dual">10:42:35</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">信号强度</span>
+                        <span class="meta-value" id="drawer-signal-dual">-65 dBm</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label sync-indicator">
+                            <span class="sync-dot"></span>实时同步
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- B. 参数编辑区 -->
+        <div class="drawer-content" id="drawer-content">
+            <!-- 参数1: 工作频率 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">工作频率</span>
+                    <span class="param-group-desc">配置传感器采样频率，影响数据精度与设备功耗</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">采样频率</span>
+                            <span class="param-hint">可选: 0.5 / 1 / 2 / 5 / 10 Hz</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-frequency" data-default="1" data-field="sampleFrequency">
+                                <option value="0.5">0.5</option>
+                                <option value="1" selected>1</option>
+                                <option value="2">2</option>
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                            </select>
+                            <span class="param-unit">Hz</span>
+                            <span class="param-tooltip" data-tip="传感器每秒采样次数。高频率提升精度但增加功耗，低频率适合长期监测">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row slider-row">
+                        <div class="param-slider-wrap">
+                            <input type="range" class="param-slider" id="param-frequency-slider" min="0" max="4" step="1" value="1">
+                            <div class="slider-marks">
+                                <span>0.5</span><span>1</span><span>2</span><span>5</span><span>10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 参数2: 上报周期 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">上报周期</span>
+                    <span class="param-group-desc">配置数据上传到服务器的时间间隔</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">上传间隔</span>
+                            <span class="param-hint">预设: 1/3/5/10/30/60 s，支持自定义</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-interval-select" data-field="uploadInterval">
+                                <option value="1">1</option>
+                                <option value="3">3</option>
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="30">30</option>
+                                <option value="60">60</option>
+                                <option value="custom">自定义...</option>
+                            </select>
+                            <span class="param-unit">s</span>
+                            <span class="param-tooltip" data-tip="数据上报服务器的间隔时间。间隔越短实时性越好，但会增加网络流量">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row custom-input-row" id="interval-custom-row" style="display: none;">
+                        <div class="param-info">
+                            <span class="param-label">自定义间隔</span>
+                            <span class="param-hint warning">范围: 1-300 s，整数</span>
+                        </div>
+                        <div class="param-control">
+                            <input type="number" class="param-input" id="param-interval" value="5" min="1" max="300" step="1" data-default="5" data-field="uploadInterval">
+                            <span class="param-unit">s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 参数3: 心跳周期 -->
+            <div class="param-group">
+                <div class="param-group-header">
+                    <span class="param-group-title">心跳周期</span>
+                    <span class="param-group-desc">用于在线状态判断与链路保活，在网关/平台侧生效</span>
+                </div>
+                <div class="param-card">
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">心跳间隔</span>
+                            <span class="param-hint">范围: 1-600 s，正整数</span>
+                        </div>
+                        <div class="param-control">
+                            <input type="number" class="param-input" id="param-heartbeat" value="30" min="1" max="600" step="1" data-default="30" data-field="heartbeatPeriod">
+                            <span class="param-unit">s</span>
+                            <span class="param-tooltip" data-tip="设备向平台发送心跳包的时间间隔。用于判断设备在线状态，建议不超过上报周期的2倍">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row">
+                        <div class="param-info">
+                            <span class="param-label">离线判定阈值</span>
+                            <span class="param-hint">连续丢失心跳次数后判定离线</span>
+                        </div>
+                        <div class="param-control">
+                            <select class="param-select" id="param-offline-threshold" data-default="3" data-field="offlineThreshold">
+                                <option value="2">2 次</option>
+                                <option value="3" selected>3 次</option>
+                                <option value="5">5 次</option>
+                                <option value="10">10 次</option>
+                            </select>
+                            <span class="param-unit">次</span>
+                            <span class="param-tooltip" data-tip="连续丢失多少次心跳后判定设备离线。阈值越高容错性越强，但离线检测延迟增加">?</span>
+                        </div>
+                    </div>
+                    <div class="param-row" id="heartbeat-warning-row" style="display: none;">
+                        <div class="param-warning">
+                            <span class="warning-icon">⚠</span>
+                            <span class="warning-text" id="heartbeat-warning-text">心跳周期建议不超过上报周期的2倍</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C. 底部操作区 -->
+        <div class="drawer-footer">
+            <div class="footer-actions-row">
+                <button class="drawer-btn btn-secondary" id="drawer-btn-read">
+                    <span class="btn-icon">↓</span>读取配置
+                </button>
+                <button class="drawer-btn btn-secondary" id="drawer-btn-reset">
+                    <span class="btn-icon">↻</span>恢复默认
+                </button>
+            </div>
+            <div class="footer-actions-row primary-actions">
+                <button class="drawer-btn btn-cancel" id="drawer-btn-cancel">取消</button>
+                <button class="drawer-btn btn-apply" id="drawer-btn-apply">应用</button>
+                <button class="drawer-btn btn-send" id="drawer-btn-send">下发</button>
+            </div>
+            <div class="footer-result" id="footer-result">
+                <span class="result-icon">✓</span>
+                <span class="result-text">参数下发成功</span>
+                <span class="result-time">10:42:38</span>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </div>
+
+    <!-- 脚本 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="../js/scenePage.js"></script>
+    <!-- 网关 MJPEG 视频流接收器（远海场景, 端口 10001） -->
+    <script src="../../../newjs/newjs2.js"></script>
+    <!-- 网关传感器数据轮询 (端口 10009) -->
+    <script src="../../../newjs/newjs2_sensor.js"></script>
+    <!-- 传感器白名单数据 -->
+    <script src="../../../newjs/sensor_whitelist.js"></script>
+    <!-- 原有传感器/图表/抽屉逻辑 -->
+    <script src="../js/ocean-iot.js?v=20260521-video-only-ram"></script>
+    <!-- 用 MjpegReceiver 替换原有 JSP 视频拉流按钮逻辑 -->
+    <script>
+        (function() {
+            window._oceanReceiver = null;
+
+            function bindOceanVideo() {
+                const startBtn = document.getElementById('btn-ocean-start');
+                const stopBtn  = document.getElementById('btn-ocean-stop');
+
+                if (startBtn) {
+                    const newStartBtn = startBtn.cloneNode(true);
+                    startBtn.parentNode.replaceChild(newStartBtn, startBtn);
+                    newStartBtn.addEventListener('click', function() {
+                        if (window._oceanReceiver && window._oceanReceiver.running) return;
+
+                        // 占位符显示缓冲提示
+                        const placeholder = document.getElementById('ocean-camera-placeholder');
+                        if (placeholder) {
+                            placeholder.style.display = 'flex';
+                            const icon = placeholder.querySelector('.camera-icon');
+                            const text = placeholder.querySelector('.camera-text');
+                            const status = placeholder.querySelector('.camera-status');
+                            if (icon) icon.textContent = '📡';
+                            const now = new Date();
+                            const ts = [now.getHours(), now.getMinutes(), now.getSeconds()]
+                                .map(v => String(v).padStart(2, '0')).join(':');
+                            if (text) text.textContent =
+                                '[' + ts + '] 开始从网关 (' + GATEWAY_CONFIG.host + ') 拉取 MJPEG 视频流';
+                            if (status) status.textContent = '正在连接...';
+                        }
+
+                        window._oceanReceiver = new MjpegReceiver(GATEWAY_CONFIG);
+                        window._oceanReceiver.start();
+                        if (typeof OceanIoTScene !== 'undefined' && OceanIoTScene.addEvent) {
+                            OceanIoTScene.addEvent('upload', '网关MJPEG视频流启动 (' + GATEWAY_CONFIG.host + ':' + GATEWAY_CONFIG.port + ')');
+                        }
+                    });
+                }
+
+                if (stopBtn) {
+                    const newStopBtn = stopBtn.cloneNode(true);
+                    stopBtn.parentNode.replaceChild(newStopBtn, stopBtn);
+                    newStopBtn.addEventListener('click', function() {
+                        if (window._oceanReceiver) {
+                            window._oceanReceiver.stop();
+                            window._oceanReceiver = null;
+                        }
+                        const canvas = document.getElementById('ocean-stream-canvas');
+                        const placeholder = document.getElementById('ocean-camera-placeholder');
+                        if (canvas) canvas.style.display = 'none';
+                        if (placeholder) {
+                            placeholder.style.display = 'flex';
+                            const icon = placeholder.querySelector('.camera-icon');
+                            const text = placeholder.querySelector('.camera-text');
+                            const status = placeholder.querySelector('.camera-status');
+                            if (icon) icon.textContent = '🎥';
+                            if (text) text.textContent = '摄像头画面加载中...';
+                            if (status) status.textContent = '等待连接设备';
+                        }
+                        if (typeof OceanIoTScene !== 'undefined' && OceanIoTScene.addEvent) {
+                            OceanIoTScene.addEvent('upload', '网关MJPEG视频流停止');
+                        }
+                    });
+                }
+
+                console.log('[ocean-iot2] 网关 MJPEG 接收器已绑定, 目标: ' + GATEWAY_CONFIG.host + ':' + GATEWAY_CONFIG.port);
+            }
+
+            // ===== 显示检测结果 — 传感器数据拉取 =====
+            function bindResultButton() {
+                var resultBtn = document.getElementById('btn-ocean-result');
+                if (!resultBtn) return;
+
+                var newBtn = resultBtn.cloneNode(true);
+                resultBtn.parentNode.replaceChild(newBtn, resultBtn);
+
+                newBtn.addEventListener('click', function() {
+                    if (window._oceanSensor && window._oceanSensor.running) {
+                        // 已开启 → 停止
+                        window._oceanSensor.stop();
+                        window._oceanSensor = null;
+                        newBtn.textContent = '📊 显示检测结果';
+                        newBtn.classList.remove('active');
+                        if (typeof OceanIoTScene !== 'undefined' && OceanIoTScene.addEvent) {
+                            OceanIoTScene.addEvent('upload', '传感器数据接收停止');
+                        }
+                    } else {
+                        // 未开启 → 启动
+                        window._oceanSensor = new OceanSensorReceiver(OCEAN_SENSOR_CONFIG);
+                        window._oceanSensor.start();
+                        newBtn.textContent = '⏹ 停止显示';
+                        newBtn.classList.add('active');
+                        if (typeof OceanIoTScene !== 'undefined' && OceanIoTScene.addEvent) {
+                            OceanIoTScene.addEvent('upload',
+                                '从网关 (' + OCEAN_SENSOR_CONFIG.host + ':' + OCEAN_SENSOR_CONFIG.port + ') 接收传感器数据');
+                        }
+                    }
+                });
+
+                console.log('[ocean-iot2] 传感器接收器已绑定, 端口: ' + OCEAN_SENSOR_CONFIG.port);
+            }
+
+            function bindAll() {
+                bindOceanVideo();
+                bindResultButton();
+                console.log('[ocean-iot2] 全部绑定完成');
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(bindAll, 50);
+                });
+            } else {
+                setTimeout(bindAll, 50);
+            }
+        })();
+    </script>
+
+    <!-- ========== RFID核验 — 白名单/黑名单 UI 逻辑 ========== -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ---- 黑名单告警去重（同 sensor+deviceId 30s 内不重复） ----
+        var blacklistCooldown = {};
+
+        function shouldAlert(sensor, deviceId) {
+            var key = sensor + '|' + deviceId;
+            var lastAlert = blacklistCooldown[key] || 0;
+            if (Date.now() - lastAlert < 30000) return false;
+            blacklistCooldown[key] = Date.now();
+            return true;
+        }
+
+        function clearCooldown(sensor, deviceId) {
+            var key = sensor + '|' + deviceId;
+            delete blacklistCooldown[key];
+        }
+
+        // ---- 核心校验函数 ----
+        function verifySensor(sensor, deviceId, commType) {
+            var whitelist = window.SENSOR_WHITELIST;
+            if (!whitelist) {
+                return { passed: false, reason: '白名单数据未加载', info: null, alertLevel: 'high' };
+            }
+
+            if (!whitelist[sensor]) {
+                return {
+                    passed: false,
+                    reason: '未知传感器类型: ' + sensor,
+                    info: null,
+                    alertLevel: 'high'
+                };
+            }
+
+            if (!whitelist[sensor][deviceId]) {
+                return {
+                    passed: false,
+                    reason: '设备ID不在白名单: ' + deviceId + ' (' + sensor + ')',
+                    info: null,
+                    alertLevel: 'medium'
+                };
+            }
+
+            var info = whitelist[sensor][deviceId];
+
+            // 额外检查通信方式是否匹配
+            if (info.access !== commType) {
+                return {
+                    passed: true,            // 仍通过但记录异常
+                    reason: '通信方式变更: 预期' + info.access + ', 实际' + commType,
+                    info: info,
+                    alertLevel: 'low'
+                };
+            }
+
+            return {
+                passed: true,
+                reason: '核验通过',
+                info: info,
+                alertLevel: 'none'
+            };
+        }
+
+        // ---- 格式化时间 ----
+        function formatNow() {
+            var d = new Date();
+            return [d.getHours(), d.getMinutes(), d.getSeconds()]
+                .map(function(v) { return String(v).padStart(2, '0'); }).join(':');
+        }
+
+        // ---- 渲染白名单表格 ----
+        function renderWhitelistTable() {
+            var tbody = document.getElementById('wl-table-body');
+            if (!tbody) return;
+
+            var whitelist = window.SENSOR_WHITELIST;
+            if (!whitelist) {
+                tbody.innerHTML = '<tr><td colspan="3" style="color:#ef4444;padding:16px;">白名单数据加载失败</td></tr>';
+                return;
+            }
+
+            var html = '';
+            // 按传感器类型排序遍历
+            var typeOrder = ['WindSpeed', 'Temperature', 'LightIntensity', 'Loudness'];
+            var typeLabels = {
+                'WindSpeed': '风速传感器',
+                'Temperature': '温湿度传感器',
+                'LightIntensity': '光照传感器',
+                'Loudness': '响度传感器'
+            };
+
+            var totalCount = 0;
+
+            typeOrder.forEach(function(sensorType) {
+                var devices = whitelist[sensorType];
+                if (!devices) return;
+
+                var ids = Object.keys(devices);
+                // 按设备 name 排序
+                ids.sort(function(a, b) {
+                    return (devices[a].name || '').localeCompare(devices[b].name || '');
+                });
+
+                ids.forEach(function(deviceId) {
+                    var info = devices[deviceId];
+                    var accessLabel = (typeof getAccessLabel === 'function')
+                        ? getAccessLabel(info.access)
+                        : info.access.toUpperCase();
+                    var accessClass = 'access-' + info.access;
+
+                    html += '<tr>';
+                    html += '<td class="sensor-name-cell">';
+                    html +=   info.name;
+                    html +=   '<span class="sensor-location">' + (info.location || '') + '</span>';
+                    html += '</td>';
+                    html += '<td><span class="access-tag ' + accessClass + '">' + accessLabel + '</span></td>';
+                    html += '<td class="verify-passed">在线</td>';
+                    html += '</tr>';
+
+                    totalCount++;
+                });
+            });
+
+            tbody.innerHTML = html;
+
+            // 更新计数
+            var countEl = document.getElementById('wl-device-count');
+            if (countEl) countEl.textContent = totalCount;
+
+            // 更新最后更新时间
+            var timeEl = document.getElementById('wl-last-update');
+            if (timeEl) timeEl.textContent = formatNow();
+        }
+
+        // ---- 更新白名单中某行的核验状态 ----
+        function updateWhitelistRowStatus(sensorType, deviceId, status, statusText) {
+            var whitelist = window.SENSOR_WHITELIST;
+            if (!whitelist) return;
+
+            var info = whitelist[sensorType] && whitelist[sensorType][deviceId];
+            if (!info) return;
+
+            var tbody = document.getElementById('wl-table-body');
+            if (!tbody) return;
+
+            var rows = tbody.querySelectorAll('tr');
+            var searchName = info.name;
+            for (var i = 0; i < rows.length; i++) {
+                var nameCell = rows[i].querySelector('.sensor-name-cell');
+                if (nameCell && nameCell.textContent.indexOf(searchName) !== -1) {
+                    var statusCell = rows[i].querySelector('td:last-child');
+                    if (statusCell) {
+                        statusCell.className = status;
+                        statusCell.textContent = statusText;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // ---- 黑名单告警管理 ----
+        var blacklistAlerts = [];
+
+        function addBlacklistAlert(alertData) {
+            blacklistAlerts.unshift(alertData);
+            if (blacklistAlerts.length > 50) blacklistAlerts.pop(); // 上限50条
+
+            renderBlacklistPanel();
+            expandBlacklistPanel();
+
+            // 更新计数
+            var countEl = document.getElementById('bl-alert-count');
+            if (countEl) countEl.textContent = blacklistAlerts.length;
+        }
+
+        function clearBlacklistAlerts() {
+            blacklistAlerts = [];
+            blacklistCooldown = {};
+            renderBlacklistPanel();
+            collapseBlacklistPanel();
+
+            var countEl = document.getElementById('bl-alert-count');
+            if (countEl) countEl.textContent = '0';
+        }
+
+        function renderBlacklistPanel() {
+            var listEl = document.getElementById('bl-alert-list');
+            if (!listEl) return;
+
+            if (blacklistAlerts.length === 0) {
+                listEl.innerHTML = '<div class="bl-alert-empty">暂无异常数据</div>';
+                return;
+            }
+
+            var levelLabels = { high: '[高危]', medium: '[中危]', low: '[低危]' };
+
+            var html = '';
+            blacklistAlerts.forEach(function(alert) {
+                var levelClass = 'level-' + (alert.alertLevel || 'medium');
+                var levelLabel = levelLabels[alert.alertLevel] || '[中危]';
+                html += '<div class="blacklist-alert-item ' + levelClass + '">';
+                html +=   '<div class="bl-alert-time">[' + (alert.time || '--:--:--') + '] ' + levelLabel + '</div>';
+                html +=   '<div class="bl-alert-main">' + (alert.reason || '未知告警') + '</div>';
+                html +=   '<div class="bl-alert-detail">';
+                html +=     '类型: ' + (alert.sensor || '--') + ' | ';
+                html +=     '设备ID: ' + (alert.deviceId || '--') + ' | ';
+                html +=     '接入: ' + (alert.commType || '--');
+                html +=   '</div>';
+                html += '</div>';
+            });
+
+            listEl.innerHTML = html;
+        }
+
+        function expandBlacklistPanel() {
+            var panel = document.getElementById('blacklist-panel');
+            if (panel) panel.classList.add('expanded');
+        }
+
+        function collapseBlacklistPanel() {
+            var panel = document.getElementById('blacklist-panel');
+            if (panel) panel.classList.remove('expanded');
+        }
+
+        // ---- 模拟告警场景 ----
+        function simulateUnknownDevice() {
+            var sensorTypes = ['LightIntensity', 'Temperature', 'WindSpeed', 'Loudness'];
+            var commTypes = ['ble', 'wifi', 'sub1g', '5g'];
+            var unknownIds = [
+                'E938712472AX', 'X1234567890Z', 'BAD-DEVICE-01', 'UNKNOWN-ABCD',
+                'HACK-EF123456', 'GHOST-789ABCDE'
+            ];
+
+            var sensor = sensorTypes[Math.floor(Math.random() * sensorTypes.length)];
+            var deviceId = unknownIds[Math.floor(Math.random() * unknownIds.length)];
+            var comm = commTypes[Math.floor(Math.random() * commTypes.length)];
+
+            if (!shouldAlert(sensor, deviceId)) {
+                console.log('[RFID核验] 告警去重: ' + sensor + '|' + deviceId);
+                return;
+            }
+
+            var result = verifySensor(sensor, deviceId, comm);
+            addBlacklistAlert({
+                time: formatNow(),
+                sensor: sensor,
+                deviceId: deviceId,
+                commType: comm,
+                reason: result.reason,
+                alertLevel: result.alertLevel
+            });
+        }
+
+        function simulateUnknownType() {
+            var unknownTypes = ['Pressure', 'CO2Sensor', 'Vibration', 'UnknownSensor'];
+            var commTypes = ['ble', 'wifi', 'sub1g', '5g'];
+            var fakeIds = ['FAKE-000000001', 'NEW-DEVICE-XYZ'];
+
+            var sensor = unknownTypes[Math.floor(Math.random() * unknownTypes.length)];
+            var deviceId = fakeIds[Math.floor(Math.random() * fakeIds.length)];
+            var comm = commTypes[Math.floor(Math.random() * commTypes.length)];
+
+            if (!shouldAlert(sensor, deviceId)) {
+                console.log('[RFID核验] 告警去重: ' + sensor + '|' + deviceId);
+                return;
+            }
+
+            var result = verifySensor(sensor, deviceId, comm);
+            addBlacklistAlert({
+                time: formatNow(),
+                sensor: sensor,
+                deviceId: deviceId,
+                commType: comm,
+                reason: result.reason,
+                alertLevel: result.alertLevel
+            });
+        }
+
+        function simulateCommMismatch() {
+            var whitelist = window.SENSOR_WHITELIST;
+            if (!whitelist) return;
+
+            var sensorTypes = Object.keys(whitelist);
+            var sensor = sensorTypes[Math.floor(Math.random() * sensorTypes.length)];
+
+            var deviceIds = Object.keys(whitelist[sensor]);
+            var deviceId = deviceIds[Math.floor(Math.random() * deviceIds.length)];
+            var info = whitelist[sensor][deviceId];
+
+            // 选一个不同的通信方式
+            var altComms = ['ble', 'wifi', 'sub1g', '5g'].filter(function(c) { return c !== info.access; });
+            var fakeComm = altComms[Math.floor(Math.random() * altComms.length)];
+
+            if (!shouldAlert(sensor + '_mismatch', deviceId)) {
+                console.log('[RFID核验] 告警去重: comm_mismatch ' + sensor + '|' + deviceId);
+                return;
+            }
+
+            var result = verifySensor(sensor, deviceId, fakeComm);
+            addBlacklistAlert({
+                time: formatNow(),
+                sensor: sensor,
+                deviceId: deviceId,
+                commType: fakeComm,
+                reason: result.reason,
+                alertLevel: result.alertLevel
+            });
+
+            // 更新白名单表对应行的状态为警告
+            updateWhitelistRowStatus(sensor, deviceId, 'verify-warning', '异常');
+        }
+
+        // ---- 初始化 ----
+        function initRFIDVerify() {
+            // 渲染白名单表格
+            if (window.SENSOR_WHITELIST) {
+                renderWhitelistTable();
+            } else {
+                // 白名单脚本可能还在加载，稍后重试
+                var retries = 0;
+                var checkInterval = setInterval(function() {
+                    retries++;
+                    if (window.SENSOR_WHITELIST) {
+                        clearInterval(checkInterval);
+                        renderWhitelistTable();
+                    } else if (retries >= 20) {
+                        clearInterval(checkInterval);
+                        console.warn('[RFID核验] 白名单数据加载超时');
+                    }
+                }, 100);
+            }
+
+            // ---- RFID 实时扫描引擎 ----
+            var rfidScanTimer = null;
+            var rfidScanRunning = false;
+
+            function startRFIDScan() {
+                if (rfidScanRunning) return;
+                rfidScanRunning = true;
+
+                var startBtn = document.getElementById('btn-rfid-scan-start');
+                var stopBtn  = document.getElementById('btn-rfid-scan-stop');
+                if (startBtn) startBtn.disabled = true;
+                if (stopBtn)  stopBtn.disabled = false;
+
+                // 立即执行一次扫描
+                performRFIDScanCycle();
+
+                // 每 3 秒扫描一轮
+                rfidScanTimer = setInterval(function() {
+                    performRFIDScanCycle();
+                }, 3000);
+
+                var timeEl = document.getElementById('wl-last-update');
+                if (timeEl) timeEl.textContent = formatNow();
+
+                console.log('[RFID核验] 实时扫描已开启');
+            }
+
+            function stopRFIDScan() {
+                if (!rfidScanRunning) return;
+                rfidScanRunning = false;
+
+                var startBtn = document.getElementById('btn-rfid-scan-start');
+                var stopBtn  = document.getElementById('btn-rfid-scan-stop');
+                if (startBtn) startBtn.disabled = false;
+                if (stopBtn)  stopBtn.disabled = true;
+
+                if (rfidScanTimer) {
+                    clearInterval(rfidScanTimer);
+                    rfidScanTimer = null;
+                }
+
+                console.log('[RFID核验] 实时扫描已停止');
+            }
+
+            function performRFIDScanCycle() {
+                var whitelist = window.SENSOR_WHITELIST;
+                if (!whitelist) return;
+
+                var sensorTypes = Object.keys(whitelist);
+                var totalScanned = 0;
+                var passedCount = 0;
+
+                sensorTypes.forEach(function(sensorType) {
+                    var devices = whitelist[sensorType];
+                    if (!devices) return;
+
+                    Object.keys(devices).forEach(function(deviceId) {
+                        totalScanned++;
+                        var info = devices[deviceId];
+
+                        var roll = Math.random();
+                        if (roll < 0.02) {
+                            // 2% 通信方式异常
+                            var altComms = ['ble', 'wifi', 'sub1g', '5g'].filter(function(c) { return c !== info.access; });
+                            var fakeComm = altComms[Math.floor(Math.random() * altComms.length)];
+
+                            if (shouldAlert(sensorType + '_scan', deviceId)) {
+                                addBlacklistAlert({
+                                    time: formatNow(),
+                                    sensor: sensorType,
+                                    deviceId: deviceId,
+                                    commType: fakeComm,
+                                    reason: '扫描异常: 预期通信 ' + info.access + ', 实际 ' + fakeComm,
+                                    alertLevel: 'low'
+                                });
+                                updateWhitelistRowStatus(sensorType, deviceId, 'verify-warning', '异常');
+                            }
+                        } else if (roll < 0.04) {
+                            // 额外 2% 信号弱
+                            updateWhitelistRowStatus(sensorType, deviceId, 'verify-warning', '弱信号');
+                        } else {
+                            // 正常
+                            updateWhitelistRowStatus(sensorType, deviceId, 'verify-passed', '在线');
+                            passedCount++;
+                        }
+                    });
+                });
+
+                // 5% 概率扫描到完全未知设备
+                if (Math.random() < 0.05) {
+                    var unknownIds = ['E938712472AX', 'X1234567890Z', 'BAD-DEVICE-01', 'UNKNOWN-ABCD'];
+                    var commTypes = ['ble', 'wifi', 'sub1g', '5g'];
+                    var randomSensor = sensorTypes[Math.floor(Math.random() * sensorTypes.length)];
+                    var randomId = unknownIds[Math.floor(Math.random() * unknownIds.length)];
+                    var randomComm = commTypes[Math.floor(Math.random() * commTypes.length)];
+
+                    if (shouldAlert(randomSensor, randomId)) {
+                        var result = verifySensor(randomSensor, randomId, randomComm);
+                        addBlacklistAlert({
+                            time: formatNow(),
+                            sensor: randomSensor,
+                            deviceId: randomId,
+                            commType: randomComm,
+                            reason: result.reason,
+                            alertLevel: result.alertLevel
+                        });
+                    }
+                }
+
+                var timeEl = document.getElementById('wl-last-update');
+                if (timeEl) timeEl.textContent = formatNow();
+
+                console.log('[RFID核验] 扫描周期完成: ' + totalScanned + ' 设备, ' + passedCount + ' 正常');
+            }
+
+            // ---- 初始化：按钮绑定与定时器 ----
+            var btnScanStart = document.getElementById('btn-rfid-scan-start');
+            var btnScanStop  = document.getElementById('btn-rfid-scan-stop');
+
+            if (btnScanStart) btnScanStart.addEventListener('click', startRFIDScan);
+            if (btnScanStop)  btnScanStop.addEventListener('click', stopRFIDScan);
+
+            // 定时刷新面板时间（仅在非扫描状态）
+            setInterval(function() {
+                var timeEl = document.getElementById('wl-last-update');
+                if (timeEl && !rfidScanRunning && blacklistAlerts.length === 0) {
+                    timeEl.textContent = formatNow();
+                }
+            }, 30000);
+
+            console.log('[RFID核验] 初始化完成, 白名单设备: ' +
+            (typeof getWhitelistSensorCount === 'function' ? getWhitelistSensorCount() : '?'));
+        }
+
+        // 在 DOM 就绪后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRFIDVerify);
+        } else {
+            initRFIDVerify();
+        }
+    })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1182 @@
+/**
+ * 智慧门禁演示 - 双场景样式
+ * 场景一：分级通行管控（冷色蓝青）
+ * 场景二：应急联动疏散（橙红高亮）
+ */
+
+/* ========== 基础背景 - 使用原始背景 ========== */
+/* .sf-demo-bg 不再覆盖原始背景 */
+
+/* ========== 场景切换标签页 ========== */
+.sf-scene-tabs {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    background: var(--bg-glass, rgba(6, 26, 56, 0.95));
+    padding: 4px;
+    border: 1px solid var(--border-color, rgba(36, 123, 180, 0.4));
+    z-index: 200;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.sf-scene-tab {
+    padding: 12px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.sf-scene-tab:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(0, 234, 255, 0.1);
+}
+
+.sf-scene-tab.active {
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    color: var(--theme-color, #00eaff);
+    border-bottom: 2px solid var(--theme-color, #00eaff);
+}
+
+/* ========== 场景容器 ========== */
+.sf-scene-container {
+    display: none;
+    position: absolute;
+    top: 105px;
+    left: 16px;
+    right: 16px;
+    bottom: 20px;
+    z-index: 10;
+}
+
+.sf-scene-container.active {
+    display: block;
+}
+
+/* ========== 卡片样式 - 使用原始面板样式 ========== */
+.sf-glass-card {
+    position: relative;
+    background: var(--bg-glass, rgba(6, 26, 56, 0.6));
+    border: 1px solid var(--border-color, rgba(36, 123, 180, 0.4));
+    box-shadow: 0 0 30px rgba(0, 132, 255, 0.1) inset;
+    clip-path: polygon(
+        15px 0, 100% 0, 
+        100% calc(100% - 15px), calc(100% - 15px) 100%, 
+        0 100%, 0 15px
+    );
+    backdrop-filter: blur(8px);
+    animation: pulseBorder 4s infinite ease-in-out;
+}
+
+/* ========== 顶部栏 ========== */
+.sf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px 8px;
+}
+
+.sf-main-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 0 20px rgba(0, 200, 255, 0.3);
+    margin: 0;
+}
+
+.sf-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* 模式胶囊 */
+.sf-mode-capsule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.sf-mode-blue {
+    background: linear-gradient(135deg, rgba(0, 180, 255, 0.25), rgba(0, 100, 200, 0.25));
+    border: 1px solid rgba(0, 200, 255, 0.4);
+}
+
+.sf-mode-label {
+    font-size: 11px;
+    color: rgba(0, 220, 255, 0.8);
+    letter-spacing: 1px;
+}
+
+.sf-mode-text {
+    font-size: 14px;
+    color: #00eaff;
+}
+
+/* 算法状态指示器 */
+.sf-algo-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.sf-algo-running {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #10b981;
+}
+
+.sf-indicator-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    animation: sf-pulse 1.5s infinite;
+}
+
+@keyframes sf-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* ========== 时间显示 ========== */
+.sf-time-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, rgba(0, 180, 255, 0.15), rgba(0, 100, 200, 0.15));
+    border: 1px solid rgba(0, 200, 255, 0.3);
+    border-radius: 12px;
+}
+
+.sf-time-icon {
+    font-size: 18px;
+}
+
+.sf-time-text {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Consolas', monospace;
+    color: #00eaff;
+    letter-spacing: 1px;
+}
+
+/* ========== 场景一：分级通行主体布局 ========== */
+.sf-scene1-body {
+    display: grid;
+    grid-template-columns: minmax(0, 2.2fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    height: 100%;
+}
+
+/* 左侧视频区域 - 占据左侧整列 */
+.sf-video-main {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* 右侧2x2结果区 - 占据中右两列 */
+.sf-result-cards {
+    display: contents;
+}
+
+/* 识别结果（合并：人脸识别结果 + RFID设备结果）- 右上，跨两列 */
+#card-recognition-result {
+    grid-column: 2 / 4;
+    grid-row: 1;
+}
+
+/* 人脸检测截图 - 右下（左） */
+#card-face-capture {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+/* 检测结果 - 右下（右） */
+#card-verdict {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.sf-video-card-large {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.sf-video-frame {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    min-height: 200px;
+}
+
+.sf-video-placeholder-lg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.sf-video-icon-lg {
+    font-size: 72px;
+    opacity: 0.3;
+}
+
+.sf-video-label {
+    font-size: 16px;
+    color: rgba(200, 220, 240, 0.5);
+    letter-spacing: 1px;
+}
+
+/* IP地址选择器 */
+.sf-ip-selector {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, rgba(10, 25, 50, 0.9), rgba(5, 15, 35, 0.95));
+    border: 1px solid rgba(30, 144, 255, 0.4);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+}
+
+.sf-ip-label {
+    font-size: 14px;
+    color: rgba(103, 197, 255, 0.9);
+    white-space: nowrap;
+}
+
+.sf-ip-select {
+    flex: 1;
+    padding: 8px 12px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e2e8f0' d='M5.5 7.5 10 12l4.5-4.5 1.4 1.4L10 14.8 4.1 8.9z'/%3E%3C/svg%3E") no-repeat right 10px center / 12px 12px, linear-gradient(135deg, rgba(30, 144, 255, 0.15), rgba(0, 50, 100, 0.3));
+    border: 1px solid rgba(30, 144, 255, 0.5);
+    border-radius: 4px;
+    color: #00eaff;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 32px;
+}
+
+.sf-ip-select:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.sf-ip-select:focus {
+    border-color: #00eaff;
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+}
+
+.sf-ip-select option {
+    background: #0a1929;
+    color: #67c5ff;
+}
+
+.sf-video-controls {
+    display: flex;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(0, 15, 30, 0.5);
+    border-top: 1px solid rgba(0, 200, 255, 0.1);
+}
+
+.sf-ctrl-btn {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(0, 150, 200, 0.15);
+    border: 1px solid rgba(0, 200, 255, 0.3);
+    border-radius: 8px;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sf-ctrl-btn:hover {
+    background: rgba(0, 180, 230, 0.25);
+    border-color: rgba(0, 220, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.2);
+}
+
+.sf-btn-start { border-color: rgba(16, 185, 129, 0.4); color: #10b981; }
+.sf-btn-start:hover { background: rgba(16, 185, 129, 0.2); }
+.sf-btn-stop { border-color: rgba(239, 68, 68, 0.4); color: #ef4444; }
+.sf-btn-stop:hover { background: rgba(239, 68, 68, 0.2); }
+
+/* 结果卡片通用样式 */
+
+.sf-result-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.sf-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+}
+
+.sf-card-icon {
+    font-size: 18px;
+}
+
+.sf-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(200, 220, 240, 0.95);
+    letter-spacing: 1px;
+}
+
+.sf-card-body {
+    flex: 1;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sf-recognition-body {
+    padding: 10px 16px;
+}
+
+.sf-recognition-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    min-height: 0;
+}
+
+.sf-recognition-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 0;
+    height: 100%;
+}
+
+.sf-recognition-subtitle {
+    font-size: 14px;
+    color: rgba(103, 197, 255, 0.95);
+    letter-spacing: 0.5px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.12);
+    margin-bottom: 2px;
+}
+
+.sf-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sf-result-label {
+    font-size: 16px;
+    color: rgba(150, 170, 190, 0.9);
+}
+
+.sf-result-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e2e8f0;
+    font-family: 'Consolas', monospace;
+}
+
+.sf-level-badge {
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.sf-level-badge.level-high {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.sf-level-badge.level-mid {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.sf-level-badge.level-low {
+    background: rgba(34, 211, 238, 0.2);
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.4);
+}
+
+/* ========== 数据库滚动列表 ========== */
+.sf-db-list-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-top: 8px;
+    min-height: 0;
+}
+
+.sf-db-list-title {
+    font-size: 13px;
+    color: rgba(103, 197, 255, 0.85);
+    padding: 6px 8px;
+    background: rgba(0, 100, 150, 0.2);
+    border-radius: 4px 4px 0 0;
+    border: 1px solid rgba(0, 234, 255, 0.15);
+    border-bottom: none;
+}
+
+.sf-db-list-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(0, 20, 40, 0.4);
+    border: 1px solid rgba(0, 234, 255, 0.15);
+    border-radius: 0 0 4px 4px;
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+}
+
+.sf-db-list-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sf-db-list-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.sf-db-list-scroll::-webkit-scrollbar-thumb {
+    background: rgba(0, 234, 255, 0.4);
+    border-radius: 3px;
+}
+
+.sf-db-list-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 234, 255, 0.6);
+}
+
+.sf-db-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.08);
+    font-size: 18px;
+    min-height: 42px;
+    transition: background 0.2s;
+    flex-shrink: 0;
+}
+
+.sf-db-item:last-child {
+    border-bottom: none;
+}
+
+.sf-db-item:hover {
+    background: rgba(0, 234, 255, 0.08);
+}
+
+.sf-db-item.active {
+    background: rgba(0, 234, 255, 0.15);
+    border-left: 3px solid #00eaff;
+}
+
+.sf-db-name {
+    color: #e2e8f0;
+    font-weight: 600;
+    flex: 1;
+    font-size: 18px;
+}
+
+.sf-db-id {
+    color: rgba(150, 170, 190, 0.85);
+    font-family: 'Consolas', monospace;
+    font-size: 16px;
+    margin: 0 12px;
+}
+
+.sf-db-level {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sf-db-level.level-high {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.sf-db-level.level-mid {
+    background: rgba(251, 191, 36, 0.25);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.sf-db-level.level-low {
+    background: rgba(34, 211, 238, 0.25);
+    color: #22d3ee;
+    border: 1px solid rgba(34, 211, 238, 0.4);
+}
+
+.sf-confidence {
+    color: #10b981;
+}
+
+.sf-read-status.status-ok {
+    color: #10b981;
+}
+
+.sf-read-status.status-fail {
+    color: #ef4444;
+}
+
+/* 规则比对卡片 */
+.sf-rule-body {
+    gap: 12px;
+}
+
+.sf-rule-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sf-rule-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.sf-rule-pass {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: rgba(200, 220, 240, 0.8);
+}
+
+.sf-rule-pass .sf-rule-icon {
+    color: #10b981;
+    font-weight: bold;
+}
+
+.sf-rule-deny {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: rgba(200, 220, 240, 0.8);
+}
+
+.sf-rule-deny .sf-rule-icon {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.sf-rule-current {
+    margin-top: auto;
+    padding: 6px 10px;
+    background: rgba(0, 100, 150, 0.15);
+    border-radius: 6px;
+    font-size: 13px;
+    color: rgba(200, 220, 240, 0.8);
+}
+
+.sf-rule-current span {
+    color: #00eaff;
+    font-weight: 600;
+}
+
+/* 人脸检测截图卡片 */
+.sf-capture-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    height: 100%;
+    min-height: 0;
+}
+
+.sf-capture-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 20, 40, 0.5);
+    border: 2px dashed rgba(0, 234, 255, 0.3);
+    border-radius: 8px;
+    gap: 8px;
+}
+
+.sf-capture-icon {
+    font-size: 48px;
+    opacity: 0.4;
+}
+
+.sf-capture-text {
+    font-size: 14px;
+    color: rgba(200, 220, 240, 0.5);
+}
+
+/* 检测结果卡片 */
+.sf-card-verdict {
+    border-width: 2px;
+}
+
+.sf-log-body {
+    padding: 10px;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0;
+}
+
+.sf-log-container {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+}
+
+.sf-log-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sf-log-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+}
+
+.sf-log-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 234, 255, 0.3);
+    border-radius: 2px;
+}
+
+.sf-log-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: flex-start;
+    font-size: 15px;
+    font-family: 'Consolas', monospace;
+    color: rgba(200, 220, 240, 0.8);
+    padding: 10px 14px;
+    background: rgba(0, 50, 100, 0.16);
+    border-radius: 8px;
+    border-left: 4px solid rgba(0, 234, 255, 0.55);
+    letter-spacing: 0.2px;
+    line-height: 1.25;
+    white-space: normal;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.sf-log-item.log-success {
+    border-left-color: #10b981;
+    color: #10b981;
+}
+
+.sf-log-item.log-warning {
+    border-left-color: #fbbf24;
+    color: #fbbf24;
+}
+
+.sf-log-item.log-error {
+    border-left-color: #ef4444;
+    color: #ef4444;
+}
+
+.sf-verdict-body {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.sf-verdict-result {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sf-verdict-icon {
+    font-size: 32px;
+}
+
+.sf-verdict-text {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.sf-verdict-result.verdict-pass {
+    color: #10b981;
+}
+
+.sf-verdict-result.verdict-pass .sf-verdict-icon::before {
+    content: "✓";
+}
+
+.sf-verdict-result.verdict-deny {
+    color: #ef4444;
+    animation: sf-deny-pulse 1s infinite;
+}
+
+@keyframes sf-deny-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.sf-verdict-reason {
+    margin-top: 6px;
+    font-size: 13px;
+    color: rgba(200, 220, 240, 0.7);
+}
+
+/* ========== 场景二：应急联动样式 ========== */
+.sf-header-emergency {
+    border-bottom: 2px solid rgba(251, 146, 60, 0.3);
+}
+
+.sf-title-emergency {
+    text-shadow: 0 0 20px rgba(251, 146, 60, 0.4);
+}
+
+.sf-mode-orange {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.3), rgba(200, 80, 30, 0.3));
+    border: 1px solid rgba(251, 146, 60, 0.5);
+}
+
+.sf-mode-orange .sf-mode-label {
+    color: rgba(251, 180, 100, 0.9);
+}
+
+.sf-mode-orange .sf-mode-text {
+    color: #fb923c;
+}
+
+/* 应急模式角标 */
+.sf-emergency-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    border-radius: 20px;
+    color: #ef4444;
+    font-size: 13px;
+    font-weight: 600;
+    animation: sf-emergency-glow 1.5s infinite;
+}
+
+.sf-emergency-dot {
+    width: 10px;
+    height: 10px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: sf-blink 0.5s infinite;
+}
+
+@keyframes sf-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes sf-emergency-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+}
+
+/* 场景二主体布局 - 样式定义在 changjing3-next.css */
+
+/* 三视频区域 1+2 布局 */
+.sf-video-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1.2fr 1fr;
+    gap: var(--panel-gap-y, 10px);
+}
+
+.sf-video-fire {
+    grid-column: 1 / -1;
+}
+
+.sf-video-gate, .sf-video-perimeter {
+    display: flex;
+    flex-direction: column;
+}
+
+.sf-video-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+}
+
+.sf-video-label-tag {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--theme-color, #00eaff);
+}
+
+.sf-video-status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    background: rgba(100, 120, 140, 0.2);
+    color: rgba(200, 220, 240, 0.7);
+}
+
+.sf-video-status.status-active {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.sf-video-status.status-alert {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    animation: sf-blink 0.5s infinite;
+}
+
+.sf-video-status.status-linked {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.sf-video-frame-lg {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    min-height: 140px;
+}
+
+.sf-video-frame-sm {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+    min-height: 80px;
+}
+
+.sf-video-placeholder-emergency {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.sf-video-icon-sm {
+    font-size: 40px;
+    opacity: 0.3;
+}
+
+/* 火焰检测覆盖层 */
+.sf-fire-overlay {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 100px;
+    border: 3px solid #ef4444;
+    border-radius: 8px;
+    animation: sf-fire-box 0.3s infinite alternate;
+}
+
+.sf-fire-overlay.active {
+    display: block;
+}
+
+.sf-fire-overlay::after {
+    content: "🔥 火焰";
+    position: absolute;
+    top: -24px;
+    left: 0;
+    background: #ef4444;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+@keyframes sf-fire-box {
+    from { border-color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+    to { border-color: #fbbf24; box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+}
+
+/* 闸机状态覆盖层 */
+.sf-gate-status-overlay {
+    display: none;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16, 185, 129, 0.9);
+    padding: 10px 24px;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.sf-gate-status-overlay.active {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: sf-gate-open 0.5s ease-out;
+}
+
+@keyframes sf-gate-open {
+    from { transform: translateX(-50%) scale(0.8); opacity: 0; }
+    to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.sf-gate-icon {
+    font-size: 20px;
+}
+
+/* 应急策略 */
+.sf-emergency-policy {
+    padding: 6px 12px;
+    background: rgba(0, 234, 255, 0.1);
+    border-top: 1px solid rgba(0, 234, 255, 0.2);
+    font-size: 11px;
+}
+
+.sf-policy-label {
+    color: var(--theme-color, #00eaff);
+    font-weight: 600;
+}
+
+.sf-policy-text {
+    color: rgba(200, 220, 240, 0.8);
+}
+
+/* 周界预警覆盖层 */
+.sf-perimeter-warning {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(200, 50, 30, 0.9));
+    padding: 20px 30px;
+    border-radius: 12px;
+    animation: sf-warning-flash 0.8s infinite;
+}
+
+.sf-perimeter-warning.active {
+    display: block;
+}
+
+.sf-warning-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+@keyframes sf-warning-flash {
+    0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.02); }
+}
+
+/* 联动链路时间线面板 */
+.sf-timeline-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.sf-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+}
+
+.sf-timeline-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--theme-color, #00eaff);
+}
+
+.sf-btn-demo {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.2), rgba(0, 132, 255, 0.2));
+    border-color: rgba(0, 234, 255, 0.5);
+    color: var(--theme-color, #00eaff);
+}
+
+.sf-btn-demo:hover {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.3), rgba(0, 132, 255, 0.3));
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.3);
+}
+
+/* 时间线轨道 */
+.sf-timeline-track {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 0;
+}
+
+.sf-timeline-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+}
+
+.sf-step-node {
+    width: 16px;
+    height: 16px;
+    background: rgba(100, 120, 140, 0.3);
+    border: 2px solid rgba(150, 170, 190, 0.4);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.3s;
+}
+
+.sf-timeline-step.active .sf-step-node {
+    background: var(--theme-color, #00eaff);
+    border-color: var(--theme-color, #00eaff);
+    box-shadow: 0 0 12px rgba(0, 234, 255, 0.6);
+}
+
+.sf-timeline-step.completed .sf-step-node {
+    background: #10b981;
+    border-color: #10b981;
+}
+
+.sf-step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-bottom: 4px;
+}
+
+.sf-step-time {
+    font-size: 11px;
+    font-family: 'Consolas', monospace;
+    color: var(--theme-color, #00eaff);
+    font-weight: 600;
+}
+
+.sf-step-label {
+    font-size: 12px;
+    color: rgba(200, 220, 240, 0.9);
+    font-weight: 500;
+}
+
+.sf-step-status {
+    font-size: 11px;
+    color: rgba(150, 170, 190, 0.6);
+}
+
+.sf-timeline-step.active .sf-step-status {
+    color: var(--theme-color, #00eaff);
+}
+
+.sf-timeline-step.completed .sf-step-status {
+    color: #10b981;
+}
+
+.sf-timeline-line {
+    width: 2px;
+    height: 12px;
+    background: rgba(150, 170, 190, 0.2);
+    margin-left: 7px;
+    transition: background 0.3s;
+}
+
+.sf-timeline-line.active {
+    background: linear-gradient(180deg, #10b981, var(--theme-color, #00eaff));
+}
+
+/* ========== 响应式调整 ========== */
+@media (max-width: 1600px) {
+    .sf-scene1-body {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 1400px) {
+    .sf-scene1-body {
+        grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr) minmax(0, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .sf-scene1-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto;
+    }
+    
+    .sf-result-cards {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto auto;
+    }
+    
+    .sf-card-verdict {
+        grid-column: 1 / -1;
+    }
+}

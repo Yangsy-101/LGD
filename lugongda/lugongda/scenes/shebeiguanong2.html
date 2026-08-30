@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧工厂子场景-设备人员管控场景 - 泛在物联网管控系统</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/shebeiguanong.css?v=20260527-warning-confidence" />
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+            <div class="screen-bg">
+                <a href="../main.html" class="back-button">
+                    <span class="back-button-icon">←</span>
+                    <span>返回主页面</span>
+                </a>
+                <div class="header">
+                    <img src="../images/hand.png" class="hand-img" />
+                    <div class="scene-page-title"><span>智慧工厂子场景-设备人员管控场景</span></div>
+                </div>
+
+                <div class="sbg-scene-grid">
+                     <div class="sbg-panel sbg-shot-panel">
+                        <div class="sbg-panel-title"><span>周界预警检测截图</span></div>
+                        <div class="sbg-panel-content">
+                            <div class="sbg-shot-layout">
+                                <div class="sbg-shot-stage">
+                                    <img class="sbg-shot-image" id="sbg-shot-image" />
+                                    <div class="sbg-shot-placeholder" id="sbg-shot-placeholder">
+                                        <div class="sbg-placeholder-icon">📷</div>
+                                        <div class="sbg-placeholder-text">周界预警截图</div>
+                                    </div>
+                                </div>
+                                <div class="sbg-shot-actions">
+                                    <button class="sbg-ctrl-btn sbg-btn-start" id="sbg-shot-btn-show" type="button">显示检测结果</button>
+                                    <button class="sbg-ctrl-btn sbg-btn-stop" id="sbg-shot-btn-stop" type="button">结束检测</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+                     <div class="sbg-panel sbg-warning-panel">
+                         <div class="sbg-panel-title"><span>周界预警信息</span></div>
+                         <div class="sbg-panel-content sbg-list-panel">
+                             <div class="sbg-list" id="sbg-warning-list"></div>
+                         </div>
+                     </div>
+ 
+                     <div class="sbg-panel sbg-video-panel">
+                         <div class="sbg-panel-title"><span>设备管控画面</span></div>
+                             <div class="sbg-panel-content" id="sbg-device-video" data-stream-url="http://36.152.33.88:8081/media/get_video5.jsp">
+                                 <div class="sbg-video-content">
+                                     <div class="sbg-video-stage">
+                                         <div class="sbg-placeholder" id="sbg-device-video-placeholder">
+                                             <div class="sbg-placeholder-icon">🎥</div>
+                                             <div class="sbg-placeholder-text">接入指定IP摄像头实时流</div>
+                                             <div class="sbg-placeholder-hint">选择本地视频文件</div>
+                                         </div>
+                                         <div class="sbg-video-inner" id="sbg-device-video-inner">
+                                             <video id="sbg-device-video-player" class="sbg-video-player" controls playsinline></video>
+                                             <canvas id="sbg-device-ws-frame" class="sbg-ws-frame"></canvas>
+                                         </div>
+                                         <button class="sbg-video-select-btn" id="sbg-device-video-select" type="button">选择文件</button>
+                                         <input class="sbg-video-file" id="sbg-device-video-file" type="file" accept="video/*" />
+                                     </div>
+                                     <div class="sbg-video-bar">
+                                         <button class="sbg-ctrl-btn sbg-btn-start" id="sbg-device-btn-start" type="button">开始设备管控检测</button>
+                                         <button class="sbg-ctrl-btn sbg-btn-stop" id="sbg-device-btn-stop" type="button">结束设备管控检测</button>
+                                     </div>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <div class="sbg-panel sbg-stock-panel">
+                        <div class="sbg-panel-title"><span>在库信息</span></div>
+                        <div class="sbg-panel-content sbg-list-panel">
+                            <div class="sbg-stock-sections">
+                                <div class="sbg-db-list-container">
+                                    <div class="sbg-db-list-title">入库人员信息</div>
+                                    <div class="sbg-db-list-scroll" id="sbg-person-db-scroll"></div>
+                                </div>
+                                <div class="sbg-db-list-container">
+                                    <div class="sbg-db-list-title">入库设备信息</div>
+                                    <div class="sbg-db-list-scroll" id="sbg-device-db-scroll"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+ 
+                     <div class="sbg-panel sbg-pass-panel" data-log-url="http://192.168.0.233:10012/latest.json">
+                        <div class="sbg-panel-title"><span>通行状态</span></div>
+                        <div class="sbg-panel-content sbg-list-panel">
+                            <div class="sbg-log-container" id="sbg-pass-log">
+                                <div class="sbg-log-item">[--:--:--] 等待服务器日志...</div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+    <script src="../js/scenePage.js"></script>
+    <!-- 网关 MJPEG 视频流接收器 -->
+    <script src="../../../newjs/newjs4.js"></script>
+    <!-- 网关周界预警截图接收器 (端口 10007) -->
+    <script src="../../../newjs/newjs4_photo.js"></script>
+    <!-- 原有场景逻辑 -->
+    <script src="../js/shebeiguanong.js?v=20260527-warning-confidence"></script>
+    <!-- 用 MjpegReceiver 替换原有视频拉流按钮逻辑 -->
+    <script>
+        (function() {
+            window._deviceReceiver = null;
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+            function timeStamp() {
+                var d = new Date();
+                return '[' + [d.getHours(), d.getMinutes(), d.getSeconds()].map(pad).join(':') + ']';
+            }
+
+            function bindVideoButtons() {
+                var startBtn = document.getElementById('sbg-device-btn-start');
+                var stopBtn  = document.getElementById('sbg-device-btn-stop');
+                var ph = document.getElementById('sbg-device-video-placeholder');
+
+                if (startBtn) {
+                    var s = startBtn.cloneNode(true);
+                    startBtn.parentNode.replaceChild(s, startBtn);
+                    s.addEventListener('click', function() {
+                        if (window._deviceReceiver && window._deviceReceiver.running) return;
+                        if (ph) {
+                            ph.style.display = 'flex';
+                            var icon = ph.querySelector('.sbg-placeholder-icon');
+                            var text = ph.querySelector('.sbg-placeholder-text');
+                            var hint = ph.querySelector('.sbg-placeholder-hint');
+                            if (icon) icon.textContent = '📡';
+                            if (text) text.textContent = timeStamp() + ' 开始从网关 (' + DEVICE_CONFIG.host + ') 拉取 MJPEG 视频流';
+                            if (hint) hint.textContent = '端口 ' + DEVICE_CONFIG.port + ' · 正在连接...';
+                        }
+                        window._deviceReceiver = new MjpegReceiver(DEVICE_CONFIG);
+                        window._deviceReceiver.start();
+                        // ★ 同步启动通行日志轮询
+                        console.log('[shebeiguanong2] 准备启动通行日志, SheBeiGuanKongScene:', typeof SheBeiGuanKongScene);
+                        if (typeof SheBeiGuanKongScene !== 'undefined') {
+                            SheBeiGuanKongScene.startPassLogPolling();
+                        } else {
+                            console.log('[shebeiguanong2] SheBeiGuanKongScene 未定义!');
+                        }
+                    });
+                }
+
+                if (stopBtn) {
+                    var st = stopBtn.cloneNode(true);
+                    stopBtn.parentNode.replaceChild(st, stopBtn);
+                    st.addEventListener('click', function() {
+                        if (window._deviceReceiver) { window._deviceReceiver.stop(); window._deviceReceiver = null; }
+                        // ★ 同步停止通行日志轮询
+                        if (typeof SheBeiGuanKongScene !== 'undefined') {
+                            SheBeiGuanKongScene.stopPassLogPolling();
+                        }
+                        if (ph) {
+                            ph.style.display = 'flex';
+                            var icon = ph.querySelector('.sbg-placeholder-icon');
+                            var text = ph.querySelector('.sbg-placeholder-text');
+                            var hint = ph.querySelector('.sbg-placeholder-hint');
+                            if (icon) icon.textContent = '🎥';
+                            if (text) text.textContent = '接入指定IP摄像头实时流';
+                            if (hint) hint.textContent = '选择本地视频文件';
+                        }
+                    });
+                }
+
+                console.log('[shebeiguanong2] MJPEG 接收器已绑定, 目标: ' + DEVICE_CONFIG.host + ':' + DEVICE_CONFIG.port);
+            }
+
+            // ===== 周界预警截图 + 预警信息 + 通行状态 =====
+            function bindShotButtons() {
+                window._sbgPhoto = null;
+
+                var showBtn = document.getElementById('sbg-shot-btn-show');
+                if (showBtn) {
+                    var ns = showBtn.cloneNode(true);
+                    showBtn.parentNode.replaceChild(ns, showBtn);
+                    ns.addEventListener('click', function() {
+                        // 启动网关截图轮询
+                        if (!window._sbgPhoto) {
+                            window._sbgPhoto = new SBGPhotoReceiver(SBG_CONFIG);
+                        }
+                        window._sbgPhoto.start();
+                        // 周界预警 + 通行状态仍由 shebeiguanong.js 负责
+                        if (typeof SheBeiGuanKongScene !== 'undefined') {
+                            SheBeiGuanKongScene.startWarningDisplay();
+                            SheBeiGuanKongScene.startPassLogPolling();
+                        }
+                    });
+                }
+
+                var stopBtn = document.getElementById('sbg-shot-btn-stop');
+                if (stopBtn) {
+                    var nst = stopBtn.cloneNode(true);
+                    stopBtn.parentNode.replaceChild(nst, stopBtn);
+                    nst.addEventListener('click', function() {
+                        if (window._sbgPhoto) { window._sbgPhoto.stop(); }
+                        if (typeof SheBeiGuanKongScene !== 'undefined') {
+                            SheBeiGuanKongScene.stopWarningDisplay();
+                            SheBeiGuanKongScene.stopPassLogPolling();
+                        }
+                    });
+                }
+
+                console.log('[shebeiguanong2] 截图接收器已绑定, 端口: ' + SBG_CONFIG.port);
+            }
+
+            function bindAll() {
+                bindVideoButtons();
+                bindShotButtons();
+                console.log('[shebeiguanong2] 全部绑定完成');
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(bindAll, 50);
+                });
+            } else {
+                setTimeout(bindAll, 50);
+            }
+        })();
+    </script>
+
+</body>
+</html>

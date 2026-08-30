@@ -1,0 +1,830 @@
+/**
+ * 森林火灾及气象场景 - 主页面概览样式
+ */
+
+.forest-overview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    overflow: hidden;
+    justify-content: space-between;
+}
+
+/* 顶部状态栏 */
+.forest-overview .overview-status-bar {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(0, 50, 100, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+.forest-overview .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.forest-overview .status-icon {
+    font-size: 14px;
+}
+
+.forest-overview .status-label {
+    color: rgba(180, 215, 255, 0.95);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.forest-overview .status-value {
+    color: #00eaff;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.forest-overview .status-online {
+    color: #00ff88;
+    text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+}
+
+/* 火情告警区域 */
+.forest-overview .fire-alert-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 0;
+    flex: 1;
+    min-height: 0;
+}
+
+.forest-overview .alert-circle {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.forest-overview .alert-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 3px solid rgba(0, 234, 255, 0.4);
+    border-radius: 50%;
+    animation: alertPulse 2s infinite;
+}
+
+@keyframes alertPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.6;
+    }
+}
+
+.forest-overview .alert-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    background: radial-gradient(circle, rgba(0, 234, 255, 0.15), rgba(0, 100, 150, 0.05));
+    border-radius: 50%;
+    border: 2px solid rgba(0, 234, 255, 0.3);
+    z-index: 1;
+}
+
+.forest-overview .alert-icon {
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.forest-overview .alert-text {
+    font-size: 14px;
+    color: #00eaff;
+    font-weight: bold;
+}
+
+/* 预警等级框 */
+.forest-overview .alert-level-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    background: rgba(0, 50, 100, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    min-width: 70px;
+}
+
+.forest-overview .alert-level-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(180, 215, 255, 0.95);
+}
+
+.forest-overview .alert-level-indicator {
+    display: flex;
+    gap: 6px;
+}
+
+.forest-overview .level-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(100, 100, 100, 0.4);
+    border: 1px solid rgba(100, 100, 100, 0.6);
+    transition: all 0.3s;
+}
+
+.forest-overview .level-dot.level-low {
+    background: rgba(0, 200, 255, 0.3);
+    border-color: rgba(0, 200, 255, 0.5);
+}
+
+.forest-overview .level-dot.level-medium {
+    background: rgba(251, 191, 36, 0.3);
+    border-color: rgba(251, 191, 36, 0.5);
+}
+
+.forest-overview .level-dot.level-high {
+    background: rgba(239, 68, 68, 0.3);
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.forest-overview .level-dot.active.level-low {
+    background: #00c8ff;
+    border-color: #00c8ff;
+    box-shadow: 0 0 8px rgba(0, 200, 255, 0.6);
+}
+
+.forest-overview .level-dot.active.level-medium {
+    background: #fbbf24;
+    border-color: #fbbf24;
+    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.forest-overview .level-dot.active.level-high {
+    background: #ef4444;
+    border-color: #ef4444;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+    animation: highAlertPulse 0.5s infinite;
+}
+
+@keyframes highAlertPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.forest-overview .alert-level-text {
+    font-size: 15px;
+    font-weight: bold;
+    color: #00eaff;
+}
+
+.forest-overview .alert-level-box.level-low .alert-level-text {
+    color: #00eaff;
+}
+
+.forest-overview .alert-level-box.level-medium .alert-level-text {
+    color: #fbbf24;
+}
+
+.forest-overview .alert-level-box.level-high .alert-level-text {
+    color: #ef4444;
+    animation: textBlink 0.5s infinite;
+}
+
+/* 警告状态 */
+.forest-overview .alert-circle.alert-warning .alert-ring {
+    border-color: rgba(255, 107, 107, 0.6);
+    animation: alertWarningPulse 1s infinite;
+}
+
+@keyframes alertWarningPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px 10px rgba(255, 107, 107, 0);
+    }
+}
+
+.forest-overview .alert-circle.alert-warning .alert-center {
+    background: radial-gradient(circle, rgba(255, 107, 107, 0.25), rgba(150, 0, 0, 0.05));
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+.forest-overview .alert-circle.alert-warning .alert-text {
+    color: #ff6b6b;
+    animation: textBlink 1s infinite;
+}
+
+@keyframes textBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* 数据卡片容器 */
+.forest-overview .overview-data-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.forest-overview .data-card {
+    position: relative;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    padding: 6px 8px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.forest-overview .data-card:hover {
+    border-color: rgba(0, 234, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 234, 255, 0.2);
+}
+
+.forest-overview .card-icon {
+    font-size: 15px;
+    opacity: 0.7;
+}
+
+.forest-overview .card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.forest-overview .card-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(180, 215, 255, 0.95);
+    letter-spacing: 0.5px;
+}
+
+.forest-overview .card-value {
+    font-size: 17px;
+    font-weight: bold;
+    color: #00eaff;
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.5);
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.forest-overview .card-unit {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.7);
+    margin-left: 2px;
+}
+
+/* 不同卡片的颜色主题 */
+.forest-overview .card-temp .card-value {
+    color: #ff6b6b;
+    text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
+}
+
+.forest-overview .card-humidity .card-value {
+    color: #4ecdc4;
+    text-shadow: 0 0 8px rgba(78, 205, 196, 0.5);
+}
+
+.forest-overview .card-smoke .card-value {
+    color: #ffd93d;
+    text-shadow: 0 0 8px rgba(255, 217, 61, 0.5);
+}
+
+.forest-overview .card-wind .card-value {
+    color: #a78bfa;
+    text-shadow: 0 0 8px rgba(167, 139, 250, 0.5);
+}
+
+.forest-overview .card-light .card-value {
+    color: #fbbf24;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+}
+
+.forest-overview .card-camera .card-value {
+    color: #22d3ee;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+}
+
+/* 地区切换按钮 */
+.forest-overview .region-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.forest-overview .region-btn {
+    padding: 5px 14px;
+    background: rgba(30, 144, 255, 0.15);
+    border: 1px solid rgba(30, 144, 255, 0.3);
+    border-radius: 4px;
+    color: #67c5ff;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.forest-overview .region-btn:hover {
+    background: rgba(30, 144, 255, 0.3);
+    border-color: rgba(30, 144, 255, 0.5);
+}
+
+.forest-overview .region-btn.active {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.4), rgba(30, 144, 255, 0.3));
+    border-color: #00d4ff;
+    color: #fff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.4);
+}
+
+/* 火焰图标等级样式 */
+.forest-overview .alert-circle.alert-low {
+    /* 低风险 = 蓝色主题，不再使用绿色 */
+}
+
+.forest-overview .alert-circle.alert-low .alert-ring {
+    border-color: rgba(0, 234, 255, 0.45);
+}
+
+.forest-overview .alert-circle.alert-low .alert-center {
+    background: radial-gradient(circle, rgba(0, 180, 255, 0.2), rgba(0, 100, 180, 0.08));
+    border-color: rgba(0, 200, 255, 0.35);
+}
+
+.forest-overview .alert-circle.alert-low .alert-icon {
+    /* 保持🔥原生红色，不应用绿色滤镜 */
+}
+
+.forest-overview .alert-circle.alert-low .alert-text {
+    color: #00eaff;
+}
+
+.forest-overview .alert-circle.alert-medium {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+    animation: mediumPulse 2s ease-in-out infinite;
+}
+
+.forest-overview .alert-circle.alert-medium .alert-ring {
+    border-color: rgba(251, 191, 36, 0.5);
+}
+
+.forest-overview .alert-circle.alert-medium .alert-center {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(251, 191, 36, 0.15));
+    border-color: rgba(251, 191, 36, 0.6);
+}
+
+.forest-overview .alert-circle.alert-medium .alert-icon {
+    filter: hue-rotate(30deg) saturate(1.2);
+}
+
+.forest-overview .alert-circle.alert-medium .alert-text {
+    color: #fbbf24;
+}
+
+.forest-overview .alert-circle.alert-high {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.15));
+    animation: highPulse 1s ease-in-out infinite;
+}
+
+.forest-overview .alert-circle.alert-high .alert-ring {
+    border-color: rgba(239, 68, 68, 0.6);
+    animation: ringPulse 1s ease-in-out infinite;
+}
+
+.forest-overview .alert-circle.alert-high .alert-center {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(239, 68, 68, 0.2));
+    border-color: rgba(239, 68, 68, 0.7);
+}
+
+.forest-overview .alert-circle.alert-high .alert-text {
+    color: #ef4444;
+    animation: textBlink 0.5s ease-in-out infinite;
+}
+
+@keyframes mediumPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+}
+
+@keyframes highPulse {
+    0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.7); }
+}
+
+@keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes textBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* 通信状态栏 */
+.forest-overview .comm-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(0, 50, 100, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 4px;
+    flex-shrink: 0;
+    min-height: 40px;
+}
+
+.forest-overview .comm-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(180, 215, 255, 0.95);
+    flex-shrink: 0;
+}
+
+.forest-overview .comm-items {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+    justify-content: center;
+    overflow: visible;
+}
+
+/* 通信按钮样式 */
+.forest-overview .comm-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 18px;
+    background: rgba(30, 60, 100, 0.4);
+    border: 1px solid rgba(100, 116, 139, 0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.forest-overview .comm-btn:hover {
+    transform: scale(1.02);
+}
+
+.forest-overview .comm-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #64748b;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.forest-overview .comm-name {
+    color: #94a3b8;
+    transition: color 0.2s;
+    font-weight: 600;
+}
+
+.forest-overview .comm-btn.comm-online {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.forest-overview .comm-btn.comm-online .comm-dot {
+    background: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+}
+
+.forest-overview .comm-btn.comm-online .comm-name {
+    color: #10b981;
+}
+
+.forest-overview .comm-btn.comm-offline {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.forest-overview .comm-btn.comm-offline .comm-dot {
+    background: #ef4444;
+    animation: offlineBlink 1s infinite;
+}
+
+.forest-overview .comm-btn.comm-offline .comm-name {
+    color: #ef4444;
+}
+
+@keyframes offlineBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* 底部信息栏 */
+.forest-overview .overview-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    background: rgba(0, 234, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 4px;
+    padding: 5px 10px;
+}
+
+.forest-overview .footer-tip {
+    color: rgba(0, 234, 255, 0.5);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.forest-overview .footer-tip:hover {
+    color: #00eaff;
+}
+
+.forest-overview .footer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.8);
+}
+
+.forest-overview .footer-icon {
+    font-size: 14px;
+}
+
+.forest-overview .footer-text {
+    color: rgba(103, 197, 255, 0.9);
+}
+
+/* =========================================
+   响应式调整 - 屏幕自适应
+   ========================================= */
+
+/* 中等屏幕 */
+@media (max-width: 1600px) {
+    .forest-overview {
+        gap: 6px;
+        padding: 8px;
+    }
+    
+    .forest-overview .overview-status-bar {
+        padding: 5px 8px;
+        gap: 8px;
+    }
+    
+    .forest-overview .status-label {
+        font-size: 9px;
+    }
+    
+    .forest-overview .region-btn {
+        padding: 2px 6px;
+        font-size: 9px;
+    }
+    
+    .forest-overview .alert-circle {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .forest-overview .alert-center {
+        width: 52px;
+        height: 52px;
+    }
+    
+    .forest-overview .alert-icon {
+        font-size: 18px;
+    }
+    
+    .forest-overview .alert-text {
+        font-size: 10px;
+    }
+    
+    .forest-overview .data-card {
+        padding: 5px 8px;
+    }
+    
+    .forest-overview .card-icon {
+        font-size: 14px;
+    }
+    
+    .forest-overview .card-label {
+        font-size: 9px;
+    }
+    
+    .forest-overview .card-value {
+        font-size: 14px;
+    }
+    
+    .forest-overview .card-unit {
+        font-size: 9px;
+    }
+}
+
+/* 较小屏幕 */
+@media (max-width: 1400px) {
+    .forest-overview {
+        gap: 5px;
+        padding: 6px;
+    }
+    
+    .forest-overview .overview-status-bar {
+        padding: 4px 6px;
+        gap: 6px;
+    }
+    
+    .forest-overview .status-icon {
+        font-size: 12px;
+    }
+    
+    .forest-overview .status-label {
+        font-size: 8px;
+    }
+    
+    .forest-overview .region-btn {
+        padding: 2px 5px;
+        font-size: 8px;
+    }
+    
+    .forest-overview .fire-alert-section {
+        gap: 10px;
+        padding: 6px 8px;
+    }
+    
+    .forest-overview .alert-circle {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .forest-overview .alert-center {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .forest-overview .alert-icon {
+        font-size: 16px;
+    }
+    
+    .forest-overview .alert-text {
+        font-size: 9px;
+    }
+    
+    .forest-overview .alert-level-title {
+        font-size: 9px;
+    }
+    
+    .forest-overview .level-dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .forest-overview .alert-level-text {
+        font-size: 11px;
+    }
+    
+    .forest-overview .overview-data-cards {
+        gap: 4px;
+    }
+    
+    .forest-overview .data-card {
+        padding: 4px 6px;
+        gap: 4px;
+    }
+    
+    .forest-overview .card-icon {
+        font-size: 12px;
+    }
+    
+    .forest-overview .card-label {
+        font-size: 8px;
+    }
+    
+    .forest-overview .card-value {
+        font-size: 13px;
+    }
+    
+    .forest-overview .card-unit {
+        font-size: 8px;
+    }
+    
+    .forest-overview .comm-status-bar {
+        padding: 4px 8px;
+        gap: 8px;
+    }
+    
+    .forest-overview .comm-title {
+        font-size: 9px;
+    }
+    
+    .forest-overview .comm-btn {
+        padding: 3px 6px;
+        font-size: 9px;
+    }
+    
+    .forest-overview .comm-dot {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .forest-overview .overview-footer {
+        padding: 4px 8px;
+    }
+    
+    .forest-overview .footer-item {
+        font-size: 9px;
+    }
+}
+
+/* 高度自适应 */
+@media (max-height: 800px) {
+    .forest-overview .alert-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .forest-overview .alert-center {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .forest-overview .alert-icon {
+        font-size: 16px;
+    }
+    
+    .forest-overview .card-value {
+        font-size: 14px;
+    }
+    
+    .forest-overview .overview-data-cards {
+        gap: 4px;
+    }
+    
+    .forest-overview .data-card {
+        padding: 4px 6px;
+    }
+}
+
+@media (max-height: 700px) {
+    .forest-overview {
+        gap: 4px;
+        padding: 5px;
+    }
+    
+    .forest-overview .fire-alert-section {
+        padding: 4px 6px;
+    }
+    
+    .forest-overview .alert-circle {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .forest-overview .alert-center {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .forest-overview .alert-icon {
+        font-size: 14px;
+    }
+    
+    .forest-overview .alert-text {
+        font-size: 8px;
+    }
+    
+    .forest-overview .overview-data-cards {
+        gap: 3px;
+    }
+    
+    .forest-overview .data-card {
+        padding: 3px 5px;
+    }
+    
+    .forest-overview .card-value {
+        font-size: 12px;
+    }
+}

@@ -1,0 +1,5619 @@
+/* ====================================
+   卫星接入点传感器数据监控系统 - 样式表
+   深色科技风格 + 玻璃态效果
+   ==================================== */
+
+/* CSS变量定义 */
+:root {
+    /* 主题色 */
+    --primary: #00d4ff;
+    --primary-dark: #0099cc;
+    --secondary: #7c3aed;
+    --accent: #f472b6;
+
+    /* 传感器颜色 */
+    --temp-color: #ff6b6b;
+    --temp-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+    --humidity-color: #4ecdc4;
+    --humidity-gradient: linear-gradient(135deg, #4ecdc4 0%, #45b7aa 100%);
+    --pressure-color: #ffd93d;
+    --pressure-gradient: linear-gradient(135deg, #ffd93d 0%, #f0c929 100%);
+    --noise-color: #a855f7;
+    --noise-gradient: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+
+    /* 背景与表面 */
+    --bg-dark: #0a0a1a;
+    --bg-gradient: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0a0a1a 100%);
+    --surface: rgba(255, 255, 255, 0.03);
+    --surface-hover: rgba(255, 255, 255, 0.08);
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+
+    /* 文字颜色 */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+
+    /* 状态颜色 */
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+
+    /* 阴影 */
+    --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.3);
+
+    /* 边框半径 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* 过渡 */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* 重置样式 */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 全局样式 */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* 背景动画 */
+.bg-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+    background: var(--bg-gradient);
+}
+
+.stars,
+.stars2,
+.stars3 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.stars {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><circle cx="50" cy="50" r="1" fill="white" opacity="0.5"/><circle cx="150" cy="100" r="0.5" fill="white" opacity="0.6"/><circle cx="300" cy="80" r="1" fill="white" opacity="0.4"/><circle cx="400" cy="150" r="0.5" fill="white" opacity="0.7"/><circle cx="500" cy="50" r="1" fill="white" opacity="0.5"/><circle cx="600" cy="200" r="0.5" fill="white" opacity="0.6"/><circle cx="700" cy="100" r="1" fill="white" opacity="0.4"/><circle cx="100" cy="300" r="0.5" fill="white" opacity="0.7"/><circle cx="250" cy="250" r="1" fill="white" opacity="0.5"/><circle cx="450" cy="350" r="0.5" fill="white" opacity="0.6"/><circle cx="550" cy="280" r="1" fill="white" opacity="0.4"/><circle cx="750" cy="320" r="0.5" fill="white" opacity="0.7"/></svg>') repeat;
+    animation: animateStars 100s linear infinite;
+}
+
+.stars2 {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><circle cx="80" cy="120" r="1.5" fill="%2300d4ff" opacity="0.3"/><circle cx="200" cy="300" r="1" fill="%237c3aed" opacity="0.3"/><circle cx="350" cy="180" r="1.5" fill="%2300d4ff" opacity="0.2"/><circle cx="500" cy="400" r="1" fill="%23f472b6" opacity="0.3"/><circle cx="650" cy="250" r="1.5" fill="%237c3aed" opacity="0.2"/></svg>') repeat;
+    animation: animateStars 80s linear infinite;
+}
+
+.stars3 {
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><circle cx="120" cy="200" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="380" cy="100" r="2" fill="%2300d4ff" opacity="0.15"/><circle cx="580" cy="350" r="2" fill="%237c3aed" opacity="0.1"/></svg>') repeat;
+    animation: animateStars 120s linear infinite;
+}
+
+@keyframes animateStars {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-800px);
+    }
+}
+
+/* 主容器 */
+.container {
+    max-width: 95vw;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.25rem;
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+}
+
+/* 头部 */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    /* 为子元素绝对定位提供基准 */
+    flex-wrap: nowrap;
+    /* 防止换行 */
+    padding: 20px 15px;
+    /* 减小左右内边距，使内容更靠边 */
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: white;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* 南邮Logo样式 */
+.njupt-logo {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    background: transparent;
+    border-radius: var(--radius-md);
+    border: none;
+}
+
+.njupt-logo img {
+    height: 100%;
+    width: auto;
+    max-width: 500px;
+    object-fit: contain;
+    filter: brightness(1.1);
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 50px rgba(0, 212, 255, 0.6);
+    }
+}
+
+.title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 文字居中 */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.main-title {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    font-size: 4.4rem;
+    /* 极致放大 */
+    font-weight: 900;
+    /* 使用最粗字重以体现权威感 */
+    /* 高级感的蓝白钛金渐变 */
+    background: linear-gradient(180deg, #ffffff 0%, #dbefff 45%, #5caeff 55%, #92caff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 10px;
+    /* 宽大的字间距显得更高级 */
+    /* 双层光影：一层是文字本身的立体感，一层是背景的辉光 */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+    text-shadow: 0 0 30px rgba(0, 162, 255, 0.4);
+    z-index: 10;
+    margin: 0;
+    line-height: 1.1;
+    transform: scale(1, 1.05);
+    /* 稍微拉长字体，增加挺拔感 */
+}
+
+.sub-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    gap: 8px;
+    /* 进一步减小间距 */
+    background: rgba(0, 0, 0, 0.2);
+    padding: 4px 10px;
+    /* 极紧凑内边距 */
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+}
+
+/* 接入点选择器 */
+.access-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-normal);
+}
+
+.access-point-selector:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+    border-color: rgba(0, 212, 255, 0.4);
+}
+
+.access-point-selector label {
+    display: flex;
+    align-items: center;
+    color: var(--primary);
+    font-size: 1.1rem;
+}
+
+.access-point-select {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    min-width: 180px;
+    padding: 4px 8px;
+}
+
+.access-point-select option {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    padding: 10px;
+}
+
+.access-point-select:focus {
+    outline: none;
+}
+
+/* 切换动画 */
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 合并后的接入点选择器 */
+.access-point-combined {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    /* 极小间距 */
+    padding: 4px 6px;
+    /* 极紧凑内边距 */
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-lg);
+    font-family: 'Orbitron', sans-serif;
+}
+
+.access-point-combined i {
+    color: var(--primary);
+    font-size: 1.2rem;
+}
+
+.access-point-combined .access-point-select {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-family: 'Microsoft YaHei', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+    width: 110px;
+    /* 收缩宽度解决重叠 */
+    padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.access-point-combined .access-point-select option {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+.badge-id {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    padding-left: 6px;
+    border-left: 1px solid var(--glass-border);
+    font-family: 'Orbitron', sans-serif;
+    white-space: nowrap;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 12px;
+    height: 12px;
+    /* 仅保留圆点 */
+    position: relative;
+    margin-right: 4px;
+    /* 减小与时间的间距 */
+    padding: 0;
+    background: none;
+    min-width: auto;
+}
+
+/* 状态指示器右侧分割线 */
+.status-indicator::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    /* 调整分割线位置 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+}
+
+.status-dot.online {
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+}
+
+.status-dot.offline {
+    background: var(--error);
+    box-shadow: 0 0 10px var(--error);
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* 时间显示 */
+.current-time {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    /* 再次减小内部间距 */
+    color: var(--secondary);
+    font-family: 'Orbitron', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    margin-left: 0;
+    /* 移除左侧边距 */
+    min-width: 100px;
+    /* 再次减小固定宽度 */
+    font-variant-numeric: tabular-nums;
+}
+
+/* 统计概览 */
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-normal);
+}
+
+.stat-item:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+}
+
+.stat-item i {
+    font-size: 1.5rem;
+    color: var(--primary);
+    opacity: 0.8;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* 区块标题 */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.section-title i {
+    color: var(--primary);
+    font-size: 1.3rem;
+}
+
+.section-title h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+
+
+.section-title .chart-controls,
+.section-title .table-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+/* 传感器卡片 */
+.sensor-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.sensor-card {
+    position: relative;
+    padding: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.sensor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.sensor-card.temperature {
+    border-top: 3px solid var(--temp-color);
+}
+
+.sensor-card.humidity {
+    border-top: 3px solid var(--humidity-color);
+}
+
+.sensor-card.pressure {
+    border-top: 3px solid var(--pressure-color);
+}
+
+.sensor-card.noise {
+    border-top: 3px solid var(--noise-color);
+}
+
+.sensor-card.temperature:hover {
+    box-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+}
+
+.sensor-card.humidity:hover {
+    box-shadow: 0 0 30px rgba(78, 205, 196, 0.3);
+}
+
+.sensor-card.pressure:hover {
+    box-shadow: 0 0 30px rgba(255, 217, 61, 0.3);
+}
+
+.sensor-card.noise:hover {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: white;
+}
+
+.temperature .card-icon {
+    background: var(--temp-gradient);
+}
+
+.humidity .card-icon {
+    background: var(--humidity-gradient);
+}
+
+.pressure .card-icon {
+    background: var(--pressure-gradient);
+}
+
+.noise .card-icon {
+    background: var(--noise-gradient);
+}
+
+.card-trend {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.card-trend.up {
+    color: var(--success);
+}
+
+.card-trend.down {
+    color: var(--error);
+}
+
+.card-trend.stable {
+    color: var(--text-muted);
+}
+
+.card-body {
+    margin-bottom: 16px;
+}
+
+.card-value {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.card-value .value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.temperature .card-value .value {
+    color: var(--temp-color);
+}
+
+.humidity .card-value .value {
+    color: var(--humidity-color);
+}
+
+.pressure .card-value .value {
+    color: var(--pressure-color);
+}
+
+.noise .card-value .value {
+    color: var(--noise-color);
+}
+
+.card-value .unit {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.card-label {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.card-footer {
+    padding-top: 12px;
+    border-top: 1px solid var(--glass-border);
+}
+
+.raw-value {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.raw-value span {
+    font-family: 'Roboto Mono', monospace;
+    color: var(--text-secondary);
+}
+
+.card-glow {
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0.1;
+    pointer-events: none;
+    transition: var(--transition-slow);
+}
+
+.temperature .card-glow {
+    background: radial-gradient(circle, var(--temp-color) 0%, transparent 70%);
+}
+
+.humidity .card-glow {
+    background: radial-gradient(circle, var(--humidity-color) 0%, transparent 70%);
+}
+
+.pressure .card-glow {
+    background: radial-gradient(circle, var(--pressure-color) 0%, transparent 70%);
+}
+
+.noise .card-glow {
+    background: radial-gradient(circle, var(--noise-color) 0%, transparent 70%);
+}
+
+.sensor-card:hover .card-glow {
+    opacity: 0.2;
+}
+
+
+
+/* 图表控制按钮 */
+.chart-btn {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.chart-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text-primary);
+}
+
+.chart-btn.active {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    border-color: transparent;
+    color: white;
+}
+
+.chart-btn[data-metric="temperature"].active {
+    background: var(--temp-gradient);
+}
+
+.chart-btn[data-metric="humidity"].active {
+    background: var(--humidity-gradient);
+}
+
+.chart-btn[data-metric="pressure"].active {
+    background: var(--pressure-gradient);
+}
+
+.chart-btn[data-metric="noise"].active {
+    background: var(--noise-gradient);
+}
+
+/* 图表区域 */
+.chart-section {
+    margin-bottom: 32px;
+}
+
+.chart-container {
+    padding: 1.5rem;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    min-height: 40vh;
+    height: auto;
+}
+
+/* 表格区域 */
+.table-section {
+    margin-bottom: 32px;
+}
+
+.table-wrapper {
+    padding: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table th {
+    padding: 14px 16px;
+    text-align: left;
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.data-table th:first-child {
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.data-table th:last-child {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.data-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+}
+
+.data-table tbody tr {
+    transition: var(--transition-fast);
+}
+
+.data-table tbody tr:hover {
+    background: var(--surface-hover);
+}
+
+.data-table tbody tr:hover td {
+    color: var(--text-primary);
+}
+
+.data-table td.mono {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent);
+}
+
+.data-table .sensor-value {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 500;
+}
+
+.data-table .temp-value {
+    color: var(--temp-color);
+}
+
+.data-table .humidity-value {
+    color: var(--humidity-color);
+}
+
+.data-table .pressure-value {
+    color: var(--pressure-color);
+}
+
+.data-table .noise-value {
+    color: var(--noise-color);
+}
+
+/* 分页控件 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+}
+
+.page-btn {
+    padding: 10px 20px;
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.page-info .separator {
+    color: var(--text-muted);
+}
+
+.page-info .total-records {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.page-size-select {
+    padding: 8px 16px;
+    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.page-size-select:hover {
+    background: var(--surface-hover);
+}
+
+.page-size-select option {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+}
+
+/* 页脚 */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.footer-center {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.api-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.api-status .online {
+    color: var(--success);
+}
+
+.api-status .offline {
+    color: var(--error);
+}
+
+/* 响应式设计 */
+@media (max-width: 1400px) {
+    .sensor-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail-panel {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .section-title {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .chart-controls {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 12px;
+    }
+
+    .sensor-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-overview {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .detail-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .main-title {
+        font-size: 1.4rem;
+    }
+
+    .card-value .value {
+        font-size: 2rem;
+    }
+
+    .pagination {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+}
+
+/* 加载动画 */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+.loading::after {
+    content: '';
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--glass-border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* ==================== 2x2 图表网格布局 ==================== */
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 24px;
+    height: auto;
+}
+
+/* 独立的图表卡片 */
+.chart-card {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(0, 212, 255, 0.3);
+}
+
+/* 卡片标题 */
+.chart-card .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chart-card .card-header i {
+    font-size: 1.2rem;
+}
+
+.chart-card .card-header h3 {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* 图表容器 */
+.chart-card .chart-container {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    min-height: 250px;
+    /* 保证每个图表有足够高度 */
+}
+
+/* 响应式调整 - 仅在极小屏幕(平板竖屏/手机)下切换为单列 */
+@media (max-width: 768px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+}
+
+/* ==================== 硬件链路展示区 ==================== */
+
+.hardware-showcase {
+    margin-bottom: 32px;
+    padding: 24px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+}
+
+.hardware-diagram {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.architecture-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-normal);
+}
+
+.architecture-media {
+    position: relative;
+}
+
+.architecture-media .architecture-image {
+    position: relative;
+    z-index: 1;
+}
+
+
+.architecture-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+}
+
+/* 链路节点展示 */
+.link-nodes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+}
+
+.link-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.node-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: white;
+    transition: var(--transition-normal);
+}
+
+.node-icon.sensor {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+}
+
+.node-icon.gateway {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.node-icon.satellite {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.node-icon.ground {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.node-icon.server {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.node-icon:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+}
+
+.node-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.link-arrow {
+    color: var(--primary);
+    font-size: 1.5rem;
+    animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+        transform: translateX(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(3px);
+    }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .link-nodes {
+        gap: 12px;
+    }
+
+    .node-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .link-arrow {
+        font-size: 1.2rem;
+    }
+
+    .node-label {
+        font-size: 0.75rem;
+    }
+}
+
+/* 优化架构图显示 - 增强可见性 */
+.hardware-diagram {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+}
+
+.architecture-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    transition: var(--transition-normal);
+    /* 放大图片以提高文字可见性 */
+    min-height: 400px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.architecture-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+}
+
+
+/* ==================== 专业版硬件链路展示区 ==================== */
+
+.hardware-showcase {
+    margin-bottom: 32px;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+.hardware-diagram {
+    position: relative;
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(20, 25, 45, 0.95) 0%, rgba(10, 15, 30, 0.98) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-xl);
+    box-shadow:
+        0 0 40px rgba(0, 212, 255, 0.1),
+        inset 0 0 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.hardware-diagram::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(0, 212, 255, 0.5) 20%,
+            rgba(0, 212, 255, 1) 50%,
+            rgba(0, 212, 255, 0.5) 80%,
+            transparent 100%);
+}
+
+.architecture-image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    transition: var(--transition-normal);
+    filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+}
+
+.architecture-image:hover {
+    transform: scale(1.01);
+    filter: drop-shadow(0 15px 40px rgba(0, 212, 255, 0.2));
+}
+
+/* 链路节点展示 - 专业版 */
+.link-nodes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 20px 30px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(20, 25, 45, 0.9) 0%, rgba(15, 20, 40, 0.95) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.link-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    transition: var(--transition-normal);
+}
+
+.link-node:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.node-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.node-icon::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.node-icon.sensor {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.node-icon.gateway {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.node-icon.satellite {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.node-icon.ground {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.node-icon.server {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.node-icon:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+}
+
+.node-label {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    white-space: nowrap;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.link-arrow {
+    color: var(--primary);
+    font-size: 1.8rem;
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    animation: arrowFlow 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowFlow {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateX(0) scale(1);
+        color: rgba(0, 212, 255, 0.6);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateX(4px) scale(1.1);
+        color: rgba(0, 212, 255, 1);
+    }
+}
+
+/* 响应式优化 */
+@media (max-width: 992px) {
+    .link-nodes {
+        padding: 16px 20px;
+        gap: 8px;
+    }
+
+    .link-node {
+        padding: 8px 12px;
+    }
+
+    .node-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+
+    .node-label {
+        font-size: 0.8rem;
+    }
+
+    .link-arrow {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .link-nodes {
+        gap: 6px;
+    }
+
+    .node-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .node-label {
+        font-size: 0.75rem;
+    }
+
+    .link-arrow {
+        font-size: 1.2rem;
+    }
+}
+
+
+/* ==================== 专业版小标题样式 ==================== */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(102, 126, 234, 0.05) 100%);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--primary) 0%, transparent 70%);
+}
+
+.section-title i {
+    font-size: 1.6rem;
+    color: var(--primary);
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+    position: relative;
+    z-index: 1;
+}
+
+.section-title h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.section-title .update-time {
+    margin-left: auto;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 1;
+}
+
+/* 首个section-title不需要顶部margin */
+.stats-overview+.section-title,
+.header+.section-title {
+    margin-top: 24px;
+}
+
+/* 分隔线效果 */
+.sensor-cards,
+.detail-panel,
+.hardware-showcase,
+.charts-grid,
+.table-section {
+    position: relative;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .section-title {
+        padding: 14px 18px;
+        gap: 10px;
+    }
+
+    .section-title i {
+        font-size: 1.3rem;
+    }
+
+    .section-title h2 {
+        font-size: 1.2rem;
+    }
+}
+
+
+/* 链路节点间距优化 - 更分散 */
+.link-nodes {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 28px 40px;
+    margin-top: 20px;
+    background: linear-gradient(135deg, rgba(20, 25, 45, 0.9) 0%, rgba(15, 20, 40, 0.95) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-height: 120px;
+}
+
+.link-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-md);
+    transition: var(--transition-normal);
+    min-width: 90px;
+}
+
+.link-arrow {
+    color: var(--primary);
+    font-size: 2rem;
+    opacity: 0.8;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    animation: arrowFlow 1.5s ease-in-out infinite;
+    padding: 0 10px;
+}
+
+
+/* 接入点选择器 - 移至传感器区域 */
+.access-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 24px;
+    padding: 8px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.access-point-selector label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.access-point-selector label i {
+    color: var(--primary);
+}
+
+.sensor-section-title {
+    flex-wrap: wrap;
+}
+
+.sensor-section-title .update-time {
+    margin-left: auto;
+}
+
+@media (max-width: 992px) {
+    .access-point-selector {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sensor-section-title .update-time {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+}
+
+
+/* 接入点下拉框优化 - 放大并右移 */
+.access-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    margin-right: 20px;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.access-point-selector label {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.access-point-select {
+    padding: 10px 16px;
+    font-size: 1rem;
+    min-width: 200px;
+    background: rgba(20, 25, 45, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.access-point-selector .badge-id {
+    padding: 6px 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--primary) 0%, #667eea 100%);
+    color: white;
+    border-radius: var(--radius-md);
+}
+
+
+/* 接入点下拉框优化 - 更右移、更好看的颜色 */
+.access-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.08) 0%, rgba(102, 126, 234, 0.08) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.1);
+}
+
+.access-point-selector label {
+    color: var(--primary);
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.access-point-selector label i {
+    color: #00f2fe;
+    font-size: 1.1rem;
+}
+
+.access-point-select {
+    padding: 10px 18px;
+    font-size: 1rem;
+    min-width: 220px;
+    background: linear-gradient(135deg, rgba(20, 25, 45, 0.95) 0%, rgba(30, 35, 55, 0.95) 100%);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.access-point-select:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.access-point-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+.access-point-selector .badge-id {
+    padding: 8px 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #00d4ff 0%, #667eea 50%, #764ba2 100%);
+    color: white;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+}
+
+.sensor-section-title .update-time {
+    margin-left: 0;
+    position: absolute;
+    right: 24px;
+}
+
+.sensor-section-title {
+    position: relative;
+}
+
+
+/* 强制修复布局重叠 - 最终版 */
+.sensor-section-title {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    padding-right: 20px !important;
+}
+
+.sensor-section-title h2 {
+    flex-shrink: 0 !important;
+    margin-right: 20px !important;
+}
+
+.sensor-section-title .update-time {
+    position: static !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    padding-left: 20px !important;
+}
+
+.access-point-selector {
+    margin: 0 auto !important;
+    max-width: fit-content !important;
+}
+
+/* 响应式调整 - 小屏幕下列变为两行 */
+@media (max-width: 1400px) {
+    .sensor-section-title {
+        flex-wrap: wrap !important;
+        height: auto !important;
+        padding-bottom: 20px !important;
+    }
+
+    .sensor-section-title .update-time {
+        width: 100% !important;
+        text-align: right !important;
+        margin-top: 15px !important;
+        padding-left: 0 !important;
+    }
+
+    .access-point-selector {
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+}
+
+
+/* 调整下拉框位置 - 靠近右侧时间但保持间距 */
+.access-point-selector {
+    margin-left: auto !important;
+    /* 推到最右边 */
+    margin-right: 20px !important;
+    /* 与时间保持20px间距 */
+    max-width: none !important;
+}
+
+.sensor-section-title .update-time {
+    margin-left: 0 !important;
+    /* 重置左边距 */
+    padding-left: 0 !important;
+    border-left: 1px solid rgba(0, 212, 255, 0.3);
+    /* 添加分隔线 */
+    padding-left: 20px !important;
+    /* 分隔线内边距 */
+}
+
+
+/* 字体放大 + 间距优化 */
+.access-point-selector {
+    margin-right: 30px !important;
+    /* 增加与时间的间距到30px */
+}
+
+.access-point-selector label {
+    font-size: 1.1rem !important;
+    /* 标签字体放大 */
+}
+
+.access-point-select {
+    font-size: 1.1rem !important;
+    /* 下拉框文字放大 */
+    padding: 12px 20px !important;
+}
+
+.access-point-selector .badge-id {
+    font-size: 1.2rem !important;
+    /* SN码放大 */
+    padding: 8px 18px !important;
+}
+
+.sensor-section-title .update-time {
+    font-size: 1rem !important;
+    /* 更新时间文字微调放大 */
+}
+
+
+/* SN码背景颜色优化 - 降低蓝色浓度，改为深色科技风 */
+.access-point-selector .badge-id {
+    background: rgba(20, 20, 30, 0.6) !important;
+    /* 偏黑灰色背景 */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    /* 改为低调的灰白边框 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2) !important;
+    /* 移除蓝色内阴影，仅保留黑色投影 */
+    color: #00e5ff !important;
+    /* 文字保持荧光青色，但稍微柔和 */
+}
+
+
+/* 地图与统计数据容器 */
+.map-stats-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.map-section {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-section .section-title.compact {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.map-section .section-title.compact::before {
+    display: none;
+}
+
+.map-display {
+    flex: 1;
+    min-height: 350px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    /* fix leaflet z-index */
+}
+
+/* 统计数据垂直排列 */
+.stats-overview.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+.stats-overview.vertical .stat-item {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 响应式适配 */
+@media (max-width: 992px) {
+    .map-stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .map-display {
+        min-height: 300px;
+    }
+
+    .stats-overview.vertical {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .stats-overview.vertical .stat-item {
+        flex: 1 1 45%;
+    }
+}
+
+
+/* 自定义地图标记样式 */
+.custom-map-marker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.marker-pin {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    background: var(--primary);
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 50%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    animation: bounce 2s infinite;
+}
+
+.marker-pin::after {
+    content: '';
+    width: 24px;
+    height: 24px;
+    margin: 3px 0 0 3px;
+    background: #fff;
+    position: absolute;
+    border-radius: 50%;
+}
+
+.custom-map-marker i {
+    position: relative;
+    z-index: 2;
+    color: var(--card-bg);
+    font-size: 14px;
+    transform: translateY(-5px);
+}
+
+.active-marker .marker-pin {
+    background: #ff6b6b;
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.6);
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: rotate(-45deg) translateY(0);
+    }
+
+    50% {
+        transform: rotate(-45deg) translateY(-5px);
+    }
+}
+
+/* 弹出层样式优化 */
+.leaflet-popup-content-wrapper {
+    background: rgba(20, 25, 45, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius-md);
+}
+
+.leaflet-popup-tip {
+    background: rgba(20, 25, 45, 0.95);
+    border: 1px solid var(--primary);
+    border-top: none;
+    border-right: none;
+}
+
+
+/* 地图与统计数据容器 */
+.map-stats-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.map-section {
+    background: rgba(255, 255, 255, 0.05);
+    /* fix var replacement */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* fix var replacement */
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.map-section .section-title.compact {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.map-section .section-title.compact::before {
+    display: none;
+}
+
+.map-display {
+    flex: 1;
+    min-height: 400px;
+    /* 增加高度 */
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+/* 统计数据垂直排列 */
+.stats-overview-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-overview.vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0;
+    margin-bottom: 0;
+    background: transparent;
+    /* fix for vertical layout */
+    backdrop-filter: none;
+    border: none;
+}
+
+.stats-overview.vertical .stat-item {
+    flex: 1;
+    min-height: 100px;
+    margin: 0;
+}
+
+/* 响应式适配 */
+@media (max-width: 992px) {
+    .map-stats-container {
+        grid-template-columns: 1fr;
+    }
+
+    .map-display {
+        min-height: 300px;
+    }
+
+    .stats-overview.vertical {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .stats-overview.vertical .stat-item {
+        flex: 1 1 45%;
+    }
+}
+
+
+/* 全宽地图布局样式 */
+.map-section-full {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.map-display-full {
+    width: 100%;
+    min-height: 50vh;
+    /* 使用视口高度百分比，更好适应屏幕 */
+    background: #090c20;
+    /* 默认深色背景，防止瓦片加载前的黑屏 */
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+/* 修复统计概览回退样式 */
+.stats-overview {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.stats-overview .stat-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    transition: var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    min-height: auto;
+}
+
+/* 刷新倒计时样式 */
+.refresh-countdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 20px;
+    padding: 4px 12px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 20px;
+    color: var(--accent-cyan);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.refresh-countdown i {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==================== 2x2 无滚轮布局调整 ==================== */
+html,
+body {
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.header {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    padding: 16px 20px;
+}
+
+.title-section {
+    position: static;
+    transform: none;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.header-left {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.header-right {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+}
+
+.header-footer {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+/* Temperature-focused telemetry view */
+.latest-temperature-card {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: clamp(12px, 1.5vw, 22px);
+    overflow: hidden;
+    padding: clamp(16px, 2vw, 28px);
+    border: 1px solid rgba(255, 120, 92, 0.32);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(circle at 14% 28%, rgba(255, 91, 91, 0.17), transparent 34%), linear-gradient(135deg, rgba(26, 22, 38, 0.96), rgba(8, 24, 42, 0.94));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 18px 42px rgba(0, 0, 0, 0.2);
+}
+
+.latest-temperature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(90deg, #000, transparent 84%);
+}
+
+.temperature-reading, .latest-link-meta { position: relative; z-index: 1; }
+.temperature-reading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 3px 12px;
+    padding: 0 0 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.temperature-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: rgba(255, 226, 215, 0.78);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+}
+
+.temperature-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    color: #ff9072;
+    border: 1px solid rgba(255, 126, 92, 0.34);
+    border-radius: 50%;
+    background: rgba(255, 112, 82, 0.12);
+    box-shadow: 0 0 20px rgba(255, 89, 61, 0.14);
+}
+
+.temperature-value-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.temperature-value {
+    color: #fff8f2;
+    font-family: "Bahnschrift", "DIN Alternate", "Microsoft YaHei", sans-serif;
+    font-size: clamp(2.5rem, 3.5vw, 4.2rem);
+    font-weight: 300;
+    line-height: 0.96;
+    letter-spacing: -0.055em;
+    text-shadow: 0 0 28px rgba(255, 118, 84, 0.28);
+}
+
+.temperature-unit { margin-top: 7px; color: #ff8d6f; font-size: clamp(1rem, 1.5vw, 1.4rem); font-weight: 700; }
+.latest-record-id { grid-column: 1; color: rgba(214, 230, 242, 0.55); font-size: 0.73rem; letter-spacing: 0.05em; }
+.latest-record-id strong { margin-left: 5px; color: rgba(237, 246, 255, 0.82); font-family: Consolas, monospace; }
+.latest-link-meta { display: grid; grid-template-rows: repeat(3, minmax(0, 1fr)); gap: 8px; }
+
+.link-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 10px 14px;
+    border: 1px solid rgba(104, 190, 228, 0.12);
+    border-radius: 8px;
+    background: rgba(7, 24, 40, 0.56);
+}
+
+.link-meta-item.latency-item { border-color: rgba(63, 226, 182, 0.18); background: linear-gradient(90deg, rgba(24, 92, 78, 0.2), rgba(7, 24, 40, 0.56)); }
+.link-meta-icon { display: grid; place-items: center; flex: 0 0 32px; width: 32px; height: 32px; color: #73dfff; border-radius: 7px; background: rgba(37, 178, 220, 0.1); }
+.latency-item .link-meta-icon { color: #70edc1; background: rgba(50, 218, 169, 0.1); }
+.link-meta-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.link-meta-copy small { color: rgba(199, 220, 234, 0.54); font-size: 0.67rem; }
+.link-meta-copy strong { overflow: hidden; color: rgba(239, 249, 255, 0.95); font-family: "Bahnschrift", "Microsoft YaHei", sans-serif; font-size: clamp(0.78rem, 1vw, 0.98rem); font-variant-numeric: tabular-nums; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+#latestLatency[data-level="good"] { color: #78edc5; }
+#latestLatency[data-level="medium"] { color: #ffd478; }
+#latestLatency[data-level="high"] { color: #ff8a7d; }
+
+.history-summary { margin-left: auto; color: rgba(201, 225, 239, 0.58); font-size: 0.72rem; }
+.history-summary strong { color: #78e7ff; font-family: Consolas, monospace; }
+.history-panel-body, .history-table-shell { min-height: 0; height: 100%; }
+.history-table-shell { overflow: auto; border: 1px solid rgba(100, 194, 230, 0.14); border-radius: 8px; background: rgba(5, 18, 32, 0.68); scrollbar-color: rgba(58, 185, 224, 0.5) transparent; scrollbar-width: thin; }
+.history-table { width: 100%; border-collapse: collapse; table-layout: fixed; color: rgba(226, 240, 249, 0.88); font-size: clamp(0.72rem, 0.9vw, 0.88rem); font-variant-numeric: tabular-nums; }
+.history-table th, .history-table td { padding: 11px 18px; text-align: left; }
+.history-table th:first-child, .history-table td:first-child { width: 15%; }
+.history-table th:last-child, .history-table td:last-child { width: 20%; }
+.history-table thead { position: sticky; z-index: 2; top: 0; background: #0b263b; box-shadow: 0 1px rgba(95, 202, 236, 0.18); }
+.history-table th { color: rgba(139, 211, 235, 0.72); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; }
+.history-table tbody tr { border-top: 1px solid rgba(112, 194, 224, 0.09); transition: background-color 160ms ease; }
+.history-table tbody tr:hover { background: rgba(43, 171, 207, 0.075); }
+.history-record-id { color: #87ddf4; font-family: Consolas, monospace; font-weight: 700; }
+.history-time { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.history-time i { width: 13px; color: rgba(104, 207, 237, 0.48); text-align: center; }
+.latency-badge { display: inline-flex; align-items: center; gap: 6px; min-width: 84px; padding: 4px 9px; border: 1px solid rgba(126, 217, 198, 0.18); border-radius: 999px; background: rgba(83, 202, 170, 0.08); color: #83e5c3; white-space: nowrap; }
+.latency-badge.medium { border-color: rgba(255, 202, 95, 0.2); background: rgba(255, 185, 60, 0.08); color: #ffd27a; }
+.latency-badge.high { border-color: rgba(255, 126, 112, 0.2); background: rgba(255, 101, 86, 0.08); color: #ff9a8e; }
+.latency-badge.unknown { color: rgba(210, 225, 235, 0.5); }
+.history-empty-row td { height: 100px; color: rgba(196, 217, 230, 0.5); text-align: center; }
+
+@media (max-width: 900px) {
+    .latest-temperature-card { overflow: auto; }
+    .history-table { min-width: 660px; }
+}
+
+/* ================================================================
+   Professional telemetry console — final visual system
+   ================================================================ */
+:root {
+    --console-bg: #07101d;
+    --console-surface: #0b1726;
+    --console-surface-raised: #0f1d2d;
+    --console-line: rgba(142, 176, 204, 0.17);
+    --console-line-strong: rgba(79, 197, 229, 0.34);
+    --console-cyan: #42c9e9;
+    --console-cyan-soft: #8bdcf0;
+    --console-green: #58d6a9;
+    --console-warm: #ff8064;
+    --console-text: #e7f0f6;
+    --console-muted: #8096a8;
+    --console-radius: 8px;
+}
+
+html { background: var(--console-bg); }
+
+body {
+    color: var(--console-text);
+    font-family: "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    background:
+        linear-gradient(rgba(84, 132, 163, 0.032) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(84, 132, 163, 0.032) 1px, transparent 1px),
+        radial-gradient(circle at 78% -10%, rgba(45, 151, 185, 0.11), transparent 31%),
+        var(--console-bg);
+    background-size: 40px 40px, 40px 40px, auto, auto;
+}
+
+.bg-animation { opacity: 0.18; }
+.bg-animation .stars2, .bg-animation .stars3 { display: none; }
+
+.container {
+    max-width: 1920px;
+    padding: 14px 16px 10px;
+    gap: 12px;
+}
+
+.header {
+    position: relative;
+    min-height: 76px;
+    padding: 10px 14px;
+    overflow: hidden;
+    border: 1px solid var(--console-line);
+    border-radius: var(--console-radius);
+    background: linear-gradient(110deg, rgba(12, 27, 43, 0.98), rgba(10, 22, 37, 0.96));
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.2), inset 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.header::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--console-cyan);
+    box-shadow: 0 0 16px rgba(66, 201, 233, 0.54);
+}
+
+.header::after {
+    content: "";
+    position: absolute;
+    right: 27%;
+    bottom: 0;
+    width: 170px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--console-cyan), transparent);
+    opacity: 0.45;
+}
+
+.header-left, .header-right, .title-section { position: relative; z-index: 1; }
+.header-left { gap: 12px; min-width: 300px; }
+.page-back-button + .njupt-logo { margin-left: 4px; }
+.page-back-button + .njupt-logo img { width: auto; max-width: 228px; max-height: 48px; filter: saturate(0.25) brightness(1.35); }
+
+.page-back-button {
+    min-width: 72px;
+    height: 36px;
+    border-color: rgba(93, 190, 218, 0.3);
+    border-radius: 6px;
+    background: #0b2133;
+    box-shadow: none;
+    color: #cae9f2;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.page-back-button:hover { border-color: var(--console-cyan); background: #103047; transform: none; }
+
+.title-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.main-title {
+    margin: 0;
+    color: #e8f3f8;
+    font-family: "Noto Sans SC", "Microsoft YaHei UI", sans-serif;
+    font-size: clamp(1.5rem, 2.3vw, 2.45rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.1;
+    text-shadow: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+}
+
+.title-subline {
+    color: rgba(111, 192, 216, 0.62);
+    font-family: "Bahnschrift", "DIN Alternate", sans-serif;
+    font-size: clamp(0.52rem, 0.62vw, 0.7rem);
+    letter-spacing: 0.28em;
+}
+
+.header-right { min-width: 270px; justify-content: flex-end; gap: 10px; }
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 104px;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--console-line);
+    border-radius: 6px;
+    background: rgba(4, 17, 29, 0.72);
+}
+
+.status-indicator::after { display: none; }
+.status-dot { flex: 0 0 auto; width: 7px; height: 7px; box-shadow: 0 0 8px currentColor; }
+.status-copy { display: flex; flex-direction: column; line-height: 1.2; }
+.status-copy small { color: var(--console-muted); font-size: 0.56rem; }
+.status-copy strong { color: var(--console-green); font-size: 0.7rem; font-weight: 600; }
+
+.current-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    min-width: 112px;
+    height: 42px;
+    padding: 0 11px;
+    border: 1px solid var(--console-line);
+    border-radius: 6px;
+    background: rgba(4, 17, 29, 0.72);
+    color: var(--console-text);
+    font-family: "Bahnschrift", Consolas, monospace;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+    text-shadow: none;
+}
+
+.current-time small { margin-top: 3px; color: var(--console-muted); font-size: 0.52rem; letter-spacing: 0.08em; }
+
+.dashboard-grid { gap: 12px; grid-template-columns: minmax(0, 1.16fr) minmax(520px, 0.84fr); }
+
+.dashboard-panel {
+    padding: 10px;
+    overflow: hidden !important;
+    border: 1px solid var(--console-line);
+    border-radius: var(--console-radius);
+    background: linear-gradient(145deg, rgba(12, 26, 42, 0.97), rgba(8, 19, 32, 0.97));
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18), inset 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.dashboard-panel .section-title {
+    position: relative;
+    min-height: 38px;
+    margin: 0 0 8px;
+    padding: 0 12px;
+    overflow: hidden;
+    border: 0;
+    border-bottom: 1px solid var(--console-line);
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.dashboard-panel .section-title::before {
+    width: 2px;
+    height: 16px;
+    top: 50%;
+    left: 0;
+    border-radius: 0;
+    background: var(--console-cyan);
+    transform: translateY(-50%);
+    box-shadow: none;
+}
+
+.dashboard-panel .section-title::after { display: none; }
+.dashboard-panel .section-title i { color: var(--console-cyan); font-size: 0.86rem; text-shadow: none; }
+.dashboard-panel .section-title h2 {
+    color: #dcebf2;
+    font-size: clamp(0.78rem, 2.7cqw, 0.94rem);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.panel-architecture .panel-body.scaled-container,
+.panel-map-sensor .map-section-full,
+.history-table-shell {
+    border: 1px solid rgba(133, 171, 198, 0.14);
+    border-radius: 6px;
+    background: #081525;
+    box-shadow: inset 0 0 36px rgba(0, 0, 0, 0.12);
+}
+
+.architecture-graph-wrapper, #architectureGraph { border-radius: 5px; }
+
+.map-sensor-header { gap: 10px; }
+.map-sensor-header .section-title { background: transparent; }
+.panel-map-sensor .map-sensor-body { gap: 10px; }
+.panel-map-sensor .map-section-full { padding: 0 !important; overflow: hidden; }
+.map-display-full { border-radius: 5px; filter: saturate(0.82) contrast(0.98); }
+
+.leaflet-control-zoom a {
+    border-color: rgba(91, 131, 158, 0.25) !important;
+    background: #f4f6f5 !important;
+    color: #182a37 !important;
+}
+
+.sensor-group { gap: 8px; }
+.sensor-controls { gap: 6px; }
+.sensor-controls .access-point-selector {
+    padding: 8px 10px !important;
+    border: 1px solid var(--console-line) !important;
+    border-radius: 6px !important;
+    background: rgba(7, 22, 36, 0.84) !important;
+    box-shadow: none !important;
+}
+
+.sensor-controls .access-point-selector label { margin: 0 0 5px; color: var(--console-muted); font-size: 0.67rem; font-weight: 500; }
+.sensor-controls .access-point-select {
+    height: 30px !important;
+    padding: 0 9px !important;
+    border: 1px solid rgba(100, 169, 194, 0.28) !important;
+    border-radius: 4px !important;
+    background: #0a1d2d !important;
+    color: #d8e8ef !important;
+    font-size: 0.7rem !important;
+    box-shadow: none !important;
+}
+
+.sensor-source-badge {
+    padding: 4px 8px;
+    border-color: rgba(88, 214, 169, 0.18);
+    border-radius: 4px;
+    background: rgba(88, 214, 169, 0.07);
+    color: #8ddfc2;
+    font-size: 0.62rem;
+}
+
+.latest-temperature-card {
+    padding: 12px 13px;
+    gap: 9px;
+    border: 1px solid rgba(153, 181, 199, 0.16);
+    border-radius: 6px;
+    background: linear-gradient(145deg, #0d1b2a, #091726);
+    box-shadow: none;
+}
+
+.latest-temperature-card::before { opacity: 0.28; background-size: 28px 28px; }
+.temperature-reading { padding-bottom: 9px; border-color: var(--console-line); }
+.temperature-icon { width: 28px; height: 28px; border-radius: 5px; color: var(--console-warm); box-shadow: none; }
+.temperature-kicker { gap: 7px; color: #b6c8d3; font-size: 0.66rem; letter-spacing: 0.04em; }
+.temperature-value { color: #f2f5f5; font-size: clamp(2.35rem, 3.2vw, 3.7rem); font-weight: 400; text-shadow: none; }
+.temperature-unit { color: var(--console-warm); font-size: 1rem; }
+.latest-record-id { font-size: 0.6rem; letter-spacing: 0; }
+
+.latest-link-meta { gap: 6px; }
+.link-meta-item { min-height: 0; padding: 7px 9px; border-radius: 5px; border-color: var(--console-line); background: rgba(6, 20, 33, 0.68); }
+.link-meta-item.latency-item { border-color: rgba(88, 214, 169, 0.2); background: rgba(19, 68, 59, 0.15); }
+.link-meta-icon { flex-basis: 27px; width: 27px; height: 27px; border-radius: 4px; color: var(--console-cyan); }
+.link-meta-copy small { color: var(--console-muted); font-size: 0.58rem; }
+.link-meta-copy strong { color: #dce9ef; font-size: clamp(0.68rem, 0.85vw, 0.82rem); }
+
+.history-summary { color: var(--console-muted); font-size: 0.62rem; }
+.history-summary strong { color: var(--console-cyan-soft); }
+.history-table-shell { background: #071523; }
+.history-table { color: #cbdbe4; font-size: clamp(0.66rem, 0.78vw, 0.78rem); }
+.history-table thead { background: #0d2435; box-shadow: 0 1px var(--console-line); }
+.history-table th { color: #829dac; font-size: 0.58rem; letter-spacing: 0.08em; }
+.history-table th, .history-table td { padding: 8px 14px; }
+.history-table tbody tr { border-color: rgba(119, 155, 179, 0.1); }
+.history-table tbody tr:hover { background: rgba(66, 201, 233, 0.045); }
+.history-record-id { color: #80cadc; font-weight: 600; }
+.history-time { gap: 6px; }
+.latency-badge { min-width: 76px; padding: 3px 7px; border-radius: 4px; background: rgba(88, 214, 169, 0.055); color: #75cfaf; }
+.latency-badge.medium { background: rgba(235, 180, 75, 0.055); color: #ddb86d; }
+.latency-badge.high { background: rgba(237, 115, 94, 0.055); color: #e89584; }
+
+.refresh-countdown {
+    border: 1px solid rgba(66, 201, 233, 0.2) !important;
+    border-radius: 4px !important;
+    background: rgba(66, 201, 233, 0.07) !important;
+    color: #88d9eb !important;
+    box-shadow: none !important;
+}
+
+.header-footer {
+    min-height: 26px;
+    padding: 5px 8px;
+    border-top: 1px solid var(--console-line);
+    color: #677f91;
+    font-size: 0.62rem;
+}
+
+.header-footer .online { color: var(--console-green); }
+
+@keyframes professional-enter {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.header { animation: professional-enter 320ms ease-out both; }
+.panel-architecture { animation: professional-enter 360ms 50ms ease-out both; }
+.panel-map-sensor { animation: professional-enter 360ms 90ms ease-out both; }
+.panel-trends { animation: professional-enter 360ms 130ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+    .header, .panel-architecture, .panel-map-sensor, .panel-trends { animation: none; }
+}
+
+@media (max-width: 1200px) {
+    .dashboard-grid { grid-template-columns: 1fr; min-height: 1500px; }
+    .header-left { min-width: 250px; }
+    .header-right { min-width: 230px; }
+    .title-subline { display: none; }
+}
+
+@media (max-width: 760px) {
+    .header { min-height: 62px; }
+    .header-left { min-width: auto; }
+    .njupt-logo { display: none; }
+    .header-right { min-width: auto; }
+    .status-indicator { display: none; }
+    .current-time { min-width: 92px; }
+    .main-title { font-size: clamp(0.92rem, 4vw, 1.2rem); letter-spacing: 0.02em; }
+}
+
+body.responsive-dashboard.viewport-tight .latest-temperature-card,
+body.responsive-dashboard.viewport-ultra .latest-temperature-card { padding: 10px 12px; gap: 10px; }
+body.responsive-dashboard.viewport-tight .link-meta-item,
+body.responsive-dashboard.viewport-ultra .link-meta-item { padding: 6px 9px; }
+body.responsive-dashboard.viewport-tight .history-table th,
+body.responsive-dashboard.viewport-tight .history-table td,
+body.responsive-dashboard.viewport-ultra .history-table th,
+body.responsive-dashboard.viewport-ultra .history-table td { padding-top: 7px; padding-bottom: 7px; }
+
+.container > .header-footer {
+    width: 100%;
+    flex: 0 0 auto;
+    margin-top: 0;
+}
+
+.dashboard-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.dashboard-panel {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    /* 启用 Container Queries - 让子元素可以使用 cqw 单位 */
+    container-type: inline-size;
+    container-name: panel;
+}
+
+.dashboard-panel .section-title {
+    margin: 0 0 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-lg);
+}
+
+.dashboard-panel .panel-body {
+    flex: 1;
+    min-height: 0;
+}
+
+.panel-architecture .hardware-showcase,
+.panel-map-sensor .map-section-full {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.panel-architecture .hardware-diagram {
+    margin-bottom: 12px;
+}
+
+.panel-architecture .architecture-image {
+    max-height: 240px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.panel-architecture .link-nodes {
+    padding: 12px;
+    gap: 10px;
+}
+
+.panel-constellation .satellite-visualization-section {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 12px;
+}
+
+.panel-constellation .satellite-globe-container,
+.panel-constellation .satellite-info-panel {
+    min-height: 0;
+}
+
+.panel-constellation .satellite-info-panel {
+    padding: 12px;
+}
+
+.panel-constellation .detail-stats {
+    gap: 10px;
+}
+
+.panel-constellation .control-section {
+    margin-top: 10px;
+}
+
+/* 紧凑布局调整 */
+.map-sensor-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* 调整为 1:1 分配 */
+    gap: 8px;
+    /* 减小间距 */
+    min-height: 0;
+}
+
+.map-section-full {
+    padding: 0;
+    /* 移除 padding */
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.map-display-full {
+    height: 100%;
+    min-height: 0;
+    width: 100%;
+}
+
+/* 强制紧凑布局：传感器卡片 */
+.sensor-group {
+    flex: 1;
+    /* 占据剩余空间 */
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 8px;
+    overflow: hidden;
+}
+
+.sensor-cards {
+    flex: 1;
+    /* 占据 sensor-group 的剩余空间 */
+    margin: 0;
+    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    /* 强制两行均分高度 */
+    min-height: 0;
+    /* 允许收缩 */
+}
+
+.sensor-card {
+    padding: 8px 12px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* 内容垂直分布 */
+}
+
+.sensor-card .card-header {
+    margin-bottom: 0;
+    /* 移除额外间距 */
+    flex: 0 0 auto;
+}
+
+.sensor-card .card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+}
+
+.sensor-card .card-footer {
+    display: none;
+    /* 隐藏原始值区域以节省空间 */
+}
+
+.sensor-card .card-value .value {
+    font-size: 1.5rem;
+    line-height: 1.2;
+}
+
+.sensor-card .card-label {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.sensor-card .card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+}
+
+.detail-panel {
+    margin: 0;
+    padding: 8px;
+    gap: 8px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.detail-value.mono {
+    font-size: 0.75rem;
+}
+
+.panel-trends .charts-grid {
+    height: 100%;
+    margin: 0;
+    gap: 10px;
+}
+
+.panel-trends .chart-card {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.panel-trends .chart-container {
+    padding: 8px;
+    flex: 1 1 auto;
+    min-height: 170px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.panel-trends .chart-container>canvas {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, minmax(0, 1fr));
+    }
+
+    body {
+        overflow: auto;
+    }
+}
+
+/* 2x2 layout sizing tweaks */
+.header {
+    margin-bottom: 0;
+}
+
+.container {
+    padding: 16px;
+}
+
+.main-title {
+    font-size: 3rem;
+    letter-spacing: 6px;
+}
+
+.njupt-logo {
+    height: 64px;
+    padding: 0 12px;
+}
+
+.header-right .current-time {
+    font-size: 1rem;
+    min-width: 88px;
+}
+
+.panel-constellation .satellite-visualization-section {
+    margin: 0;
+}
+
+.panel-map-sensor .map-section-full {
+    margin: 0;
+}
+
+.map-section-full {
+    height: 100%;
+}
+
+.sensor-group {
+    overflow: visible;
+    margin-top: 8px;
+}
+
+/* Top panels slightly smaller */
+.panel-architecture .hardware-showcase {
+    padding: 8px;
+}
+
+.panel-architecture .architecture-image {
+    max-height: 210px;
+}
+
+.panel-architecture .link-nodes {
+    padding: 8px;
+    gap: 8px;
+}
+
+.panel-constellation .satellite-info-panel {
+    padding: 10px;
+}
+
+.panel-constellation .main-stats {
+    margin-bottom: 10px;
+}
+
+.panel-constellation .detail-stats {
+    gap: 8px;
+}
+
+/* Reduce top-row height slightly to give more room to lower panels */
+.dashboard-grid {
+    grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+.panel-architecture,
+.panel-constellation {
+    padding: 12px;
+}
+
+.panel-architecture .architecture-image {
+    max-height: 190px;
+}
+
+.panel-constellation .satellite-globe-container {
+    min-height: 0;
+}
+
+/* Fill empty space in top panels */
+.panel-architecture .panel-body,
+.panel-constellation .panel-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.panel-architecture .hardware-showcase {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.panel-architecture .hardware-diagram {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-architecture .architecture-image {
+    max-height: 100%;
+}
+
+.panel-constellation .satellite-visualization-section {
+    flex: 1 1 auto;
+    grid-template-columns: 1fr;
+}
+
+.panel-constellation .satellite-globe-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Orbit toggle in constellation panel title */
+.satellite-section-title {
+    position: relative;
+}
+
+.satellite-section-title .orbit-toggle {
+    margin-left: auto;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+.satellite-section-title .orbit-controls {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.satellite-section-title .globe-control-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 10px;
+}
+
+/* Keep orbit toggle size stable when active */
+.satellite-section-title .globe-control-btn.active {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    transform: none;
+}
+
+/* Force orbit toggle size to stay fixed even when active */
+.satellite-section-title .globe-control-btn,
+.satellite-section-title .globe-control-btn.active {
+    padding: 5px 10px !important;
+    font-size: 0.8rem !important;
+    transform: none !important;
+    box-shadow: none;
+}
+
+/* Override globe-control-btn sizing/hover for header buttons */
+.satellite-section-title .globe-control-btn {
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    height: 30px;
+    line-height: 1;
+}
+
+.satellite-section-title .globe-control-btn:hover,
+.satellite-section-title .globe-control-btn:active,
+.satellite-section-title .globe-control-btn.active {
+    transform: none !important;
+}
+
+/* Unify section title size with constellation title */
+.section-title h2 {
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+}
+
+/* Responsive sizing to fill window */
+:root {
+    --panel-gap: clamp(10px, 1.2vh, 16px);
+    --panel-pad: clamp(10px, 1.2vh, 14px);
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    padding: clamp(12px, 1.5vh, 18px);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.dashboard-grid {
+    gap: var(--panel-gap);
+}
+
+.dashboard-panel {
+    padding: var(--panel-pad);
+}
+
+.main-title {
+    font-size: clamp(2.1rem, 3.4vw, 3.2rem);
+    letter-spacing: clamp(4px, 0.6vw, 8px);
+}
+
+.section-title h2 {
+    font-size: clamp(1rem, 1.2vw, 1.2rem) !important;
+}
+
+.panel-architecture .architecture-image {
+    max-height: min(100%, 28vh);
+}
+
+/* Scaled content wrappers for top panels */
+.panel-body.scaled-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.panel-scale {
+    transform-origin: top left;
+    will-change: transform;
+}
+
+/* Make panels span full screen width */
+.container {
+    max-width: none;
+}
+
+.dashboard-grid {
+    width: 100%;
+}
+
+/* Panel/title responsive scaling by container size */
+.header {
+    font-size: clamp(12px, 0.9vw, 15px);
+}
+
+.dashboard-panel {
+    font-size: clamp(12px, 0.9vw, 16px);
+}
+
+.section-title h2 {
+    font-size: 1.05em !important;
+}
+
+/* Slightly reduce top row height */
+.dashboard-grid {
+    grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr);
+}
+
+/* Ensure each module content fits its own panel bounds */
+.dashboard-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-panel>.panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+}
+
+.panel-architecture .hardware-showcase,
+.panel-constellation .satellite-visualization-section,
+.panel-trends .charts-grid,
+.panel-map-sensor .map-section-full {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.panel-constellation .satellite-globe-container,
+.panel-map-sensor .map-display-full,
+.panel-trends .chart-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Disable scaling wrapper and make content fit panel */
+.panel-body.scaled-container {
+    align-items: stretch;
+    justify-content: stretch;
+}
+
+.panel-scale {
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+}
+
+.panel-architecture .hardware-showcase {
+    height: 100%;
+    padding: 0;
+}
+
+.panel-architecture .hardware-diagram {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-architecture .architecture-image {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+}
+
+.panel-constellation .satellite-visualization-section {
+    height: 100%;
+    margin: 0;
+}
+
+.panel-constellation .satellite-globe-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Fill panel without cropping by removing extra padding and fitting image */
+.panel-architecture .panel-body {
+    padding: 0 !important;
+}
+
+.panel-architecture .hardware-showcase {
+    padding: 0 !important;
+    border: none;
+    background: transparent;
+}
+
+.panel-architecture .architecture-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Prevent architecture image from being clipped */
+.panel-architecture .hardware-diagram {
+    padding: 8px;
+}
+
+.panel-architecture .architecture-image {
+    max-width: 96%;
+    max-height: 96%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Extra inset to avoid border clipping in architecture panel */
+.panel-architecture {
+    overflow: hidden;
+}
+
+.panel-architecture .panel-body {
+    padding: 12px !important;
+    box-sizing: border-box;
+}
+
+.panel-architecture .hardware-diagram {
+    padding: 0;
+}
+
+.panel-architecture .architecture-image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+/* Extra vertical inset to avoid top/bottom clipping */
+.panel-architecture .panel-body {
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+}
+
+.panel-architecture .architecture-image {
+    max-height: calc(100% - 12px);
+}
+
+/* Fix top/bottom clipping in architecture panel */
+.panel-architecture .panel-body {
+    padding: 22px 16px !important;
+}
+
+.panel-architecture .hardware-showcase {
+    height: 100%;
+}
+
+.panel-architecture .hardware-diagram {
+    padding: 12px 0;
+}
+
+.panel-architecture .architecture-image {
+    transform: scale(0.92);
+    transform-origin: center;
+}
+
+/* Architecture image stretch to inner frame */
+.panel-architecture .hardware-diagram {
+    padding: 0;
+}
+
+.panel-architecture .architecture-image {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: fill;
+    transform: none;
+}
+
+.panel-architecture .panel-body {
+    padding: 0 !important;
+}
+
+.panel-architecture .hardware-showcase {
+    width: 100%;
+    height: 100%;
+    padding: 0 !important;
+    margin: 0;
+}
+
+.panel-architecture .hardware-diagram {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.panel-architecture .architecture-image {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+/* Force architecture image to exactly match inner frame */
+.panel-architecture .panel-body,
+.panel-architecture .hardware-showcase,
+.panel-architecture .hardware-diagram {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.panel-architecture .architecture-image {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: fill !important;
+    border-radius: 0 !important;
+}
+
+/* Architecture image: stretch to 100% width, 90% height */
+.panel-architecture .architecture-image {
+    height: 90% !important;
+}
+
+/* Center the architecture image with a slightly smaller height */
+.panel-architecture .hardware-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.panel-architecture .architecture-image {
+    height: 88% !important;
+    margin: 0 auto;
+}
+
+/* Slightly smaller and centered */
+.panel-architecture .architecture-image {
+    height: 85% !important;
+}
+
+.panel-architecture .architecture-image {
+    height: 70% !important;
+}
+
+/* Ensure percentage height works for architecture image */
+.panel-architecture {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-architecture .panel-body {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+}
+
+.panel-architecture .hardware-showcase,
+.panel-architecture .hardware-diagram {
+    height: 100% !important;
+    min-height: 0;
+}
+
+.panel-architecture .hardware-diagram {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.panel-architecture .architecture-image {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: fill !important;
+}
+
+@media (max-width: 1200px) {
+    .map-sensor-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    }
+}
+
+/* Map/Sensor header row */
+.map-sensor-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 12px;
+    align-items: center;
+}
+
+.map-sensor-header .section-title {
+    margin: 0;
+}
+
+.map-sensor-header .sensor-section-title {
+    margin-bottom: 0;
+}
+
+@media (max-width: 900px) {
+    \n .map-sensor-header {
+        grid-template-columns: 1fr;
+    }
+
+    .map-sensor-header .sensor-section-title {
+        margin-top: 10px;
+    }
+}
+
+/* Map + sensor tweaks (side-by-side header + map height) */
+.panel-map-sensor .map-sensor-body {
+    align-items: stretch;
+}
+
+.panel-map-sensor .map-section-full {
+    min-height: 340px;
+}
+
+.panel-map-sensor .map-display-full {
+    min-height: 320px;
+}
+
+.sensor-section-title {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+}
+
+.sensor-section-title .access-point-selector {
+    margin-left: auto;
+    padding: 6px 10px;
+    gap: 6px;
+}
+
+.sensor-section-title .access-point-select {
+    min-width: 110px;
+    width: 110px;
+    font-size: 0.85rem;
+}
+
+.sensor-section-title .update-time,
+.sensor-section-title .refresh-countdown {
+    flex: 0 0 100%;
+    margin-left: 0;
+}
+
+.panel-map-sensor .map-display-full {
+    height: auto;
+}
+
+/* Map title top-left + map fill left column */
+.panel-map-sensor {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-map-sensor .panel-body {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.map-sensor-header {
+    align-items: center;
+}
+
+.map-sensor-header .map-title {
+    justify-content: flex-start;
+}
+
+.map-sensor-body {
+    min-height: 0;
+    height: 100%;
+}
+
+.panel-map-sensor .map-section-full {
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-map-sensor .map-display-full {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+}
+
+/* Sensor controls layout */
+.sensor-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sensor-controls .access-point-selector {
+    align-self: flex-start;
+    max-width: 100%;
+}
+
+.sensor-controls .sensor-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.sensor-controls .sensor-meta .update-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 0;
+}
+
+.sensor-source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(0, 212, 255, 0.24);
+    background: rgba(0, 212, 255, 0.1);
+    color: rgba(214, 247, 255, 0.92);
+    font-size: 0.8rem;
+    line-height: 1.2;
+}
+
+.sensor-source-badge.sensor-source-badge-warning {
+    border-color: rgba(255, 196, 87, 0.28);
+    background: rgba(255, 196, 87, 0.12);
+    color: rgba(255, 229, 164, 0.94);
+}
+
+.sensor-controls .update-time {
+    margin-left: 0;
+}
+
+.sensor-controls .refresh-countdown {
+    margin-left: 0;
+}
+
+
+/* Access point select: smaller text, no overlap */
+.sensor-controls .access-point-select {
+    font-size: 0.75rem;
+    max-width: 220px;
+    width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sensor-controls .access-point-selector {
+    flex-wrap: nowrap;
+}
+
+/* Access point select: full text + compact height */
+.sensor-controls .access-point-select {
+    max-width: none;
+    width: 100%;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    padding: 4px 8px;
+    height: 32px;
+    line-height: 1.2;
+}
+
+.sensor-controls .access-point-selector {
+    align-items: center;
+}
+
+/* Access point: wrap label + full-width select to avoid overlap */
+.sensor-controls .access-point-selector {
+    flex-wrap: wrap;
+}
+
+.sensor-controls .access-point-selector label {
+    flex: 0 0 100%;
+    margin-bottom: 6px;
+}
+
+.sensor-controls .access-point-select {
+    width: 100%;
+    height: 36px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+}
+
+/* Access point: full-width select, no clipping */
+.sensor-controls .access-point-selector {
+    width: 100%;
+}
+
+.sensor-controls .access-point-selector label {
+    width: 100%;
+    margin-bottom: 4px;
+}
+
+.sensor-controls .access-point-select {
+    width: 100%;
+    font-size: 0.72rem;
+    height: 30px;
+    padding: 2px 8px;
+}
+
+/* Sensor title + update time on right */
+.sensor-section-title {
+    align-items: center;
+}
+
+.sensor-section-title .update-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.sensor-controls .access-point-select option {
+    white-space: normal;
+}
+
+/* Update time inline with sensor title */
+.sensor-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sensor-section-title h2 {
+    margin-right: 6px;
+}
+
+.sensor-section-title .update-time {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Keep update time inline with sensor title */
+.sensor-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.sensor-section-title h2 {
+    white-space: nowrap;
+}
+
+.sensor-section-title .update-time {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Keep update time + countdown inline */
+.sensor-section-title .refresh-countdown {
+    margin-left: 8px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+}
+
+.sensor-section-title .update-time {
+    margin-left: auto;
+}
+
+/* Force title row inline for update + countdown */
+.sensor-section-title .update-time,
+.sensor-section-title .refresh-countdown {
+    flex: 0 0 auto !important;
+    margin-left: 8px;
+}
+
+.sensor-section-title .refresh-countdown {
+    display: inline-flex !important;
+}
+
+/* Compact access point block text */
+.sensor-controls .access-point-selector label {
+    font-size: 0.8rem;
+}
+
+.sensor-controls .access-point-select {
+    font-size: 0.7rem;
+}
+
+/* Smaller text inside select options */
+.sensor-controls .access-point-select,
+.sensor-controls .access-point-select option {
+    font-size: 0.65rem;
+}
+
+/* Fix select text visibility */
+.sensor-controls .access-point-select {
+    color: var(--text-primary);
+    text-shadow: none;
+    background-color: rgba(10, 12, 28, 0.6);
+}
+
+.sensor-controls .access-point-select option {
+    color: #0f172a;
+}
+
+/* Increase select height so text isn't clipped */
+.sensor-controls .access-point-select {
+    height: 38px;
+    line-height: 38px;
+    padding: 0 10px;
+}
+
+/* Access point label + select on one line */
+.sensor-controls .access-point-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+.sensor-controls .access-point-selector label {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+}
+
+.sensor-controls .access-point-select {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 40px;
+    line-height: 40px;
+    padding: 0 12px;
+}
+
+/* Space between label and select, avoid overlap */
+.sensor-controls .access-point-selector {
+    gap: 16px;
+}
+
+.sensor-controls .access-point-selector label {
+    min-width: 64px;
+}
+
+.sensor-controls .access-point-select {
+    margin-left: 0;
+}
+
+/* Keep label and select tight */
+.sensor-controls .access-point-selector {
+    gap: 6px;
+}
+
+.sensor-controls .access-point-selector label {
+    min-width: auto;
+}
+
+/* Truly tight label + select */
+.sensor-controls .access-point-selector {
+    gap: 0;
+}
+
+.sensor-controls .access-point-selector label {
+    margin-right: 4px;
+}
+
+.sensor-controls .access-point-select {
+    margin-left: 0;
+}
+
+/* Final override: keep label and select tight */
+.sensor-controls .access-point-selector {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.sensor-controls .access-point-selector label {
+    margin: 0 6px 0 0 !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+}
+
+.sensor-controls .access-point-select {
+    margin: 0 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+/* Smaller text inside select to avoid clipping */
+.sensor-controls .access-point-select {
+    font-size: 0.6rem !important;
+}
+
+.sensor-controls .access-point-select option {
+    font-size: 0.6rem !important;
+}
+
+/* Select: larger font, full-height, white text */
+.sensor-controls .access-point-select {
+    font-size: 0.85rem !important;
+    height: 40px !important;
+    line-height: 40px !important;
+    color: #ffffff !important;
+}
+
+.sensor-controls .access-point-select option {
+    color: #ffffff !important;
+}
+
+/* Select: larger text */
+.sensor-controls .access-point-select,
+.sensor-controls .access-point-select option {
+    font-size: 1rem !important;
+}
+
+/* Select height matches font size */
+.sensor-controls .access-point-select {
+    height: 44px !important;
+    line-height: 44px !important;
+}
+
+/* Smaller card icons to free vertical space */
+.sensor-card .card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.05rem;
+}
+
+/* Detail panel text sizing to prevent overlap */
+.detail-panel {
+    align-items: flex-start;
+}
+
+.detail-item .detail-label {
+    font-size: 0.7rem;
+}
+
+.detail-item .detail-value {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.detail-item .detail-value.mono {
+    font-size: 0.7rem;
+    line-height: 1.2;
+}
+
+.detail-item {
+    min-width: 0;
+}
+
+.detail-item .detail-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Shift left panel a bit left to give right more space */
+.panel-map-sensor .map-sensor-body {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr) !important;
+}
+
+/* Slightly shrink left side (map + title) */
+.map-sensor-header {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr) !important;
+}
+
+.panel-map-sensor .map-sensor-body {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr) !important;
+}
+
+/* Add slight spacing between update time and countdown */
+.sensor-section-title .update-time {
+    margin-right: 8px;
+}
+
+.sensor-section-title .refresh-countdown {
+    margin-left: 4px;
+}
+
+/* Slightly larger gap between update time and countdown */
+.sensor-section-title .update-time {
+    margin-right: 16px;
+}
+
+.sensor-section-title .refresh-countdown {
+    margin-left: 8px;
+}
+
+/* Nudge countdown to the right */
+.sensor-section-title .refresh-countdown {
+    margin-left: 16px !important;
+}
+
+/* Update notice for new data */
+.sensor-update-notice {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sensor-update-notice.show {
+    opacity: 1;
+}
+
+/* Small gap between title card and access point card */
+.sensor-section-title {
+    margin-bottom: 6px;
+}
+
+/* Toast notification for new data */
+.sensor-update-toast {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: #22c55e;
+    color: #0b1b0f;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+    z-index: 9999;
+}
+
+.sensor-update-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+}
+
+.sensor-update-toast .toast-close {
+    pointer-events: auto;
+}
+
+/* Architecture graph (X6) */
+.panel-architecture .panel-body.scaled-container {
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.panel-architecture .panel-scale {
+    display: none;
+}
+
+.architecture-graph-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: #0f172a;
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    position: relative;
+}
+
+.architecture-graph {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.x6-graph-toolbar {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 220px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+/* Align toolbar with architecture title row */
+.panel-architecture .x6-graph-toolbar {
+    top: -52px;
+}
+
+.x6-graph-toolbar .toolbar-title {
+    font-size: 0.72rem;
+    color: #e2e8f0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.x6-graph-toolbar .toolbar-section + .toolbar-section {
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.x6-graph-toolbar .toolbar-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.x6-graph-toolbar .toolbar-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-radius: 8px;
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    background: rgba(2, 6, 23, 0.6);
+    color: #e2e8f0;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+    outline: none;
+}
+
+.x6-graph-toolbar .toolbar-input::placeholder {
+    color: rgba(226, 232, 240, 0.55);
+}
+
+.x6-graph-toolbar .toolbar-btn {
+    flex: 0 0 auto;
+    border-radius: 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    background: rgba(56, 189, 248, 0.2);
+    color: #e2e8f0;
+    padding: 4px 8px;
+    font-size: 0.68rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.x6-graph-toolbar .toolbar-btn:hover {
+    background: rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.85);
+}
+
+.x6-graph-toolbar .toolbar-btn.danger {
+    border-color: rgba(248, 113, 113, 0.7);
+    background: rgba(248, 113, 113, 0.2);
+}
+
+.x6-graph-toolbar .toolbar-btn.danger:hover {
+    background: rgba(248, 113, 113, 0.35);
+    border-color: rgba(248, 113, 113, 0.9);
+}
+
+.x6-graph-toolbar .toolbar-btn.disabled,
+.x6-graph-toolbar .toolbar-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.x6-graph-toolbar .toolbar-row-wrap {
+    flex-wrap: wrap;
+}
+
+.x6-graph-toolbar .toolbar-row-compact .toolbar-btn {
+    padding: 6px 8px;
+}
+
+.x6-graph-toolbar .toolbar-file {
+    display: none;
+}
+
+.x6-label-editor {
+    position: absolute;
+    z-index: 30;
+    border-radius: 8px;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+    background: rgba(15, 23, 42, 0.92);
+    color: #f8fafc;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    outline: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.x6-context-menu {
+    position: absolute;
+    z-index: 25;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 140px;
+    padding: 6px;
+    border-radius: 10px;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.x6-context-menu.show {
+    display: flex;
+}
+
+.x6-context-menu .context-menu-item {
+    border: none;
+    background: rgba(56, 189, 248, 0.12);
+    color: #e2e8f0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+.x6-context-menu .context-menu-item:hover {
+    background: rgba(56, 189, 248, 0.25);
+}
+
+.x6-context-menu .context-menu-item:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.x6-overlay-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.x6-globe-overlay {
+    position: absolute;
+    pointer-events: auto;
+}
+
+.architecture-graph-wrapper.x6-edit-mode .x6-globe-overlay,
+.architecture-graph-wrapper.x6-edit-mode .x6-globe-node,
+.architecture-graph-wrapper.x6-edit-mode .x6-globe-node * {
+    pointer-events: none !important;
+}
+
+
+.architecture-graph .x6-port-body {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.architecture-graph .x6-node:hover .x6-port-body {
+    opacity: 1;
+}
+
+.architecture-graph-wrapper:not(.x6-edit-mode) .x6-port-body {
+    opacity: 0 !important;
+}
+
+.architecture-graph-wrapper.x6-edit-mode .x6-node:hover .x6-port-body {
+    opacity: 1;
+}
+
+@keyframes running-line {
+    to {
+        stroke-dashoffset: -1000;
+    }
+}
+
+/* ====== Merge left panels: architecture + globe node ====== */
+.dashboard-grid {
+    grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+    grid-template-rows: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-areas:
+        "architecture map"
+        "architecture trends";
+}
+
+.panel-architecture {
+    grid-area: architecture;
+}
+
+.panel-map-sensor {
+    grid-area: map;
+}
+
+.panel-trends {
+    grid-area: trends;
+}
+
+.panel-constellation {
+    display: none !important;
+}
+
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+        grid-template-areas: none;
+    }
+}
+
+/* X6 globe node styling */
+.x6-globe-node {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.x6-globe-frame {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border-radius: 0;
+    overflow: hidden;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.x6-globe-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 6;
+}
+
+.x6-globe-controls .globe-control-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    min-width: 0;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+.x6-globe-controls .globe-control-btn i {
+    font-size: 0.85rem;
+}
+
+.x6-globe-node .satellite-globe-container {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border-radius: 14px;
+    border: none;
+    box-shadow: none;
+}
+
+.x6-globe-node canvas {
+    display: block;
+}
+
+.x6-globe-node .globe-loading {
+    font-size: 0.75rem;
+}
+
+/* Layout swap: constellation <-> map, and give map a bit more height */
+.panel-architecture {
+    order: 1;
+}
+
+.panel-map-sensor {
+    order: 2;
+}
+
+.panel-constellation {
+    order: 3;
+}
+
+.panel-trends {
+    order: 4;
+}
+
+.dashboard-grid {
+    grid-template-rows: minmax(0, 1.05fr) minmax(0, 0.95fr);
+}
+
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* ==================== Container Queries 响应式缩放 ==================== */
+/* 使用 cqw 单位让元素随容器宽度等比例缩放 */
+
+/* 标题字体随容器宽度缩放 */
+.dashboard-panel .section-title h2 {
+    font-size: clamp(0.7rem, 3.5cqw, 1.2rem);
+}
+
+.dashboard-panel .section-title i {
+    font-size: clamp(0.8rem, 4cqw, 1.5rem);
+}
+
+/* 传感器卡片数值随容器缩放 */
+.dashboard-panel .sensor-card .card-value .value {
+    font-size: clamp(0.9rem, 5cqw, 2rem);
+}
+
+.dashboard-panel .sensor-card .card-value .unit {
+    font-size: clamp(0.5rem, 2.5cqw, 1rem);
+}
+
+.dashboard-panel .sensor-card .card-label {
+    font-size: clamp(0.5rem, 2.2cqw, 0.9rem);
+}
+
+/* 图标大小随容器缩放 */
+.dashboard-panel .card-icon {
+    width: clamp(24px, 8cqw, 48px);
+    height: clamp(24px, 8cqw, 48px);
+    font-size: clamp(0.7rem, 3.5cqw, 1.3rem);
+}
+
+/* 趋势指示器缩放 */
+.dashboard-panel .card-trend {
+    width: clamp(18px, 5cqw, 32px);
+    height: clamp(18px, 5cqw, 32px);
+    font-size: clamp(0.5rem, 2cqw, 0.9rem);
+}
+
+/* 传感器卡片内边距随容器缩放 */
+.dashboard-panel .sensor-card {
+    padding: clamp(6px, 2.5cqw, 16px);
+}
+
+.dashboard-panel .sensor-card .card-header {
+    margin-bottom: clamp(4px, 2cqw, 16px);
+}
+
+.dashboard-panel .sensor-card .card-body {
+    margin-bottom: clamp(4px, 2cqw, 16px);
+}
+
+.dashboard-panel .sensor-card .card-footer {
+    padding-top: clamp(4px, 1.5cqw, 12px);
+}
+
+.dashboard-panel .sensor-card .raw-value {
+    font-size: clamp(0.5rem, 2cqw, 0.8rem);
+}
+
+/* 图表区域字体缩放 */
+.dashboard-panel .chart-card .card-header h3 {
+    font-size: clamp(0.6rem, 3cqw, 1.1rem);
+}
+
+.dashboard-panel .chart-card .card-header i {
+    font-size: clamp(0.7rem, 3.5cqw, 1.2rem);
+}
+
+.dashboard-panel .chart-card {
+    padding: clamp(6px, 2cqw, 16px);
+}
+
+.dashboard-panel .chart-card .card-header {
+    margin-bottom: clamp(4px, 1.5cqw, 12px);
+    padding-bottom: clamp(4px, 1cqw, 8px);
+}
+
+/* 地图区域样式缩放 */
+.dashboard-panel .map-section-full {
+    padding: clamp(6px, 2cqw, 24px);
+}
+
+/* 接入点选择器缩放 */
+.dashboard-panel .access-point-selector {
+    padding: clamp(4px, 1.5cqw, 12px) clamp(6px, 2cqw, 24px);
+    gap: clamp(4px, 1.5cqw, 14px);
+}
+
+.dashboard-panel .access-point-selector label {
+    font-size: clamp(0.6rem, 2.5cqw, 1rem);
+}
+
+.dashboard-panel .access-point-select {
+    font-size: clamp(0.55rem, 2.2cqw, 1rem);
+    padding: clamp(4px, 1.5cqw, 10px) clamp(6px, 2cqw, 18px);
+    min-width: clamp(80px, 25cqw, 220px);
+}
+
+/* 刷新倒计时缩放 */
+.dashboard-panel .refresh-countdown {
+    font-size: clamp(0.5rem, 2cqw, 0.9rem);
+    padding: clamp(2px, 0.8cqw, 4px) clamp(4px, 1.5cqw, 12px);
+}
+
+/* 统计信息缩放（用于卫星面板等）*/
+.dashboard-panel .stat-number {
+    font-size: clamp(1rem, 6cqw, 2rem);
+}
+
+.dashboard-panel .stat-desc {
+    font-size: clamp(0.5rem, 2cqw, 0.75rem);
+}
+
+.dashboard-panel .detail-value {
+    font-size: clamp(0.7rem, 3.5cqw, 1.2rem);
+}
+
+.dashboard-panel .detail-label {
+    font-size: clamp(0.4rem, 1.5cqw, 0.65rem);
+}
+
+/* 网格间距缩放 */
+.dashboard-panel .sensor-cards {
+    gap: clamp(6px, 2cqw, 20px);
+}
+
+.dashboard-panel .charts-grid {
+    gap: clamp(6px, 2cqw, 20px);
+}
+
+.dashboard-panel .detail-stats {
+    gap: clamp(4px, 1.5cqw, 10px);
+}
+
+/* 控制按钮缩放 */
+.dashboard-panel .globe-control-btn {
+    padding: clamp(3px, 1cqw, 5px) clamp(6px, 2cqw, 10px);
+    font-size: clamp(0.5rem, 2cqw, 0.8rem);
+}
+
+/* 分布条样式缩放 */
+.dashboard-panel .distribution-title {
+    font-size: clamp(0.4rem, 1.8cqw, 0.7rem);
+}
+
+.dashboard-panel .dist-label,
+.dashboard-panel .dist-count {
+    font-size: clamp(0.45rem, 1.8cqw, 0.75rem);
+}
+
+/* ==================== JavaScript 动态缩放配套样式 ==================== */
+
+/* 面板内容容器：确保 transform:scale() 正常工作 */
+.dashboard-panel .panel-body {
+    transform-origin: top left;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 禁用溢出隐藏以防止缩放后被裁切 */
+.dashboard-panel {
+    overflow: visible !important;
+}
+
+/* 为缩放后的内容创建新的层叠上下文 */
+.dashboard-panel .panel-body {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==================== X6 Overlay Styles for Globe ==================== */
+#architectureGraph {
+    position: relative;
+    /* Ensure absolute children are positioned relative to this */
+    width: 100%;
+    height: 100%;
+}
+
+.x6-overlay-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    /* Allow clicks to pass through empty areas */
+    z-index: 10;
+    /* Above graph nodes */
+    overflow: hidden;
+}
+
+.x6-globe-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: auto;
+    /* Re-enable clicks for globe */
+    /* width/height/transform are set by JS */
+}
+
+/* ==================== X6 Globe Node Internal Structure ==================== */
+.x6-globe-node {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+}
+
+.x6-globe-frame {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.satellite-globe-container.x6-globe-container {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    /* Reset global min-height */
+}
+
+.x6-globe-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    z-index: 15;
+}
+
+.globe-control-btn {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.globe-control-btn:hover,
+.globe-control-btn.active {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: #38bdf8;
+    color: #fff;
+}
+
+/* Final embedded-view overflow fix */
+body.embedded-view {
+    overflow: hidden;
+}
+
+body.embedded-view .container {
+    height: 100vh;
+    max-height: 100vh;
+    max-width: 100%;
+    padding: 12px;
+    gap: 12px;
+}
+
+body.embedded-view .header {
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 14px 18px;
+}
+
+body.embedded-view .header-footer {
+    gap: 8px 12px;
+    margin-top: 0;
+    padding-top: 8px;
+    flex-wrap: wrap;
+    font-size: 0.74rem;
+}
+
+body.embedded-view .main-title {
+    font-size: clamp(1.9rem, 2.6vw, 2.8rem);
+    letter-spacing: clamp(2px, 0.35vw, 6px);
+}
+
+body.embedded-view .njupt-logo {
+    height: 54px;
+    padding: 0 10px;
+}
+
+body.embedded-view .header-right {
+    padding: 4px 8px;
+    gap: 6px;
+}
+
+body.embedded-view .dashboard-grid {
+    min-height: 0;
+    gap: 12px;
+    grid-template-columns: minmax(0, 1.14fr) minmax(0, 0.86fr);
+    grid-template-rows: minmax(0, 0.97fr) minmax(0, 1.03fr);
+}
+
+body.embedded-view .dashboard-panel {
+    min-height: 0;
+    padding: 12px;
+    overflow: hidden !important;
+}
+
+body.embedded-view .dashboard-panel > .panel-body {
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.embedded-view .dashboard-panel .section-title {
+    margin: 0 0 8px;
+    padding: 9px 12px;
+}
+
+body.embedded-view .dashboard-panel .section-title h2 {
+    font-size: 0.98rem !important;
+}
+
+body.embedded-view .dashboard-panel .section-title i {
+    font-size: 1.02rem !important;
+}
+
+body.embedded-view .panel-map-sensor {
+    display: flex;
+    flex-direction: column;
+}
+
+body.embedded-view .panel-map-sensor .panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.embedded-view .map-sensor-header {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr) !important;
+    gap: 10px;
+    align-items: stretch;
+}
+
+body.embedded-view .map-sensor-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid !important;
+    grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr) !important;
+    gap: 10px;
+    align-items: stretch;
+    overflow: hidden;
+}
+
+body.embedded-view .panel-map-sensor .map-section-full {
+    min-height: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0 !important;
+    display: flex;
+    overflow: hidden;
+}
+
+body.embedded-view .panel-map-sensor .map-display-full {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100% !important;
+    min-height: 0 !important;
+}
+
+body.embedded-view .sensor-group {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+    overflow: hidden !important;
+}
+
+body.embedded-view .sensor-controls {
+    gap: 10px;
+}
+
+body.embedded-view .sensor-controls .access-point-selector {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px 14px;
+    gap: 10px !important;
+}
+
+body.embedded-view .sensor-controls .access-point-selector label {
+    font-size: 0.96rem;
+    white-space: nowrap;
+}
+
+body.embedded-view .sensor-controls .access-point-select {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    padding: 0 40px 0 12px !important;
+    line-height: 1.25 !important;
+    font-size: 0.84rem !important;
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', sans-serif !important;
+    letter-spacing: 0 !important;
+}
+
+body.embedded-view .sensor-controls .sensor-meta {
+    gap: 8px;
+}
+
+body.embedded-view .sensor-controls .sensor-meta .update-time,
+body.embedded-view .sensor-source-badge {
+    font-size: 0.74rem;
+}
+
+body.embedded-view .sensor-cards {
+    margin: 0;
+    min-height: 0;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    overflow: hidden;
+}
+
+body.embedded-view .sensor-card {
+    min-height: 0;
+    padding: 12px 14px;
+    overflow: hidden;
+}
+
+body.embedded-view .sensor-card .card-header {
+    margin-bottom: 8px;
+}
+
+body.embedded-view .sensor-card .card-body {
+    min-height: 0;
+    margin-bottom: 0;
+    gap: 4px;
+    justify-content: center;
+}
+
+body.embedded-view .sensor-card .card-footer {
+    display: none;
+}
+
+body.embedded-view .sensor-card .card-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
+}
+
+body.embedded-view .sensor-card .card-trend {
+    width: 26px;
+    height: 26px;
+    font-size: 0.72rem;
+}
+
+body.embedded-view .sensor-card .card-value {
+    gap: 8px;
+    min-width: 0;
+    flex-wrap: nowrap;
+}
+
+body.embedded-view .sensor-card .card-value .value {
+    font-size: clamp(1.62rem, 1.88vw, 2.42rem) !important;
+    line-height: 0.94;
+}
+
+body.embedded-view .sensor-card .card-value .unit {
+    font-size: clamp(0.72rem, 0.68vw, 0.94rem) !important;
+}
+
+body.embedded-view .sensor-card .card-label {
+    margin-top: 4px;
+    font-size: 0.72rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.embedded-view .panel-trends .panel-body {
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.embedded-view .panel-trends .charts-grid {
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+}
+
+body.embedded-view .panel-trends .chart-card {
+    min-height: 0;
+    padding: 12px;
+    overflow: hidden;
+}
+
+body.embedded-view .panel-trends .chart-card .card-header {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+}
+
+body.embedded-view .panel-trends .chart-card .card-header h3 {
+    font-size: 0.98rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+body.embedded-view .panel-trends .chart-container {
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 8px;
+}
+
+body.embedded-view .panel-trends .chart-container > canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+body.embedded-view .panel-architecture .panel-body.scaled-container {
+    min-height: 0;
+    overflow: hidden;
+}
+
+body.embedded-view .panel-architecture .section-title {
+    flex: 0 0 auto;
+}
+
+@media (max-height: 860px) {
+    body.embedded-view .container {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    body.embedded-view .header {
+        padding: 12px 16px;
+    }
+
+    body.embedded-view .dashboard-grid {
+        gap: 10px;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+
+    body.embedded-view .sensor-card {
+        padding: 10px 12px;
+    }
+
+    body.embedded-view .sensor-card .card-value .value {
+        font-size: clamp(1.5rem, 1.72vw, 2.06rem) !important;
+    }
+
+    body.embedded-view .panel-trends .chart-card {
+        padding: 10px;
+    }
+}
+
+/* ===== Embedded title row hard clamp ===== */
+body.embedded-view .map-sensor-header {
+    align-items: start !important;
+    margin-bottom: 8px !important;
+}
+
+body.embedded-view .map-sensor-header .section-title {
+    box-sizing: border-box !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    max-height: 34px !important;
+    margin: 0 !important;
+    padding: 3px 10px !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+    align-self: start !important;
+}
+
+body.embedded-view .map-sensor-header .section-title i {
+    font-size: 0.92rem !important;
+}
+
+body.embedded-view .map-sensor-header .section-title h2 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: 0.84rem !important;
+    line-height: 1.1 !important;
+}
+
+body.embedded-view .map-sensor-header .sensor-section-title {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+}
+
+body.embedded-view .map-sensor-header .sensor-section-title .refresh-countdown {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    padding: 0 9px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 0.72rem !important;
+}
+
+/* ===== Embedded trend cards focus ===== */
+body.embedded-view .panel-trends .charts-grid {
+    gap: 8px !important;
+}
+
+body.embedded-view .panel-trends .chart-card {
+    padding: 8px !important;
+}
+
+body.embedded-view .panel-trends .chart-card .card-header {
+    gap: 8px !important;
+    margin-bottom: 4px !important;
+    padding-bottom: 3px !important;
+}
+
+body.embedded-view .panel-trends .chart-card .card-header i {
+    font-size: 0.88rem !important;
+}
+
+body.embedded-view .panel-trends .chart-card .card-header h3 {
+    font-size: 0.88rem !important;
+    line-height: 1.06 !important;
+}
+
+body.embedded-view .panel-trends .chart-container {
+    padding: 4px !important;
+}
+
+/* ===== Embedded access point compact final ===== */
+body.embedded-view .sensor-controls .access-point-selector {
+    padding: 6px 10px !important;
+    gap: 8px !important;
+    border-radius: 18px !important;
+}
+
+body.embedded-view .sensor-controls .access-point-selector label {
+    font-size: 0.86rem !important;
+    gap: 6px !important;
+}
+
+body.embedded-view .sensor-controls .access-point-selector label i {
+    font-size: 0.78rem !important;
+}
+
+body.embedded-view .sensor-controls .access-point-select {
+    height: 36px !important;
+    line-height: 36px !important;
+    padding: 0 32px 0 10px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background-position: right 10px center !important;
+}
+
+body.embedded-view .sensor-controls .access-point-select option {
+    white-space: nowrap !important;
+    font-size: 0.72rem !important;
+}
+
+/* ===== Responsive viewport foundation ===== */
+body.responsive-dashboard {
+    --viewport-container-pad: 14px;
+    --viewport-container-gap: 12px;
+    --viewport-header-pad-y: 12px;
+    --viewport-header-pad-x: 16px;
+    --viewport-footer-font: 0.76rem;
+    --viewport-panel-gap: 12px;
+    --viewport-map-row: 1.12fr;
+    --viewport-trend-row: 0.88fr;
+    --viewport-title-height: 42px;
+    --viewport-title-padding-x: 14px;
+    --viewport-title-icon: 1rem;
+    --viewport-title-font: 0.98rem;
+    --viewport-refresh-height: 28px;
+    --viewport-refresh-font: 0.8rem;
+    --viewport-map-gap: 12px;
+    --viewport-card-gap: 10px;
+    --viewport-map-card-pad: 10px;
+    --viewport-access-pad-y: 8px;
+    --viewport-access-pad-x: 12px;
+    --viewport-access-height: 40px;
+    --viewport-access-label: 0.9rem;
+    --viewport-access-icon: 0.82rem;
+    --viewport-access-font: 0.82rem;
+    --viewport-meta-font: 0.78rem;
+    --viewport-sensor-pad: 14px;
+    --viewport-sensor-icon-box: 34px;
+    --viewport-sensor-icon-font: 0.9rem;
+    --viewport-sensor-trend-box: 28px;
+    --viewport-sensor-trend-font: 0.78rem;
+    --viewport-sensor-value: 2rem;
+    --viewport-sensor-unit: 0.86rem;
+    --viewport-sensor-label: 0.76rem;
+    --viewport-chart-gap: 10px;
+    --viewport-chart-pad: 10px;
+    --viewport-chart-icon: 0.92rem;
+    --viewport-chart-title: 0.94rem;
+    --viewport-chart-body-pad: 6px;
+}
+
+body.responsive-dashboard.viewport-compact {
+    --viewport-container-pad: 12px;
+    --viewport-container-gap: 10px;
+    --viewport-header-pad-y: 10px;
+    --viewport-header-pad-x: 14px;
+    --viewport-footer-font: 0.72rem;
+    --viewport-panel-gap: 10px;
+    --viewport-map-row: 1.14fr;
+    --viewport-trend-row: 0.86fr;
+    --viewport-title-height: 38px;
+    --viewport-title-padding-x: 12px;
+    --viewport-title-icon: 0.94rem;
+    --viewport-title-font: 0.9rem;
+    --viewport-refresh-height: 25px;
+    --viewport-refresh-font: 0.74rem;
+    --viewport-map-gap: 10px;
+    --viewport-card-gap: 8px;
+    --viewport-map-card-pad: 8px;
+    --viewport-access-pad-y: 7px;
+    --viewport-access-pad-x: 10px;
+    --viewport-access-height: 36px;
+    --viewport-access-label: 0.82rem;
+    --viewport-access-icon: 0.76rem;
+    --viewport-access-font: 0.74rem;
+    --viewport-meta-font: 0.72rem;
+    --viewport-sensor-pad: 12px;
+    --viewport-sensor-icon-box: 30px;
+    --viewport-sensor-icon-font: 0.82rem;
+    --viewport-sensor-trend-box: 25px;
+    --viewport-sensor-trend-font: 0.72rem;
+    --viewport-sensor-value: 1.76rem;
+    --viewport-sensor-unit: 0.78rem;
+    --viewport-sensor-label: 0.72rem;
+    --viewport-chart-gap: 8px;
+    --viewport-chart-pad: 8px;
+    --viewport-chart-icon: 0.86rem;
+    --viewport-chart-title: 0.88rem;
+    --viewport-chart-body-pad: 4px;
+}
+
+body.responsive-dashboard.viewport-tight {
+    --viewport-container-pad: 10px;
+    --viewport-container-gap: 8px;
+    --viewport-header-pad-y: 9px;
+    --viewport-header-pad-x: 12px;
+    --viewport-footer-font: 0.68rem;
+    --viewport-panel-gap: 8px;
+    --viewport-map-row: 1.18fr;
+    --viewport-trend-row: 0.82fr;
+    --viewport-title-height: 34px;
+    --viewport-title-padding-x: 10px;
+    --viewport-title-icon: 0.88rem;
+    --viewport-title-font: 0.84rem;
+    --viewport-refresh-height: 22px;
+    --viewport-refresh-font: 0.68rem;
+    --viewport-map-gap: 8px;
+    --viewport-card-gap: 7px;
+    --viewport-map-card-pad: 7px;
+    --viewport-access-pad-y: 6px;
+    --viewport-access-pad-x: 9px;
+    --viewport-access-height: 34px;
+    --viewport-access-label: 0.76rem;
+    --viewport-access-icon: 0.7rem;
+    --viewport-access-font: 0.68rem;
+    --viewport-meta-font: 0.68rem;
+    --viewport-sensor-pad: 10px;
+    --viewport-sensor-icon-box: 28px;
+    --viewport-sensor-icon-font: 0.76rem;
+    --viewport-sensor-trend-box: 22px;
+    --viewport-sensor-trend-font: 0.66rem;
+    --viewport-sensor-value: 1.56rem;
+    --viewport-sensor-unit: 0.72rem;
+    --viewport-sensor-label: 0.68rem;
+    --viewport-chart-gap: 7px;
+    --viewport-chart-pad: 7px;
+    --viewport-chart-icon: 0.82rem;
+    --viewport-chart-title: 0.82rem;
+    --viewport-chart-body-pad: 3px;
+}
+
+body.responsive-dashboard.viewport-ultra {
+    --viewport-container-pad: 8px;
+    --viewport-container-gap: 7px;
+    --viewport-header-pad-y: 8px;
+    --viewport-header-pad-x: 10px;
+    --viewport-footer-font: 0.64rem;
+    --viewport-panel-gap: 7px;
+    --viewport-map-row: 1.22fr;
+    --viewport-trend-row: 0.78fr;
+    --viewport-title-height: 32px;
+    --viewport-title-padding-x: 9px;
+    --viewport-title-icon: 0.82rem;
+    --viewport-title-font: 0.78rem;
+    --viewport-refresh-height: 21px;
+    --viewport-refresh-font: 0.64rem;
+    --viewport-map-gap: 7px;
+    --viewport-card-gap: 6px;
+    --viewport-map-card-pad: 6px;
+    --viewport-access-pad-y: 5px;
+    --viewport-access-pad-x: 8px;
+    --viewport-access-height: 32px;
+    --viewport-access-label: 0.7rem;
+    --viewport-access-icon: 0.66rem;
+    --viewport-access-font: 0.62rem;
+    --viewport-meta-font: 0.64rem;
+    --viewport-sensor-pad: 9px;
+    --viewport-sensor-icon-box: 26px;
+    --viewport-sensor-icon-font: 0.72rem;
+    --viewport-sensor-trend-box: 20px;
+    --viewport-sensor-trend-font: 0.62rem;
+    --viewport-sensor-value: 1.42rem;
+    --viewport-sensor-unit: 0.68rem;
+    --viewport-sensor-label: 0.64rem;
+    --viewport-chart-gap: 6px;
+    --viewport-chart-pad: 6px;
+    --viewport-chart-icon: 0.76rem;
+    --viewport-chart-title: 0.78rem;
+    --viewport-chart-body-pad: 2px;
+}
+
+body.responsive-dashboard .container {
+    padding: var(--viewport-container-pad) !important;
+    gap: var(--viewport-container-gap) !important;
+}
+
+body.responsive-dashboard .header {
+    padding: var(--viewport-header-pad-y) var(--viewport-header-pad-x) !important;
+}
+
+body.responsive-dashboard .dashboard-grid {
+    gap: var(--viewport-panel-gap) !important;
+    grid-template-rows: minmax(0, var(--viewport-map-row)) minmax(0, var(--viewport-trend-row)) !important;
+}
+
+body.responsive-dashboard .header-footer {
+    font-size: var(--viewport-footer-font) !important;
+    gap: 12px !important;
+}
+
+body.responsive-dashboard .panel-map-sensor,
+body.responsive-dashboard .panel-trends,
+body.responsive-dashboard .panel-architecture,
+body.responsive-dashboard .panel-map-sensor .panel-body,
+body.responsive-dashboard .panel-trends .panel-body,
+body.responsive-dashboard .panel-architecture .panel-body,
+body.responsive-dashboard .map-sensor-body,
+body.responsive-dashboard .sensor-group {
+    min-height: 0 !important;
+}
+
+body.responsive-dashboard .map-sensor-header {
+    gap: var(--viewport-panel-gap) !important;
+    margin-bottom: var(--viewport-map-gap) !important;
+    align-items: start !important;
+}
+
+body.responsive-dashboard .map-sensor-header .section-title {
+    min-height: var(--viewport-title-height) !important;
+    height: var(--viewport-title-height) !important;
+    max-height: var(--viewport-title-height) !important;
+    margin: 0 !important;
+    padding: 0 var(--viewport-title-padding-x) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+}
+
+body.responsive-dashboard .map-sensor-header .section-title i {
+    font-size: var(--viewport-title-icon) !important;
+}
+
+body.responsive-dashboard .map-sensor-header .section-title h2 {
+    font-size: var(--viewport-title-font) !important;
+    line-height: 1.08 !important;
+}
+
+body.responsive-dashboard .map-sensor-header .sensor-section-title {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+}
+
+body.responsive-dashboard .map-sensor-header .sensor-section-title .refresh-countdown {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    height: var(--viewport-refresh-height) !important;
+    min-height: var(--viewport-refresh-height) !important;
+    padding: 0 10px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: var(--viewport-refresh-font) !important;
+}
+
+body.responsive-dashboard .panel-map-sensor .map-section-full {
+    padding: var(--viewport-map-card-pad) !important;
+}
+
+body.responsive-dashboard .sensor-group,
+body.responsive-dashboard .sensor-controls {
+    gap: var(--viewport-card-gap) !important;
+}
+
+body.responsive-dashboard .sensor-controls .access-point-selector {
+    display: grid !important;
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: var(--viewport-access-pad-y) var(--viewport-access-pad-x) !important;
+    border-radius: calc(var(--viewport-access-height) / 2) !important;
+}
+
+body.responsive-dashboard .sensor-controls .access-point-selector label {
+    margin: 0 !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+    gap: 6px !important;
+    font-size: var(--viewport-access-label) !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+body.responsive-dashboard .sensor-controls .access-point-selector label i {
+    font-size: var(--viewport-access-icon) !important;
+}
+
+body.responsive-dashboard .sensor-controls .access-point-select {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: var(--viewport-access-height) !important;
+    line-height: var(--viewport-access-height) !important;
+    padding: 0 34px 0 12px !important;
+    font-size: var(--viewport-access-font) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    background-position: right 12px center !important;
+    background-size: 10px !important;
+}
+
+body.responsive-dashboard .sensor-controls .sensor-meta,
+body.responsive-dashboard .sensor-controls .sensor-meta .update-time {
+    font-size: var(--viewport-meta-font) !important;
+}
+
+body.responsive-dashboard .sensor-cards {
+    gap: var(--viewport-card-gap) !important;
+}
+
+body.responsive-dashboard .sensor-card {
+    padding: var(--viewport-sensor-pad) !important;
+}
+
+body.responsive-dashboard .sensor-card .card-header {
+    margin-bottom: 6px !important;
+}
+
+body.responsive-dashboard .sensor-card .card-icon {
+    width: var(--viewport-sensor-icon-box) !important;
+    height: var(--viewport-sensor-icon-box) !important;
+    font-size: var(--viewport-sensor-icon-font) !important;
+}
+
+body.responsive-dashboard .sensor-card .card-trend {
+    width: var(--viewport-sensor-trend-box) !important;
+    height: var(--viewport-sensor-trend-box) !important;
+    font-size: var(--viewport-sensor-trend-font) !important;
+}
+
+body.responsive-dashboard .sensor-card .card-value .value {
+    font-size: var(--viewport-sensor-value) !important;
+    line-height: 0.92 !important;
+}
+
+body.responsive-dashboard .sensor-card .card-value .unit {
+    font-size: var(--viewport-sensor-unit) !important;
+}
+
+body.responsive-dashboard .sensor-card .card-label {
+    font-size: var(--viewport-sensor-label) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+body.responsive-dashboard .panel-trends .charts-grid {
+    gap: var(--viewport-chart-gap) !important;
+}
+
+body.responsive-dashboard .panel-trends .chart-card {
+    padding: var(--viewport-chart-pad) !important;
+}
+
+body.responsive-dashboard .panel-trends .chart-card .card-header {
+    gap: 8px !important;
+    margin-bottom: 4px !important;
+    padding-bottom: 4px !important;
+}
+
+body.responsive-dashboard .panel-trends .chart-card .card-header i {
+    font-size: var(--viewport-chart-icon) !important;
+}
+
+body.responsive-dashboard .panel-trends .chart-card .card-header h3 {
+    font-size: var(--viewport-chart-title) !important;
+    line-height: 1.06 !important;
+}
+
+body.responsive-dashboard .panel-trends .chart-container {
+    padding: var(--viewport-chart-body-pad) !important;
+    min-height: 0 !important;
+}
+
+/* 8090 standalone navigation */
+.header-left {
+    gap: 18px;
+}
+
+.page-back-button {
+    width: auto;
+    min-width: 86px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(0, 212, 255, 0.38);
+    border-radius: 8px;
+    background: rgba(0, 20, 42, 0.68);
+    color: #e8fbff;
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: inset 0 0 18px rgba(0, 212, 255, 0.08), 0 8px 22px rgba(0, 0, 0, 0.24);
+    transition: border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+}
+
+.page-back-button:hover {
+    border-color: rgba(0, 212, 255, 0.72);
+    background: rgba(0, 58, 94, 0.8);
+    transform: translateY(-1px);
+}
+
+.page-back-button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+.page-back-button + .njupt-logo {
+    margin-left: clamp(18px, 2.2vw, 42px);
+}
+
+.page-back-button + .njupt-logo img {
+    max-width: 390px;
+}
+
+body.embedded-view .page-back-button {
+    min-width: 74px;
+    height: 36px;
+    gap: 6px;
+    font-size: 0.82rem;
+}
+
+body.embedded-view .page-back-button + .njupt-logo {
+    margin-left: clamp(12px, 1.4vw, 24px);
+}
+
+@media (max-width: 900px) {
+    .page-back-button {
+        min-width: 42px;
+        width: 42px;
+        padding: 0;
+    }
+
+    .page-back-button span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .page-back-button + .njupt-logo {
+        margin-left: 10px;
+    }
+}

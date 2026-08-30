@@ -1,0 +1,558 @@
+/* ========== 火灾检测数据 - 三视图切换样式 ========== */
+
+/* 标题容器 - 使标题和按钮并排 */
+.yjy-panel-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+/* 标题右侧切换按钮（双箭头图标） */
+.view-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: 32px;
+    height: 22px;
+    padding: 0;
+    font-size: 0;
+    color: #00eaff;
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.15) 0%, rgba(0, 150, 200, 0.1) 100%);
+    border: 1px solid rgba(0, 234, 255, 0.4);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.view-toggle-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.3) 0%, rgba(0, 150, 200, 0.25) 100%);
+    border-color: rgba(0, 234, 255, 0.7);
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.35);
+}
+
+.view-toggle-btn:active {
+    transform: scale(0.9);
+}
+
+/* 箭头图标（左右分布） */
+.toggle-arrow {
+    display: inline-block;
+    width: 0;
+    height: 0;
+}
+
+.toggle-arrow-down {
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 6px solid #00eaff;
+}
+
+.toggle-arrow-up {
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid #00eaff;
+}
+
+/* 下拉选择框容器 - 替换原按钮 */
+.capture-view-select-wrapper {
+    position: relative;
+    flex: 1;
+}
+
+/* 下拉选择框样式 */
+.capture-view-select {
+    width: 100%;
+    padding: 8px 30px 8px 12px;
+    font-size: 14px;
+    color: #00eaff;
+    background: linear-gradient(135deg, rgba(0, 100, 150, 0.3) 0%, rgba(0, 60, 100, 0.4) 100%);
+    border: 1.5px solid rgba(0, 234, 255, 0.5);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    text-align: center;
+    text-align-last: center;
+}
+
+.capture-view-select:hover {
+    background: linear-gradient(135deg, rgba(0, 120, 180, 0.4) 0%, rgba(0, 80, 120, 0.5) 100%);
+    border-color: rgba(0, 234, 255, 0.7);
+    box-shadow: 0 0 12px rgba(0, 234, 255, 0.3);
+}
+
+.capture-view-select:focus {
+    border-color: rgba(0, 234, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+}
+
+.capture-view-select option {
+    background: #0a1929;
+    color: #00eaff;
+    padding: 10px;
+}
+
+/* 下拉箭头 */
+.capture-view-select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #00eaff;
+    pointer-events: none;
+}
+
+/* ========== 视图容器 ========== */
+.capture-view-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* 所有子视图通用 */
+.capture-view-page {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.capture-view-page.active {
+    display: block;
+}
+
+/* ========== 视图1: 实时火灾截图 ========== */
+#capture-view-capture.active {
+    display: block;
+}
+
+/* ========== 视图2: 检测数据表格（标题按钮切换） ========== */
+#capture-view-table.active {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 表格样式 */
+.data-table-container {
+    flex: 1;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.data-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.data-table th {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.2) 0%, rgba(0, 150, 200, 0.15) 100%);
+    color: #00eaff;
+    font-weight: 600;
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+    white-space: nowrap;
+}
+
+.data-table td {
+    padding: 8px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(0, 234, 255, 0.1);
+}
+
+.data-table tbody tr:hover {
+    background: rgba(0, 234, 255, 0.08);
+}
+
+.data-table tbody tr:nth-child(even) {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.data-table tbody tr:nth-child(even):hover {
+    background: rgba(0, 234, 255, 0.08);
+}
+
+/* 表格空状态提示 */
+.table-empty-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(148, 163, 184, 0.7);
+    font-size: 14px;
+}
+
+.table-empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* ========== 视图3: 火灾数据页（待完善） ========== */
+#capture-view-firedata.active {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.firedata-page-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 234, 255, 0.2);
+    overflow: hidden;
+}
+
+.firedata-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.1) 0%, rgba(0, 150, 200, 0.05) 100%);
+    border-bottom: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+.firedata-page-header-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #00eaff;
+}
+
+.firedata-page-header-badge {
+    padding: 2px 10px;
+    font-size: 11px;
+    color: rgba(0, 234, 255, 0.8);
+    background: rgba(0, 234, 255, 0.1);
+    border: 1px solid rgba(0, 234, 255, 0.25);
+    border-radius: 10px;
+}
+
+.firedata-page-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    overflow: auto;
+}
+
+.firedata-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(148, 163, 184, 0.7);
+    font-size: 14px;
+}
+
+.firedata-placeholder-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+/* 火灾数据统计卡片 */
+.firedata-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.firedata-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    border: 1px solid rgba(0, 234, 255, 0.15);
+}
+
+.firedata-stat-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00eaff;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+    line-height: 1.3;
+}
+
+.firedata-stat-label {
+    font-size: 11px;
+    color: rgba(148, 163, 184, 0.75);
+    margin-top: 4px;
+}
+
+/* 火灾数据列表区域 */
+.firedata-list-area {
+    width: 100%;
+    flex: 1;
+    overflow: auto;
+}
+
+.firedata-list-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(0, 234, 255, 0.8);
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+.firedata-list-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+    color: rgba(148, 163, 184, 0.5);
+    font-size: 13px;
+}
+
+/* ========== 救援设备 - 两列表格布局 ========== */
+
+.linkage-table-layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 6px;
+    overflow: hidden;
+}
+
+/* 表头行 */
+.linkage-table-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.16) 0%, rgba(0, 150, 200, 0.12) 100%);
+    border: 1px solid rgba(0, 234, 255, 0.3);
+    border-radius: 10px;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 16px rgba(0, 170, 220, 0.12);
+}
+
+.linkage-table-header-cell {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #00eaff;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.linkage-table-header-cell:first-child {
+    border-right: 1px solid rgba(0, 234, 255, 0.15);
+}
+
+/* 数据行容器 */
+.linkage-table-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding-right: 0;
+}
+
+/* 单行 */
+.linkage-table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1 1 0;
+    min-height: 0;
+    border: 1px solid rgba(0, 234, 255, 0.22);
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(1, 23, 48, 0.65), rgba(2, 18, 38, 0.72));
+    box-shadow: inset 0 0 20px rgba(0, 180, 255, 0.06);
+}
+
+.linkage-table-row:last-child {
+    border-bottom: none;
+}
+
+/* 左列：设备名称 */
+.linkage-table-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    font-size: 20px;
+    font-weight: 800;
+    color: rgba(0, 234, 255, 0.95);
+    border-right: 1px solid rgba(0, 234, 255, 0.16);
+    text-shadow: 0 0 14px rgba(0, 200, 255, 0.3);
+    letter-spacing: 1px;
+}
+
+/* 右列：启动状态 */
+.linkage-table-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    gap: 10px;
+}
+
+/* 状态按钮 */
+.linkage-status-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    user-select: none;
+    position: relative;
+    background: rgba(2, 12, 25, 0.68);
+    border: 1px solid rgba(108, 129, 150, 0.28);
+    color: rgba(159, 182, 205, 0.8);
+    font-weight: 600;
+}
+
+.linkage-status-btn:hover {
+    border-color: rgba(0, 234, 255, 0.55);
+    transform: translateY(-1px);
+    box-shadow: 0 0 14px rgba(0, 200, 255, 0.16);
+}
+
+/* 开启激活态 */
+.linkage-status-btn.active[data-state="on"] {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 95, 70, 0.2));
+    border-color: rgba(16, 185, 129, 0.62);
+    color: #10b981;
+    font-weight: 700;
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.16), inset 0 0 14px rgba(16, 185, 129, 0.1);
+}
+
+/* 关闭激活态 */
+.linkage-status-btn.active[data-state="off"] {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(127, 29, 29, 0.2));
+    border-color: rgba(239, 68, 68, 0.62);
+    color: #ef4444;
+    font-weight: 700;
+    box-shadow: 0 0 18px rgba(239, 68, 68, 0.15), inset 0 0 14px rgba(239, 68, 68, 0.08);
+}
+
+/* 勾选标记 */
+.linkage-status-check {
+    display: none;
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 3px;
+    background: rgba(16, 185, 129, 0.25);
+    color: #10b981;
+    font-weight: bold;
+}
+
+.linkage-status-btn.active .linkage-status-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.linkage-status-btn.active[data-state="off"] .linkage-status-check {
+    background: rgba(239, 68, 68, 0.25);
+    color: #ef4444;
+}
+
+/* ========== 检测数据面板 - 隐藏徽章 + 图表布局 ========== */
+
+/* 只调整右侧两个面板标题文字 */
+.yjy-info-panel .yjy-panel-title > span:first-child,
+.yjy-linkage-panel .yjy-panel-title > span {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+/* 隐藏"实时"和"3s"徽章 */
+.yjy-info-panel .yjy-data-badge {
+    display: none !important;
+}
+
+/* 让 info-panel 内容区垂直排列，为底部按钮留空间 */
+.yjy-info-panel .yjy-panel-content.yjy-log-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    height: 100%;
+}
+
+/* 图表区域自适应剩余空间，不再独占100% */
+.yjy-info-panel .yjy-sensor-chart-container {
+    flex: 1 1 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    position: relative;
+}
+
+#yjy-temp-humi-view {
+    flex: 1.35 1 0 !important;
+}
+
+.yjy-chart-inner-title {
+    position: absolute;
+    top: 8px;
+    left: 10px;
+    z-index: 3;
+    font-size: 15px;
+    font-weight: 700;
+    color: rgba(165, 235, 255, 0.95);
+    text-shadow: 0 0 8px rgba(0, 234, 255, 0.25);
+    pointer-events: none;
+}
+
+.yjy-smoke-list {
+    flex: 1 1 0;
+    min-height: 180px;
+    padding-top: 6px;
+}
+
+#yjy-smoke-view {
+    flex: 0.72 1 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    position: relative;
+}
+

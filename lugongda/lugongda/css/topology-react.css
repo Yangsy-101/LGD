@@ -1,0 +1,538 @@
+/* 可调参数 */
+:root {
+    --hand-width: 580px;
+    --screen-padding-x: 16px;
+    --panel-gap-x: 10px;            /* 缩小间隙，更紧凑 */
+    --panel-gap-y: 10px;            /* 缩小间隙，更紧凑 */
+    --theme-color: #00eaff;         /* 主题青色 */
+    --theme-color-dim: rgba(0, 234, 255, 0.2);
+    --bg-glass: rgba(6, 26, 56, 0.6); /* 深蓝玻璃底色 */
+    --border-color: rgba(36, 123, 180, 0.4);
+}
+
+/* 动画定义 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 10px rgba(0, 234, 255, 0.1) inset; }
+    50% { box-shadow: 0 0 25px rgba(0, 234, 255, 0.3) inset; }
+    100% { box-shadow: 0 0 10px rgba(0, 234, 255, 0.1) inset; }
+}
+
+/* 背景与全局 */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #02050b; /* 深邃黑底 */
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
+.screen-bg {
+    width: 100%;
+    height: 100%;
+    /* 叠加网格纹理，增加科技底蕴 */
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        url("../images/bg.jpg") no-repeat center center / cover;
+    background-size: 40px 40px, 40px 40px, cover;
+    position: relative;
+}
+
+/* 顶部区域 */
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    /* 顶部渐变光晕 */
+    background: radial-gradient(circle at top, rgba(0, 89, 255, 0.2), transparent 60%);
+}
+
+.hand-img {
+    width: var(--hand-width);
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(0, 234, 255, 0.4));
+}
+
+.main-title {
+    margin-top: -55px;
+    font-size: 36px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    position: relative;
+    z-index: 10;
+    /* 文字颜色逻辑移交给 span */
+    color: #fff; 
+}
+
+.main-title span {
+    position: relative;
+    z-index: 2; /* 确保文字在最上层 */
+    /* 炫光文字效果 */
+    background: linear-gradient(to bottom, #ffffff, #bde6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 标题底板装饰 */
+.main-title::before {
+    content: "";
+    position: absolute;
+    /* 调整位置和大小，让底板更大 */
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 140%; 
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 40, 100, 0.9) 20%, 
+        rgba(0, 60, 150, 1) 50%, 
+        rgba(0, 40, 100, 0.9) 80%, 
+        transparent 100%
+    );
+    z-index: -1; /* 关键修改：设为负数，强制位于内容之下 */
+    /* 梯形切割 */
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    border-bottom: 2px solid rgba(0, 234, 255, 0.8);
+}
+
+/* 布局容器 - 改为 3 列结构 */
+.grid-container {
+    position: absolute;
+    left: 0; right: 0; top: 85px; bottom: 20px;
+    display: grid;
+    grid-template-columns: 26fr 48fr 26fr; /* 左右窄，中间宽 */
+    column-gap: var(--panel-gap-x);
+    padding: 0 var(--screen-padding-x);
+    /* 移除 grid-template-rows，高度由 column 内部 flex 决定 */
+}
+
+/* 列容器 */
+.column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: var(--panel-gap-y); /* 纵向间隙 */
+}
+
+/* 左右两侧列的高度分配：上小下大 */
+.column-left .panel-top,
+.column-right .panel-top {
+    flex: 4.5;
+}
+
+.column-left .panel-bottom,
+.column-right .panel-bottom {
+    flex: 5.5;
+}
+
+/* 中间列的高度分配：上大下小 */
+.column-center .panel-top {
+    flex: 4.1; /* 关系拓扑图变高 */
+}
+
+.column-center .panel-bottom {
+    flex: 3; /* 网关分布图变矮 */
+}
+
+
+/* =========================================
+   科技感面板核心样式
+   ========================================= */
+.panel {
+    position: relative;
+    box-sizing: border-box;
+    opacity: 0; /* 初始隐藏，配合动画 */
+    animation: fadeIn 0.8s ease-out forwards;
+    width: 100%; /* 确保填满 column */
+}
+
+/* 依次延迟动画，产生阶梯感 */
+.column-left .panel-top    { animation-delay: 0.1s; }
+.column-left .panel-bottom { animation-delay: 0.2s; }
+.column-center .panel-top  { animation-delay: 0.3s; }
+.column-center .panel-bottom { animation-delay: 0.4s; }
+.column-right .panel-top   { animation-delay: 0.5s; }
+.column-right .panel-bottom { animation-delay: 0.6s; }
+
+
+.panel-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 30px rgba(0, 132, 255, 0.1) inset;
+    /* 倒角效果：使用 clip-path 切掉四个角 */
+    clip-path: polygon(
+        15px 0, 100% 0, 
+        100% calc(100% - 15px), calc(100% - 15px) 100%, 
+        0 100%, 0 15px
+    );
+    backdrop-filter: blur(8px);
+    animation: pulseBorder 4s infinite ease-in-out;
+}
+
+/* 四角高亮装饰 - 使用伪元素模拟 */
+.panel::before, .panel::after {
+    content: "";
+    position: absolute;
+    width: 20px; height: 20px;
+    border: 2px solid var(--theme-color);
+    transition: all 0.3s;
+    z-index: 2;
+}
+
+.panel::before {
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+}
+
+.panel::after {
+    bottom: 0; right: 0;
+    border-left: none; border-top: none;
+}
+
+/* 另外两个角通过子元素或者额外伪元素（这里利用 panel-body 的伪元素） */
+.panel-body::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 20px; height: 20px;
+    border-top: 2px solid var(--theme-color);
+    border-right: 2px solid var(--theme-color);
+}
+
+.panel-body::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 20px; height: 20px;
+    border-bottom: 2px solid var(--theme-color);
+    border-left: 2px solid var(--theme-color);
+}
+
+/* 标题样式重构 - HUD 风格 */
+.panel-title {
+    position: relative;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 32px;
+    margin: 10px 10px 0 10px;
+    
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    
+    /* 底部渐变线条 */
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    
+    display: flex;
+    align-items: center;
+}
+
+.panel-title--switchable::after {
+    display: none;
+}
+
+.panel-title__switch {
+    margin-left: auto;
+    height: 28px;
+    border-radius: 6px;
+    padding: 0 10px;
+    border: 1px solid rgba(0, 234, 255, 0.28);
+    background: rgba(6, 26, 56, 0.65);
+    color: #e2e8f0;
+    outline: none;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.panel-title__switch:focus {
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 0 2px rgba(0, 234, 255, 0.15);
+}
+
+/* 标题前的装饰块 */
+.panel-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    background: var(--theme-color);
+    box-shadow: 0 0 8px var(--theme-color);
+}
+
+.panel-title::after {
+    content: "///";
+    position: absolute;
+    right: 10px;
+    color: rgba(0, 234, 255, 0.3);
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* 内容区域 */
+.panel-content {
+    position: absolute;
+    top: 55px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    overflow: hidden;
+    /* 临时网格背景，方便用户感知区域，如果填充图表可移除 */
+    background-image: radial-gradient(rgba(0, 234, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.topology-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+.topology-view.is-active {
+    display: block;
+}
+
+.gateway-map-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+/* 布局位置微调 */
+.panel-left-top { grid-column: 1 / 2; grid-row: 1 / 2; }
+.panel-center-top { grid-column: 2 / 3; grid-row: 1 / 2; }
+.panel-right-top { grid-column: 3 / 4; grid-row: 1 / 2; }
+.panel-left-bottom { grid-column: 1 / 2; grid-row: 2 / 3; }
+.panel-center-bottom { grid-column: 2 / 3; grid-row: 2 / 3; }
+.panel-right-bottom { grid-column: 3 / 4; grid-row: 2 / 3; }
+
+/* =========================================
+   关系拓扑图样式
+   ========================================= */
+.topology-container {
+    position: relative; /* 改为相对定位，作为子元素的坐标参考系 */
+    height: 100%;
+    width: 100%;
+    overflow: hidden; /* 防止溢出 */
+}
+
+.topology-item {
+    position: absolute; /* 改为绝对定位，实现任意位置控制 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0px;
+    /* 默认宽高，可在下方单独覆盖 */
+    width: 100px;
+    height: 120px;
+}
+
+/* === 下面是 5 个元素的独立控制区，你可以随意修改 top/left/width 等 === */
+
+/* 1. 开发板 */
+#topo-dev-board {
+    bottom: -3%;       /* 距离顶部位置 */
+    left: 45%;      /* 距离左侧位置 */
+}
+/* 单独控制开发板图片大小示例 */
+#topo-dev-board .img-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+/* 2. 工控机 */
+#topo-ipc {
+    top:20%;
+    left: 28%;
+    transform: translateX(-50%); /* 居中修正，如果不需要可删掉 */
+}
+#topo-ipc .img-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+/* 3. 工控板核心 */
+#topo-ipc-board {
+    bottom: 14%;
+    left: 25%;     /* 距离右侧位置 */
+}
+#topo-ipc-board .img-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+/* 4. 边缘计算模块 */
+#topo-jetson {
+    bottom: -3%;    /* 距离底部位置 */
+    left: 0%;
+}
+#topo-jetson .img-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+/* 5. 边缘网关 */
+#topo-gateway {
+    top: 0%;
+    left: 22%;
+}
+#topo-gateway .img-wrapper {
+    width: 50px;
+    height: 50px;
+}
+
+/* 6. 天通模块 */
+#topo-tiantong {
+    top: 22%;      /* 默认位置，您可随意调整 */
+    left: 45%;    /* 默认位置，您可随意调整 */
+}
+#topo-tiantong .img-wrapper {
+    width: 50px;   /* 图片宽度 */
+    height: 50px;  /* 图片高度 */
+}
+
+/* 7. HF/VHF模块 (已恢复) */
+#topo-hf-vhf {
+    top: 20%;      /* 默认位置 */
+    left: 0%;    /* 默认位置 */
+}
+#topo-hf-vhf .img-wrapper {
+    width: 40px;
+    height: 40px;
+}
+
+/* 连线层 (SVG) */
+.topology-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* 让鼠标事件穿透 SVG 层，不影响下方元素点击 */
+    z-index: 1; /* 放在底层，或者根据需要调整层级 */
+}
+
+/* 连线与动画样式 */
+.topo-line {
+    stroke: rgba(255, 230, 0, 0.8); /* 黄色实线，稍微不那么透明 */
+    stroke-width: 3px;
+    fill: none;
+    filter: drop-shadow(0 0 3px rgba(255, 230, 0, 0.8)); /* 保持发光效果 */
+}
+
+/* 移除之前的 @keyframes dashFlow 动画 */
+
+.topo-dot {
+    fill: #00eaff; /* 蓝色圆点 */
+    r: 4;
+    filter: drop-shadow(0 0 8px #00eaff); /* 强烈的蓝色光晕 */
+}
+.topology-item .img-wrapper {
+    /* 基础样式，具体大小由上面各个ID控制，或者这里统一默认值 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 234, 255, 0.05);
+    border: 1px solid rgba(0, 234, 255, 0.2);
+    border-radius: 8px;
+    padding: 5px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.topology-item .img-wrapper:hover {
+    background: rgba(0, 234, 255, 0.15);
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.topology-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* 保持图片比例 */
+}
+
+.topology-item .item-title {
+    color: #fff;
+    font-size: 14px; /* 统一字体大小 */
+    text-align: center;
+    font-weight: normal;
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(0, 234, 255, 0.5);
+}
+
+/* =========================================
+   自定义虚线框样式 (独立控制)
+   ========================================= */
+#topo-dash-box {
+    position: absolute;
+    /* 独立控制位置：相对于拓扑图容器 */
+    top: 26%; 
+    left: 0%;
+    
+    /* 独立控制大小 */
+    width: 430px;
+    height: 280px;
+
+    /* 虚线边框样式 */
+    border: 2px dashed rgba(0, 234, 255, 0.5);
+    background: rgba(0, 234, 255, 0.05); 
+    border-radius: 5px;
+    pointer-events: none; /* 避免遮挡鼠标 */
+    
+    /* 移除之前的 Flex 布局，改回默认或 relative，以便子元素 absolute 定位 */
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: flex-end; */
+}
+
+.box-label {
+    position: absolute; /* 改为绝对定位，方便您随意控制 */
+    /* 控制位置示例：居中并贴在底部 */
+    bottom: 10px; 
+    left: 50%;
+    transform: translateX(-50%);
+    
+    background: rgba(0, 40, 80, 0.8);
+    color: #00eaff;
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px solid #00eaff;
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+/* 浅蓝色连线样式 (带箭头) */
+.topo-line-blue {
+    stroke: #00eaff; /* 浅蓝色实线 */
+    stroke-width: 2px;
+    fill: none;
+    marker-end: url(#arrow-blue); /* 终点添加箭头 */
+}

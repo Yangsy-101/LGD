@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于低轨卫星的数据接入系统</title>
+    <link rel="icon" href="data:,">
+    <meta name="description" content="实时监控卫星接入点温度数据、采集时间、入库时间与链路时延">
+    <link rel="stylesheet" href="assets/css/style.css?v=20260710_toast_clickthrough_fix">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@100;300;400;500;700;900&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="assets/vendor/leaflet/leaflet.css?v=20260423_latest" rel="stylesheet">
+    <script defer src="assets/vendor/leaflet/leaflet.js?v=20260423_latest"></script>
+    <link rel="stylesheet" href="assets/css/satellite_globe.css?v=20260423_latest">
+    <link rel="stylesheet" href="assets/css/professional.css?v=20260710_toast_clickthrough_fix">
+</head>
+
+
+<body>
+    <!-- 背景动画 -->
+    <div class="bg-animation">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+
+    <!-- 主容器-->
+    <div class="container">
+        <!-- 头部导航 -->
+        <header class="header">
+            <div class="header-left">
+                <button type="button" class="page-back-button" id="pageBackButton" aria-label="返回上一级" title="返回上一级">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>返回</span>
+                </button>
+                <div class="njupt-logo">
+                <img src="assets/images/njupt_logo.png?v=20260423_latest" alt="南京邮电大学">
+                </div>
+            </div>
+
+            <div class="title-section">
+                <h1 class="main-title">基于低轨卫星的数据接入系统</h1>
+                <span class="title-subline">LEO SATELLITE DATA ACCESS CONSOLE</span>
+            </div>
+
+            <div class="header-right">
+                <div class="status-indicator" id="connectionStatus">
+                    <span class="status-dot online"></span>
+                    <span class="status-copy"><small>系统状态</small><strong>在线运行</strong></span>
+                </div>
+                <div class="current-time">
+                    <span id="currentTime">--:--</span>
+                    <small id="currentDate">----</small>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <section class="dashboard-panel panel-architecture">
+                <!-- 系统链路架构展示 -->
+                <section class="section-title">
+                    <i class="fas fa-network-wired"></i>
+                    <h2>卫星物联网系统结构</h2>
+                </section>
+                <div class="panel-body scaled-container">
+                    <div class="architecture-graph-wrapper">
+                        <div id="architectureGraph" class="architecture-graph"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-panel panel-map-sensor">
+                <!-- 地图区域 (全宽) -->
+                <div class="map-sensor-header">
+                    <section class="section-title map-title">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h2>监测点分布图</h2>
+                    </section>
+
+                    <section class="section-title sensor-section-title">
+                        <i class="fas fa-temperature-high"></i>
+                        <h2>最新温度数据</h2>
+                    </section>
+                </div>
+                <div class="panel-body map-sensor-body">
+                    <section class="map-section-full">
+                        <div id="nanjingMap" class="map-display-full"></div>
+                    </section>
+
+
+                    <div class="sensor-group">
+                        <div class="sensor-controls">
+                            <div class="access-point-selector">
+                                <label for="accessPointSelect"><i class="fas fa-satellite-dish"></i> 接入点</label>
+                                <select id="accessPointSelect" class="access-point-select">
+                                    <!-- 由JavaScript动态填充-->
+                                </select>
+
+                            </div>
+                            <div class="sensor-meta">
+
+
+                            </div>
+                        </div>
+                        <section class="latest-temperature-card" id="cardTemperature">
+                            <div class="temperature-reading">
+                                <div class="temperature-kicker">
+                                    <span class="temperature-icon"><i class="fas fa-temperature-high"></i></span>
+                                    <span>当前温度</span>
+                                </div>
+                                <div class="temperature-value-wrap">
+                                    <span class="temperature-value" id="valueTemperature">--</span>
+                                    <span class="temperature-unit">℃</span>
+                                </div>
+                                <span class="latest-record-id">最新记录 <strong id="latestRecordId">--</strong></span>
+                            </div>
+                            <div class="latest-link-meta">
+                                <div class="link-meta-item">
+                                    <span class="link-meta-icon"><i class="far fa-clock"></i></span>
+                                    <span class="link-meta-copy"><small>采集时间</small><strong id="latestCollectedTime">--</strong></span>
+                                </div>
+                                <div class="link-meta-item">
+                                    <span class="link-meta-icon"><i class="fas fa-database"></i></span>
+                                    <span class="link-meta-copy"><small>入库时间</small><strong id="latestIngestedTime">--</strong></span>
+                                </div>
+                                <div class="link-meta-item latency-item">
+                                    <span class="link-meta-icon"><i class="fas fa-satellite-dish"></i></span>
+                                    <span class="link-meta-copy"><small>链路时延</small><strong id="latestLatency">--</strong></span>
+                                </div>
+                            </div>
+                            <div class="card-glow"></div>
+                        </section>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-panel panel-trends">
+                <section class="section-title">
+                    <i class="fas fa-history"></i>
+                    <h2>历史数据列表</h2>
+                    <span class="history-summary">最近 <strong id="historyCount">0</strong> 条记录</span>
+                </section>
+
+                <div class="panel-body history-panel-body">
+                    <div class="history-table-shell">
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">编号</th>
+                                    <th scope="col">采集时间</th>
+                                    <th scope="col">入库时间</th>
+                                    <th scope="col">链路时延</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody">
+                                <tr class="history-empty-row"><td colspan="4">正在读取历史数据…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            if (typeof window === 'undefined' || !window.location) return;
+            const PROJECT20_BACKEND_PORT = '8090';
+            const { protocol, hostname, port, origin, pathname } = window.location;
+            const normalizeApiBase = (value) => String(value || '').replace(/\/$/, '');
+            const isLocalhost =
+                hostname === 'localhost' ||
+                hostname === '127.0.0.1' ||
+                hostname === '::1' ||
+                hostname === '[::1]';
+
+            let resolvedBase = '';
+
+            // Local file mode: use default backend directly.
+            if (protocol === 'file:') {
+                resolvedBase = 'http://127.0.0.1:8090';
+            }
+
+            // Local dev (e.g. Vite 5173): call Flask backend directly.
+            if (!resolvedBase && isLocalhost && port && port !== PROJECT20_BACKEND_PORT) {
+                resolvedBase = `${protocol}//${hostname}:${PROJECT20_BACKEND_PORT}`;
+            }
+
+            // Deployed under reverse proxy path (/project2-0 -> backend).
+            if (!resolvedBase && origin && origin !== 'null' && /^\/project2-0(\/|$)/.test(pathname)) {
+                resolvedBase = `${origin}/project2-0`;
+            }
+
+            if (resolvedBase) {
+                const normalizedBase = normalizeApiBase(resolvedBase);
+                window.__PROJECT20_API_BASE__ = normalizedBase;
+                window.__API_BASE__ = normalizedBase;
+                return;
+            }
+
+            // Backward compatibility for legacy global variable names.
+            if (window.__PROJECT20_API_BASE__) {
+                window.__PROJECT20_API_BASE__ = normalizeApiBase(window.__PROJECT20_API_BASE__);
+                if (!window.__API_BASE__) window.__API_BASE__ = window.__PROJECT20_API_BASE__;
+            } else if (window.__API_BASE__) {
+                window.__API_BASE__ = normalizeApiBase(window.__API_BASE__);
+                window.__PROJECT20_API_BASE__ = window.__API_BASE__;
+            }
+        })();
+    </script>
+    <script defer src="assets/js/map_logic.js?v=20260709_8090"></script>
+    <script defer src="assets/js/app.js?v=20260710_return_to_main"></script>
+    <script>
+        (function () {
+            const loadScript = (src, options = {}) => new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = false;
+                if (options.module) {
+                    script.type = 'module';
+                }
+                script.onload = () => resolve(src);
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.body.appendChild(script);
+            });
+
+            let heavyBundlePromise = null;
+            const loadHeavyBundle = () => {
+                if (heavyBundlePromise) return heavyBundlePromise;
+                heavyBundlePromise = loadScript('assets/js/satellite_globe.js?v=20260423_latest', { module: true })
+                    .then(() => loadScript('assets/vendor/x6.min.js?v=20260423_latest'))
+                    .then(() => loadScript('assets/js/architecture_graph.js?v=20260709_8090'))
+                    .catch((error) => {
+                        console.warn('[project2-0] delayed architecture bundle failed:', error);
+                    });
+                return heavyBundlePromise;
+            };
+
+            const scheduleHeavyBundle = () => {
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(() => loadHeavyBundle(), { timeout: 2500 });
+                    return;
+                }
+                window.setTimeout(loadHeavyBundle, 900);
+            };
+
+            window.addEventListener('load', scheduleHeavyBundle, { once: true });
+        })();
+    </script>
+</body>
+
+</html>

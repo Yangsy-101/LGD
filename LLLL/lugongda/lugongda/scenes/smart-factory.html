@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧门禁演示 - 泛在物联网管控系统</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/smart-factory.css" />
+    <link rel="stylesheet" href="../css/changjing3-next.css" />
+</head>
+<body>
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+            <div class="screen-bg sf-demo-bg">
+
+                <!-- 返回按钮 -->
+                <a href="../main.html" class="back-button">
+                    <span class="back-button-icon">←</span>
+                    <span>返回主页面</span>
+                </a>
+
+                <!-- 顶部 HAND 图片 + 标题 -->
+                <div class="header">
+                    <img src="../images/hand.png" class="hand-img" />
+                    <div class="scene-page-title"><span>智慧工厂设备管控及周界预警</span></div>
+                </div>
+
+                <!-- 场景切换标签页 -->
+                <div class="sf-scene-tabs">
+                    <button class="sf-scene-tab active" data-scene="scene1">场景一：设备人员管控业务演示</button>
+                    <button class="sf-scene-tab" data-scene="scene2">场景二：多业务应急联动演示</button>
+                </div>
+
+                <!-- ==================== 场景一：分级通行管控 ==================== -->
+                <div class="sf-scene-container active" id="scene1">
+                    <!-- 主体：视频 + 结果卡 -->
+                    <div class="sf-scene1-body">
+                        <!-- 左侧大视频 -->
+                        <div class="sf-video-main">
+                            <div class="sf-glass-card sf-video-card-large">
+                                <div class="sf-video-frame">
+                                    <div class="sf-video-placeholder-lg">
+                                        <div class="sf-video-icon-lg">📹</div>
+                                        <div class="sf-video-label">门禁摄像头实时画面</div>
+                                    </div>
+                                    <!-- IP地址选择器 -->
+                                    <div class="sf-ip-selector">
+                                        <span class="sf-ip-label">选择接收的IP地址</span>
+                                        <select class="sf-ip-select" id="sf-ip-select">
+                                            <option value="10.10.3.111">10.10.3.111 - 门禁摄像头1</option>
+                                            <option value="10.10.3.112">10.10.3.112 - 门禁摄像头2</option>
+                                            <option value="10.10.3.113">10.10.3.113 - 周界摄像头</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="sf-video-controls">
+                                    <button class="sf-ctrl-btn sf-btn-start" id="s1-btn-start">▶ 开始检测</button>
+                                    <button class="sf-ctrl-btn sf-btn-result" id="s1-btn-result">📊 显示结果</button>
+                                    <button class="sf-ctrl-btn sf-btn-stop" id="s1-btn-stop">⏹ 结束检测</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧结果区（3块）：识别结果 + 人脸检测截图 + 检测结果 -->
+                        <div class="sf-result-cards">
+                            <!-- 识别结果（合并：人脸识别结果 + RFID设备结果） -->
+                            <div class="sf-glass-card sf-result-card" id="card-recognition-result">
+                                <div class="sf-card-header">
+                                    <span class="sf-card-icon">✅</span>
+                                    <span class="sf-card-title">识别结果</span>
+                                </div>
+                                <div class="sf-card-body sf-recognition-body">
+                                    <div class="sf-recognition-grid">
+                                        <div class="sf-recognition-section">
+                                            <div class="sf-recognition-subtitle">人脸识别结果</div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">姓名</span>
+                                                <span class="sf-result-value" id="s1-person-name">--</span>
+                                            </div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">工号</span>
+                                                <span class="sf-result-value" id="s1-person-id">--</span>
+                                            </div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">人员等级</span>
+                                                <span class="sf-result-value sf-level-badge" id="s1-person-level">--</span>
+                                            </div>
+                                            <!-- 人员数据库滚动列表 -->
+                                            <div class="sf-db-list-container">
+                                                <div class="sf-db-list-title">📋 入库人员信息</div>
+                                                <div class="sf-db-list-scroll" id="person-db-scroll">
+                                                    <!-- JS动态生成 -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sf-recognition-section">
+                                            <div class="sf-recognition-subtitle">RFID设备结果</div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">设备ID</span>
+                                                <span class="sf-result-value" id="s1-device-id">--</span>
+                                            </div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">设备类型</span>
+                                                <span class="sf-result-value" id="s1-device-type">--</span>
+                                            </div>
+                                            <div class="sf-result-row">
+                                                <span class="sf-result-label">设备等级</span>
+                                                <span class="sf-result-value sf-level-badge" id="s1-device-level">--</span>
+                                            </div>
+                                            <!-- 设备数据库滚动列表 -->
+                                            <div class="sf-db-list-container">
+                                                <div class="sf-db-list-title">📋 入库设备信息</div>
+                                                <div class="sf-db-list-scroll" id="device-db-scroll">
+                                                    <!-- JS动态生成 -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 人脸检测截图 -->
+                            <div class="sf-glass-card sf-result-card" id="card-face-capture">
+                                <div class="sf-card-header">
+                                    <span class="sf-card-icon">📷</span>
+                                    <span class="sf-card-title">人脸检测截图</span>
+                                </div>
+                                <div class="sf-card-body sf-capture-body">
+                                    <div class="sf-capture-placeholder" id="s1-face-capture">
+                                        <span class="sf-capture-icon">👤</span>
+                                        <span class="sf-capture-text">等待截图</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 检测结果 -->
+                            <div class="sf-glass-card sf-result-card sf-card-verdict" id="card-verdict">
+                                <div class="sf-card-header">
+                                    <span class="sf-card-icon">📝</span>
+                                    <span class="sf-card-title">检测结果</span>
+                                </div>
+                                <div class="sf-card-body sf-log-body">
+                                    <div class="sf-log-container" id="s1-log-container">
+                                        <div class="sf-log-item">[--:--:--] 等待检测...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== 场景二：应急联动疏散 ==================== -->
+                <div class="sf-scene-container" id="scene2">
+                    <!-- 主体：三视频 + 右侧信息面板 -->
+                    <div class="sf-scene2-body">
+                        <!-- 左侧视频区域 -->
+                        <div class="sf-video-area">
+                            <!-- 三视频区域 两行Grid布局 -->
+                            <div class="sf-video-grid-v2">
+                                <!-- Row1: 设备人员管控 -->
+                                <div class="sf-glass-card sf-video-card sf-video-row1" id="s2-video-device">
+                                    <div class="sf-video-title-bar">
+                                        <span class="sf-video-title-text">设备人员管控</span>
+                                    </div>
+                                    <div class="sf-video-content">
+                                        <div class="sf-video-placeholder">
+                                            <div class="sf-video-icon">📹</div>
+                                            <div class="sf-video-desc">门禁摄像头实时画面</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Row2: 火灾检测 -->
+                                <div class="sf-glass-card sf-video-card sf-video-row2-left" id="s2-video-fire">
+                                    <div class="sf-video-title-bar">
+                                        <span class="sf-video-title-text">火灾检测</span>
+                                    </div>
+                                    <div class="sf-video-content">
+                                        <div class="sf-video-placeholder">
+                                            <div class="sf-video-icon">📹</div>
+                                            <div class="sf-video-desc">大厅区域实时监控</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Row2: 周界预警 -->
+                                <div class="sf-glass-card sf-video-card sf-video-row2-right" id="s2-video-perimeter">
+                                    <div class="sf-video-title-bar">
+                                        <span class="sf-video-title-text">周界预警</span>
+                                    </div>
+                                    <div class="sf-video-content">
+                                        <div class="sf-video-placeholder">
+                                            <div class="sf-video-icon">📹</div>
+                                            <div class="sf-video-desc">周界区域</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 统一控制按钮 -->
+                            <div class="sf-unified-controls">
+                                <div class="sf-video-config">
+                                    <div class="sf-config-item">
+                                        <span class="sf-config-label">接入视频</span>
+                                        <select class="sf-config-select" id="s2-video-target">
+                                            <option value="device">设备人员管控</option>
+                                            <option value="fire">火灾检测</option>
+                                            <option value="perimeter">周界预警</option>
+                                        </select>
+                                    </div>
+                                    <div class="sf-config-item">
+                                        <span class="sf-config-label">IP地址</span>
+                                        <select class="sf-config-select" id="s2-ip-address">
+                                            <option value="192.168.1.100">192.168.1.100</option>
+                                            <option value="192.168.1.101">192.168.1.101</option>
+                                            <option value="192.168.1.102">192.168.1.102</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="sf-control-btns">
+                                    <button class="sf-ctrl-btn sf-btn-start-unified" id="s2-btn-start">开始联动演示</button>
+                                    <button class="sf-ctrl-btn sf-btn-stop-unified" id="s2-btn-stop">结束演示</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 右侧信息面板 -->
+                        <div class="sf-info-panel">
+                            <!-- 联动状态总览 -->
+                            <div class="sf-glass-card sf-status-panel">
+                                <div class="sf-panel-header">
+                                    <span class="sf-panel-title">联动状态总览</span>
+                                </div>
+                                <div class="sf-status-list">
+                                    <!-- 火灾检测 -->
+                                    <div class="sf-status-card" id="status-fire">
+                                        <div class="sf-status-card-header">
+                                            <span class="sf-status-name">火灾检测</span>
+                                        </div>
+                                        <div class="sf-status-options">
+                                            <div class="sf-status-option active" id="status-fire-opt1">
+                                                <span class="sf-option-text">待命</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                            <div class="sf-status-option" id="status-fire-opt2">
+                                                <span class="sf-option-text">运行中</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                        </div>
+                                        <div class="sf-status-time" id="status-fire-time"></div>
+                                    </div>
+                                    <!-- 门禁系统 -->
+                                    <div class="sf-status-card" id="status-gate">
+                                        <div class="sf-status-card-header">
+                                            <span class="sf-status-name">门禁系统</span>
+                                        </div>
+                                        <div class="sf-status-options">
+                                            <div class="sf-status-option active" id="status-gate-opt1">
+                                                <span class="sf-option-text">常态核验</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                            <div class="sf-status-option" id="status-gate-opt2">
+                                                <span class="sf-option-text">应急放行</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                        </div>
+                                        <div class="sf-status-time" id="status-gate-time"></div>
+                                    </div>
+                                    <!-- 闸机状态 -->
+                                    <div class="sf-status-card" id="status-barrier">
+                                        <div class="sf-status-card-header">
+                                            <span class="sf-status-name">闸机状态</span>
+                                        </div>
+                                        <div class="sf-status-options">
+                                            <div class="sf-status-option active" id="status-barrier-opt1">
+                                                <span class="sf-option-text">关闭</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                            <div class="sf-status-option" id="status-barrier-opt2">
+                                                <span class="sf-option-text">打开</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                        </div>
+                                        <div class="sf-status-time" id="status-barrier-time"></div>
+                                    </div>
+                                    <!-- 周界预警 -->
+                                    <div class="sf-status-card" id="status-perimeter">
+                                        <div class="sf-status-card-header">
+                                            <span class="sf-status-name">周界预警</span>
+                                        </div>
+                                        <div class="sf-status-options">
+                                            <div class="sf-status-option active" id="status-perimeter-opt1">
+                                                <span class="sf-option-text">待命</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                            <div class="sf-status-option" id="status-perimeter-opt2">
+                                                <span class="sf-option-text">已启动</span>
+                                                <span class="sf-option-check">✓</span>
+                                            </div>
+                                        </div>
+                                        <div class="sf-status-time" id="status-perimeter-time"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 应急撤离记录 -->
+                            <div class="sf-glass-card sf-evacuate-panel">
+                                <div class="sf-panel-header">
+                                    <span class="sf-panel-title">应急撤离记录</span>
+                                </div>
+                                <div class="sf-evacuate-header">
+                                    <span class="sf-col-time">时间</span>
+                                    <span class="sf-col-person">人员</span>
+                                    <span class="sf-col-device">携带设备</span>
+                                    <span class="sf-col-result">通行结果</span>
+                                </div>
+                                <div class="sf-evacuate-list" id="s2-evacuate-list">
+                                    <!-- JS动态生成记录 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/scenePage.js"></script>
+    <script src="../js/changjing3.js"></script>
+    <script src="../js/changjing3-next.js"></script>
+</body>
+</html>

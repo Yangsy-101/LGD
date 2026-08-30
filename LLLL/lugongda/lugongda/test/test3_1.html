@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>58 目录 recv 日志实时读取测试</title>
+    <style>
+        :root {
+            --bgA: #071f15;
+            --bgB: #0f3a2f;
+            --card: rgba(5, 20, 15, 0.86);
+            --line: rgba(123, 219, 168, 0.4);
+            --text: #e9fff3;
+            --muted: #9fd1bc;
+            --ok: #58f0a4;
+            --error: #ff8b8b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: "Microsoft YaHei", sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(88, 240, 164, 0.2), transparent 35%),
+                radial-gradient(circle at 90% 20%, rgba(81, 178, 255, 0.15), transparent 30%),
+                linear-gradient(160deg, var(--bgA), var(--bgB));
+            padding: 18px;
+        }
+
+        .page {
+            max-width: 1500px;
+            margin: 0 auto;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(2, 10, 8, 0.5);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.38);
+            overflow: hidden;
+        }
+
+        .title-bar {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--line);
+            background: rgba(0, 0, 0, 0.24);
+        }
+
+        .title-bar h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .title-bar p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            padding: 14px;
+        }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--card);
+            display: flex;
+            flex-direction: column;
+            min-height: 580px;
+        }
+
+        .panel-head {
+            padding: 12px;
+            border-bottom: 1px solid rgba(123, 219, 168, 0.22);
+        }
+
+        .panel-head h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .meta {
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.45;
+            min-height: 36px;
+        }
+
+        .ops {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 10px 12px;
+        }
+
+        button {
+            border: 1px solid var(--line);
+            color: var(--text);
+            background: rgba(12, 49, 35, 0.85);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            background: rgba(16, 62, 44, 0.92);
+        }
+
+        .btn-start { border-color: rgba(88, 240, 164, 0.75); }
+        .btn-stop { border-color: rgba(255, 139, 139, 0.75); }
+
+        .status {
+            padding: 0 12px 10px;
+            font-size: 12px;
+            color: var(--muted);
+            min-height: 18px;
+        }
+
+        .status.ok { color: var(--ok); }
+        .status.error { color: var(--error); }
+
+        textarea {
+            flex: 1;
+            margin: 0 12px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(123, 219, 168, 0.3);
+            background: rgba(0, 7, 5, 0.85);
+            color: #d8ffec;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            padding: 10px;
+            resize: vertical;
+            min-height: 380px;
+        }
+
+        @media (max-width: 800px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .panel {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <section class="page">
+        <header class="title-bar">
+            <h1>58目录 recv*.txt 实时读取测试页</h1>
+            <p id="apiTip">读取接口: (初始化中，NanYou / 58Suo)</p>
+        </header>
+        <main class="grid" id="grid"></main>
+    </section>
+
+    <script>
+        (function () {
+            const DEFAULT_API_BASE = "http://36.152.33.88:8081/media";
+            const params = new URLSearchParams(window.location.search);
+            const rawApiBase = (params.get("apiBase") || DEFAULT_API_BASE).trim();
+            const API_BASE = rawApiBase.replace(/\/+$/, "");
+            const API = API_BASE + "/get_recv_logs.jsp";
+            const SOURCES = ["NanYou", "58Suo"];
+            const state = {};
+            const grid = document.getElementById("grid");
+            const apiTip = document.getElementById("apiTip");
+
+            apiTip.textContent = "读取接口: " + API + "?source=NanYou|58Suo";
+
+            function createPanel(source) {
+                const panel = document.createElement("section");
+                panel.className = "panel";
+
+                panel.innerHTML = ""
+                    + "<div class=\"panel-head\">"
+                    + "  <h2>" + source + "</h2>"
+                    + "  <div class=\"meta\" id=\"meta-" + source + "\">目录: /var/lib/tomcat/webapps/media/logs/" + source + "</div>"
+                    + "</div>"
+                    + "<div class=\"ops\">"
+                    + "  <button type=\"button\" data-action=\"once\">读取一次</button>"
+                    + "  <button type=\"button\" class=\"btn-start\" data-action=\"start\">开始实时(2s)</button>"
+                    + "  <button type=\"button\" class=\"btn-stop\" data-action=\"stop\">停止实时</button>"
+                    + "  <button type=\"button\" data-action=\"clear\">清空框</button>"
+                    + "</div>"
+                    + "<div class=\"status\" id=\"status-" + source + "\">等待读取</div>"
+                    + "<textarea id=\"box-" + source + "\" readonly placeholder=\"" + source + " 的数据会显示在这里\"></textarea>";
+
+                panel.addEventListener("click", function (ev) {
+                    const action = ev.target.getAttribute("data-action");
+                    if (!action) return;
+                    if (action === "once") readOnce(source);
+                    if (action === "start") startLoop(source);
+                    if (action === "stop") stopLoop(source);
+                    if (action === "clear") {
+                        document.getElementById("box-" + source).value = "";
+                        setStatus(source, "已清空", "");
+                    }
+                });
+
+                grid.appendChild(panel);
+                state[source] = { timer: null, loading: false };
+            }
+
+            function setStatus(source, text, type) {
+                const status = document.getElementById("status-" + source);
+                status.textContent = text;
+                status.className = "status" + (type ? " " + type : "");
+            }
+
+            function renderData(source, data) {
+                const box = document.getElementById("box-" + source);
+                const meta = document.getElementById("meta-" + source);
+
+                const chunks = [];
+                const entries = Array.isArray(data.entries) ? data.entries : [];
+
+                if (entries.length === 0) {
+                    if (data.msg) chunks.push("[提示] " + data.msg);
+                    if (data.checkedNewPath) chunks.push("newPath: " + data.checkedNewPath);
+                    if (data.checkedLegacyFolder) chunks.push("legacyPath: " + data.checkedLegacyFolder);
+                }
+
+                for (let i = 0; i < entries.length; i++) {
+                    const item = entries[i];
+                    chunks.push("===== " + item.fileName + " | " + (item.lastModifiedText || "") + " =====");
+                    const lines = Array.isArray(item.lines) ? item.lines : [];
+                    for (let j = 0; j < lines.length; j++) {
+                        chunks.push(lines[j]);
+                    }
+                    chunks.push("");
+                }
+
+                box.value = chunks.join("\n").trim();
+                meta.textContent = "模式: " + (data.storage || "unknown") + " | 目录: " + (data.folder || "") + " | 匹配文件: " + (data.fileCount || 0) + " 个";
+                setStatus(source, "读取成功: " + new Date().toLocaleTimeString("zh-CN", { hour12: false }), "ok");
+            }
+
+            async function readOnce(source) {
+                const s = state[source];
+                if (!s || s.loading) return;
+                s.loading = true;
+
+                setStatus(source, "请求中...", "");
+                try {
+                    const url = API + "?source=" + encodeURIComponent(source) + "&lineLimit=120&fileLimit=20&t=" + Date.now();
+                    const resp = await fetch(url, { method: "GET", cache: "no-store" });
+                    const text = await resp.text();
+                    if (!resp.ok) {
+                        throw new Error("HTTP " + resp.status + " " + text);
+                    }
+
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                    } catch (err) {
+                        throw new Error("返回内容不是 JSON: " + text.slice(0, 200));
+                    }
+
+                    if (!data.ok) {
+                        throw new Error(data.msg || "接口返回失败");
+                    }
+
+                    renderData(source, data);
+                } catch (err) {
+                    setStatus(source, "读取失败: " + err.message, "error");
+                } finally {
+                    s.loading = false;
+                }
+            }
+
+            function startLoop(source) {
+                const s = state[source];
+                if (!s) return;
+                stopLoop(source);
+                readOnce(source);
+                s.timer = setInterval(function () {
+                    readOnce(source);
+                }, 2000);
+                setStatus(source, "实时读取已开启", "ok");
+            }
+
+            function stopLoop(source) {
+                const s = state[source];
+                if (!s) return;
+                if (s.timer) {
+                    clearInterval(s.timer);
+                    s.timer = null;
+                    setStatus(source, "实时读取已停止", "");
+                }
+            }
+
+            for (let i = 0; i < SOURCES.length; i++) {
+                createPanel(SOURCES[i]);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,3209 @@
+/**
+ * 远海远域物联通信场景专用样式
+ */
+
+/* 场景网格布局 */
+.ocean-scene-grid {
+    position: absolute;
+    top: 100px;
+    left: 16px;
+    right: 16px;
+    bottom: 20px;
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+}
+
+/* 摄像头监控区域 - 占据左侧大块 */
+.ocean-panel.camera-monitor {
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+}
+
+/* 网关与回传概览 */
+.ocean-panel.gateway-overview {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+/* 中列整列合并面板 */
+.ocean-panel.middle-sensor-column {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+    padding: 12px;
+}
+
+/* RFID核验与事件融合 - 占据右上角 */
+.ocean-panel.rfid-verify-merged {
+    grid-column: 3 / 4;
+    grid-row: 1 / 2;
+}
+
+/* 关键传感器监测 */
+.ocean-panel.sensor-monitor {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+/* 极地风力监测数据 - 右下角 */
+.ocean-panel.wind-monitor {
+    grid-column: 3 / 4;
+    grid-row: 2 / 3;
+}
+
+/* 面板通用样式 */
+.ocean-panel {
+    background: linear-gradient(135deg, rgba(0, 50, 100, 0.4), rgba(0, 30, 60, 0.3));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.ocean-panel:hover {
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* 面板标题 */
+.ocean-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+}
+
+/* 右侧信息框统一：更合理的内边距与布局（不影响左侧视频区结构） */
+.ocean-panel.gateway-overview,
+.ocean-panel.rfid-verify-merged,
+.ocean-panel.sensor-monitor,
+.ocean-panel.wind-monitor {
+    padding: 16px;
+}
+
+.gateway-overview .ocean-panel-content,
+.rfid-verify-merged .ocean-panel-content,
+.sensor-monitor .ocean-panel-content,
+.wind-monitor .ocean-panel-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.middle-sensor-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.middle-sensor-sections {
+    flex: 1;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 12px;
+    min-height: 0;
+}
+
+.middle-sensor-section {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.middle-sensor-section .compact-title {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+}
+
+.section-panel-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.middle-sensor-section .sensor-chart-container {
+    flex: 1;
+    min-height: 0;
+}
+
+.middle-sensor-section .sensor-current-cards {
+    margin-top: 10px;
+}
+
+.ocean-panel-icon {
+    font-size: 20px;
+}
+
+/* 面板内容 */
+.ocean-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 自定义滚动条 */
+.ocean-panel-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ocean-panel-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+.ocean-panel-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 234, 255, 0.3);
+    border-radius: 3px;
+}
+
+.ocean-panel-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 234, 255, 0.5);
+}
+
+/* 摄像头监控区域 */
+.camera-display {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.camera-placeholder {
+    text-align: center;
+    color: rgba(103, 197, 255, 0.6);
+}
+
+.camera-large-icon {
+    font-size: 80px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.camera-status-text {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.camera-hint {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.4);
+}
+
+/* 摄像头信息栏 */
+.camera-info-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    padding: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.camera-info-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.camera-info-label {
+    color: rgba(103, 197, 255, 0.8);
+}
+
+.camera-info-value {
+    color: #00ff88;
+    font-weight: bold;
+}
+
+/* 通信状态指示器 */
+.comm-status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.comm-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.comm-item.active {
+    border-color: rgba(0, 255, 136, 0.6);
+    background: rgba(0, 255, 136, 0.05);
+}
+
+.comm-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.comm-label {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.8);
+    margin-bottom: 3px;
+}
+
+.comm-value {
+    font-size: 13px;
+    font-weight: bold;
+    color: #00eaff;
+}
+
+.comm-item.active .comm-value {
+    color: #00ff88;
+}
+
+/* 信号强度 */
+.signal-strength {
+    margin-top: 10px;
+}
+
+.signal-label {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.8);
+    margin-bottom: 5px;
+}
+
+.signal-bars {
+    display: flex;
+    gap: 4px;
+    align-items: flex-end;
+    height: 30px;
+}
+
+.signal-bar {
+    flex: 1;
+    background: rgba(0, 212, 255, 0.2);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.signal-bar.active {
+    background: linear-gradient(to top, #00ff88, #00eaff);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+/* RFID认证 */
+.rfid-scanner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+.rfid-icon-large {
+    font-size: 50px;
+    margin-bottom: 15px;
+    animation: rfidPulse 2s infinite;
+}
+
+@keyframes rfidPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+.rfid-status {
+    font-size: 14px;
+    color: #00eaff;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.rfid-info {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.7);
+    margin-bottom: 15px;
+}
+
+.rfid-last-scan {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.5);
+    margin-top: 10px;
+}
+
+.rfid-scan-button {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.3), rgba(0, 150, 200, 0.3));
+    border: 1px solid rgba(0, 234, 255, 0.5);
+    color: #00eaff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rfid-scan-button:hover {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.5), rgba(0, 150, 200, 0.5));
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.5);
+}
+
+/* 活动日志 */
+.activity-log-container {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+}
+
+.log-entry {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.8);
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry.success {
+    color: #00ff88;
+}
+
+.log-entry.warning {
+    color: #ffd93d;
+}
+
+.log-entry.error {
+    color: #ff6b6b;
+}
+
+.log-entry.info {
+    color: #00eaff;
+}
+
+/* 操作按钮区域 */
+.ocean-action-buttons {
+    position: absolute;
+    top: 85px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+.ocean-action-btn {
+    background: linear-gradient(135deg, rgba(0, 50, 100, 0.6), rgba(0, 30, 60, 0.6));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #00eaff;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.ocean-action-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 80, 150, 0.8), rgba(0, 50, 100, 0.8));
+    border-color: rgba(0, 234, 255, 0.8);
+    box-shadow: 0 0 20px rgba(0, 234, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.ocean-action-btn.active {
+    background: linear-gradient(135deg, rgba(0, 234, 255, 0.4), rgba(0, 150, 200, 0.4));
+    border-color: rgba(0, 234, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.5);
+}
+
+/* ========== 摄像头检测画面样式（仿照forest-fire） ========== */
+
+/* 地点选择栏 */
+.ocean-location-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, rgba(0, 100, 150, 0.3), rgba(0, 50, 100, 0.2));
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+}
+
+.ocean-location-title {
+    font-size: 20px;
+    color: rgba(103, 197, 255, 0.9);
+    font-weight: bold;
+}
+
+.ocean-location-value {
+    font-size: 24px;
+    color: #00eaff;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.ocean-location-select {
+    padding: 5px 12px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e2e8f0' d='M5.5 7.5 10 12l4.5-4.5 1.4 1.4L10 14.8 4.1 8.9z'/%3E%3C/svg%3E") no-repeat right 10px center / 12px 12px, linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 100, 150, 0.3));
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    border-radius: 4px;
+    color: #00eaff;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 32px;
+}
+
+.ocean-location-select:hover {
+    border-color: #00eaff;
+    box-shadow: 0 0 10px rgba(0, 234, 255, 0.4);
+}
+
+.ocean-location-select:focus {
+    border-color: #00eaff;
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.5);
+}
+
+.ocean-location-select option {
+    background: #0a1929;
+    color: #00eaff;
+}
+
+/* 摄像头面板内容 */
+.camera-monitor .ocean-panel-content {
+    position: relative;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 20, 40, 0.5));
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ocean-stream-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    z-index: 1;
+}
+
+.camera-monitor .camera-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    z-index: 2;
+}
+
+.camera-monitor .camera-icon {
+    font-size: 60px;
+    opacity: 0.4;
+    margin-bottom: 15px;
+}
+
+.camera-monitor .camera-text {
+    font-size: 16px;
+    color: rgba(103, 197, 255, 0.7);
+    margin-bottom: 8px;
+}
+
+.camera-monitor .camera-status {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.5);
+}
+
+/* 通信方式选择器 */
+.ocean-comm-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    margin-right: 10px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.ocean-comm-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(103, 197, 255, 0.95);
+}
+
+.ocean-comm-method-list {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ocean-comm-method-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px;
+    border-radius: 14px;
+    background: rgba(5, 25, 45, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.ocean-comm-method-item.active-route {
+    border-color: rgba(250, 204, 21, 0.75);
+    box-shadow: 0 0 14px rgba(250, 204, 21, 0.25);
+}
+
+.ocean-comm-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff2d2d;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 2px rgba(255, 45, 45, 0.25), 0 0 12px rgba(255, 45, 45, 0.85);
+    animation: oceanCommOfflinePulse 1.8s ease-in-out infinite;
+}
+
+.ocean-comm-indicator.online {
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25), 0 0 14px rgba(34, 197, 94, 0.95);
+    animation: oceanCommOnlinePulse 1.2s ease-in-out infinite;
+}
+
+.ocean-comm-name {
+    font-size: 13px;
+    color: #c1e7ff;
+    font-weight: 700;
+}
+
+@keyframes oceanCommOnlinePulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.12); opacity: 0.88; }
+}
+
+@keyframes oceanCommOfflinePulse {
+    0%, 100% { opacity: 0.95; }
+    50% { opacity: 0.6; }
+}
+
+/* 链路弹窗（与 forest-fire 同结构） */
+.ocean-link-toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    width: min(500px, calc(100vw - 44px));
+    height: min(500px, calc(100vh - 44px));
+    z-index: 3000;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.ocean-link-toast::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.12), rgba(3, 8, 20, 0.5));
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    z-index: -1;
+}
+
+.ocean-link-toast.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.ocean-link-toast.show::before {
+    opacity: 1;
+}
+
+.ocean-link-card {
+    width: 100%;
+    height: 100%;
+    border-radius: 18px;
+    border: 1.5px solid rgba(251, 191, 36, 0.85);
+    background: linear-gradient(160deg, rgba(22, 18, 28, 0.96), rgba(10, 14, 28, 0.96));
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 26px rgba(251, 191, 36, 0.26);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ocean-link-card.state-warning {
+    border-color: rgba(251, 191, 36, 0.85);
+    background: linear-gradient(160deg, rgba(22, 18, 28, 0.96), rgba(10, 14, 28, 0.96));
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 26px rgba(251, 191, 36, 0.26);
+}
+
+.ocean-link-card.state-recovery {
+    border-color: rgba(52, 211, 153, 0.9);
+    background: linear-gradient(160deg, rgba(10, 28, 24, 0.96), rgba(8, 20, 34, 0.96));
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.55), 0 0 28px rgba(45, 212, 191, 0.28);
+}
+
+.ocean-link-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff7d6;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 20px 22px 16px;
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.05));
+    border-bottom: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.ocean-link-card.state-recovery .ocean-link-header {
+    color: #dcfce7;
+    background: linear-gradient(90deg, rgba(45, 212, 191, 0.24), rgba(34, 197, 94, 0.08));
+    border-bottom: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.ocean-link-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fde68a, #f59e0b 72%);
+    box-shadow: 0 0 16px rgba(250, 204, 21, 0.9);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #2b1b00;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.ocean-link-card.state-recovery .ocean-link-icon {
+    background: radial-gradient(circle at 35% 35%, #bbf7d0, #10b981 72%);
+    box-shadow: 0 0 16px rgba(16, 185, 129, 0.85);
+    color: #032b1f;
+}
+
+.ocean-link-message {
+    color: #e5ecff;
+    font-size: 16px;
+    line-height: 1.55;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    padding: 18px 24px 20px;
+}
+
+.ocean-link-message-main {
+    font-size: 26px;
+    line-height: 1.35;
+    font-weight: 800;
+    color: #f8fafc;
+    text-shadow: 0 0 14px rgba(148, 163, 184, 0.22);
+}
+
+.ocean-link-card.state-recovery .ocean-link-message-main {
+    color: #ecfeff;
+    text-shadow: 0 0 14px rgba(45, 212, 191, 0.2);
+}
+
+.ocean-link-message-sub {
+    margin-top: 16px;
+    color: #e7e5e4;
+    font-size: 21px;
+    line-height: 1.55;
+    padding: 14px 14px;
+    border-radius: 10px;
+    background: rgba(46, 41, 36, 0.62);
+    border: 1px solid rgba(231, 229, 228, 0.24);
+}
+
+.ocean-link-card.state-recovery .ocean-link-message-sub {
+    color: #d1fae5;
+    background: rgba(20, 83, 45, 0.28);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.ocean-link-statusbar {
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 9px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff7d6;
+    background: rgba(120, 53, 15, 0.45);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.ocean-link-card.state-recovery .ocean-link-statusbar {
+    color: #ecfeff;
+    background: rgba(6, 78, 59, 0.55);
+    border: 1px solid rgba(45, 212, 191, 0.4);
+}
+
+.ocean-link-timestamp {
+    display: block;
+    margin-top: 18px;
+    color: #fbbf24;
+    font-size: 17px;
+    font-weight: 600;
+    border-top: 1px dashed rgba(250, 204, 21, 0.45);
+    padding-top: 12px;
+}
+
+.ocean-link-card.state-recovery .ocean-link-timestamp {
+    color: #5eead4;
+    border-top: 1px dashed rgba(45, 212, 191, 0.45);
+}
+
+/* 位置标签 */
+.ocean-location-tag {
+    padding: 2px 10px;
+    background: rgba(0, 234, 255, 0.2);
+    border: 1px solid rgba(0, 234, 255, 0.4);
+    border-radius: 10px;
+    font-size: 12px;
+    color: #00eaff;
+    font-weight: normal;
+}
+
+/* IP地址选择器 */
+.ocean-ip-selector {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, rgba(10, 25, 50, 0.9), rgba(5, 15, 35, 0.95));
+    border: 1px solid rgba(30, 144, 255, 0.4);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    z-index: 3;
+}
+
+.ocean-result-overlay {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 220px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.45);
+    background: linear-gradient(135deg, rgba(2, 20, 42, 0.85), rgba(2, 34, 66, 0.8));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    z-index: 4;
+}
+
+.ocean-result-overlay .result-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8ce8ff;
+    margin-bottom: 8px;
+}
+
+.ocean-result-overlay .result-item {
+    font-size: 12px;
+    color: rgba(180, 226, 255, 0.9);
+    margin-bottom: 5px;
+}
+
+.ocean-result-overlay .result-item:last-child {
+    margin-bottom: 0;
+}
+
+.ocean-ip-label {
+    font-size: 13px;
+    color: rgba(103, 197, 255, 0.9);
+    white-space: nowrap;
+}
+
+.ocean-ip-select {
+    flex: 1;
+    padding: 6px 12px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23e2e8f0' d='M5.5 7.5 10 12l4.5-4.5 1.4 1.4L10 14.8 4.1 8.9z'/%3E%3C/svg%3E") no-repeat right 10px center / 12px 12px, linear-gradient(135deg, rgba(30, 144, 255, 0.15), rgba(0, 50, 100, 0.3));
+    border: 1px solid rgba(30, 144, 255, 0.5);
+    border-radius: 4px;
+    color: #00eaff;
+    font-size: 13px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 32px;
+}
+
+.ocean-ip-select:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.ocean-ip-select:focus {
+    border-color: #00eaff;
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+}
+
+.ocean-ip-select option {
+    background: #0a1929;
+    color: #67c5ff;
+}
+
+/* 操作按钮区域 */
+.ocean-camera-buttons {
+    display: flex;
+    gap: 12px;
+    padding: 12px 15px;
+    border-top: 1px solid rgba(30, 144, 255, 0.3);
+    background: linear-gradient(180deg, rgba(0, 20, 40, 0.6), rgba(0, 10, 30, 0.8));
+}
+
+.ocean-camera-btn {
+    flex: 1;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, rgba(30, 144, 255, 0.25), rgba(0, 212, 255, 0.15));
+    border: 1px solid rgba(30, 144, 255, 0.5);
+    border-radius: 6px;
+    color: #67c5ff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ocean-ip-selector {
+    display: none;
+}
+
+.ocean-camera-btn:hover {
+    background: linear-gradient(135deg, rgba(30, 144, 255, 0.4), rgba(0, 212, 255, 0.3));
+    border-color: #00d4ff;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.ocean-camera-btn:active {
+    transform: translateY(0);
+}
+
+.ocean-camera-btn.active {
+    background: linear-gradient(135deg, rgba(0, 184, 255, 0.5), rgba(0, 212, 255, 0.3));
+    border-color: #00d4ff;
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(0, 212, 255, 0.35);
+}
+
+/* ========== 网关与回传概览样式 ========== */
+.gateway-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* 新版：三段式（主状态 + 4指标 + 底部趋势图） */
+.gateway-top {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 12px;
+}
+
+.gateway-focus {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(0, 212, 255, 0.18);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 94px;
+}
+
+.gateway-focus-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.gateway-status {
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #5eead4;
+}
+
+.gateway-status.warning {
+    color: #fbbf24;
+}
+
+.gateway-status.alert {
+    color: #ef4444;
+}
+
+.gateway-link-tag {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.16);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.gateway-focus-sub {
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.gateway-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.gateway-metric {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+}
+
+.metric-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
+    font-family: 'Consolas', monospace;
+}
+
+.metric-value.warning {
+    color: #fbbf24;
+}
+
+.metric-value.alert {
+    color: #ef4444;
+}
+
+.gateway-trend {
+    flex: 1;
+    min-height: 0;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    border-radius: 8px;
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+}
+
+.gateway-trend-label {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 8px;
+}
+
+.gateway-trend-chart {
+    flex: 1;
+    min-height: 0;
+}
+
+.gateway-kpi {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    text-align: center;
+}
+
+.kpi-label {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.7);
+    margin-bottom: 4px;
+}
+
+.kpi-value {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+}
+
+.kpi-value.online {
+    color: #10b981;
+}
+
+.kpi-value.offline {
+    color: #ef4444;
+}
+
+.kpi-value.warning {
+    color: #fbbf24;
+}
+
+.backhaul-progress {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.progress-label {
+    font-size: 12px;
+    color: #10b981;
+}
+
+.progress-label.retransmit {
+    color: #fbbf24;
+}
+
+.progress-percent {
+    font-size: 12px;
+    color: #00eaff;
+    font-weight: bold;
+}
+
+.progress-bar-container {
+    height: 8px;
+    background: rgba(0, 212, 255, 0.15);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #00eaff);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress-bar-fill.retransmit {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+/* ========== 卸货/RFID核验样式 ========== */
+.rfid-stats {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+/* 新版：顶部进度 + 中部主卡 + 底部双列填充 */
+.rfid-top {
+    flex: 0 0 auto;
+}
+
+.rfid-progress {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    border-radius: 8px;
+    padding: 12px 14px;
+}
+
+.rfid-progress-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.rfid-progress-title {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.rfid-progress-title span {
+    font-family: 'Consolas', monospace;
+}
+
+.rfid-progress-total {
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 6px;
+}
+
+.rfid-counts {
+    display: flex;
+    gap: 10px;
+}
+
+.rfid-count {
+    min-width: 74px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.16);
+    background: rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.rfid-count.passed {
+    border-color: rgba(94, 234, 212, 0.35);
+}
+
+.rfid-count.blocked {
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.count-num {
+    font-size: 18px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Consolas', monospace;
+}
+
+.rfid-count.passed .count-num {
+    color: #5eead4;
+}
+
+.rfid-count.blocked .count-num {
+    color: #ef4444;
+}
+
+.count-label {
+    margin-top: 2px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.rfid-progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.16);
+    overflow: hidden;
+}
+
+.rfid-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(94, 234, 212, 0.9), rgba(0, 212, 255, 0.8));
+    border-radius: 999px;
+    transition: width 0.4s ease;
+}
+
+.rfid-latest-main {
+    flex: 1;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.rfid-latest-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.14);
+    background: rgba(0, 0, 0, 0.18);
+}
+
+.rfid-latest-title {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.rfid-latest-state {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.rfid-main-result {
+    padding: 14px;
+    font-size: 34px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.92);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.rfid-main-result.passed {
+    color: #5eead4;
+}
+
+.rfid-main-result.blocked {
+    color: #ef4444;
+}
+
+.rfid-latest-body {
+    padding: 10px 14px 4px;
+}
+
+.rfid-demo-buttons {
+    margin-top: auto;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-top: 1px solid rgba(0, 212, 255, 0.12);
+    background: rgba(0, 0, 0, 0.14);
+}
+
+.rfid-demo-btn {
+    padding: 10px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.22);
+    background: rgba(148, 163, 184, 0.12);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rfid-demo-btn:hover {
+    border-color: rgba(0, 212, 255, 0.35);
+    background: rgba(148, 163, 184, 0.18);
+}
+
+.rfid-demo-btn.danger {
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.rfid-demo-btn.danger:hover {
+    border-color: rgba(239, 68, 68, 0.55);
+}
+
+.rfid-bottom {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.rfid-list {
+    min-height: 0;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.rfid-list-title {
+    padding: 10px 12px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+.rfid-list-title.alert {
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.rfid-list-body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 8px 10px;
+}
+
+.rfid-list-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.rfid-list-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.rfid-list-body::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.25);
+    border-radius: 2px;
+}
+
+.rfid-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 8px;
+    border-radius: 8px;
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px solid rgba(148, 163, 184, 0.14);
+    margin-bottom: 8px;
+}
+
+.rfid-list-item:last-child {
+    margin-bottom: 0;
+}
+
+.rfid-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.rfid-item-title {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.86);
+}
+
+.rfid-item-sub {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: 'Consolas', monospace;
+}
+
+.rfid-item-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+    align-self: center;
+}
+
+.rfid-item-badge.passed {
+    color: #5eead4;
+}
+
+.rfid-item-badge.blocked {
+    color: #ef4444;
+}
+
+.rfid-empty {
+    padding: 10px 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.rfid-stat {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px;
+    text-align: center;
+}
+
+.rfid-stat.passed {
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.rfid-stat.blocked {
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+}
+
+.rfid-stat.passed .stat-value {
+    color: #10b981;
+}
+
+.rfid-stat.blocked .stat-value {
+    color: #ef4444;
+}
+
+.stat-total {
+    font-size: 14px;
+    color: rgba(103, 197, 255, 0.6);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.7);
+    margin-top: 4px;
+}
+
+.rfid-latest-card {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.rfid-latest-card.passed {
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+.rfid-latest-card.blocked {
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.latest-card-header {
+    background: rgba(0, 212, 255, 0.1);
+    padding: 8px 12px;
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.9);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.latest-card-body {
+    padding: 10px 12px;
+}
+
+.card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.card-row:last-child {
+    border-bottom: none;
+}
+
+.card-label {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.7);
+}
+
+.card-value {
+    font-size: 12px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.result-tag {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+}
+
+.result-tag.passed {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+}
+
+.result-tag.blocked {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.reason-text {
+    color: #ef4444 !important;
+}
+
+.rfid-scan-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 150, 200, 0.2));
+    border: none;
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    color: #00eaff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rfid-scan-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 150, 200, 0.3));
+}
+
+/* ========== 关键传感器监测样式 ========== */
+.sensor-badge {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.sensor-status-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    background: rgba(0, 0, 0, 0.22);
+    margin-bottom: 10px;
+}
+
+.sensor-status-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sensor-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #5eead4;
+}
+
+.sensor-status-dot.warning {
+    background: #fbbf24;
+}
+
+.sensor-status-dot.alert {
+    background: #ef4444;
+}
+
+.sensor-status-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.sensor-status-rule {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    text-align: right;
+}
+
+.badge-source, .badge-interval {
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: normal;
+}
+
+.badge-source {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.badge-source.retransmit {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border-color: rgba(251, 191, 36, 0.4);
+}
+
+.badge-interval {
+    background: rgba(0, 212, 255, 0.15);
+    color: rgba(103, 197, 255, 0.9);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.sensor-current-cards {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0;
+}
+
+.sensor-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    padding: 6px 8px;
+    transition: all 0.3s;
+}
+
+.sensor-card.warning {
+    border-color: rgba(251, 191, 36, 0.5);
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.sensor-card.alert {
+    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.sensor-icon {
+    font-size: 18px;
+}
+
+.sensor-name {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.7);
+}
+
+.sensor-value {
+    font-size: 13px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+}
+
+.sensor-card.warning .sensor-value {
+    color: #fbbf24;
+}
+
+.sensor-card.alert .sensor-value {
+    color: #ef4444;
+}
+
+.sensor-chart-container {
+    flex: 1;
+    min-height: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0;
+}
+
+/* ========== 事件时间线样式 ========== */
+.timeline-key-status {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.78);
+    margin-bottom: 10px;
+}
+
+.timeline-container {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.timeline-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.timeline-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.timeline-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 2px;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.timeline-item.alert {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid #ef4444;
+    padding-left: 8px;
+    margin-left: -8px;
+}
+
+.timeline-time {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.6);
+    white-space: nowrap;
+    min-width: 50px;
+}
+
+.timeline-content {
+    flex: 1;
+}
+
+.timeline-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-size: 9px;
+    margin-right: 6px;
+}
+
+.timeline-tag.comm {
+    background: rgba(0, 212, 255, 0.14);
+    color: rgba(0, 212, 255, 0.9);
+}
+
+.timeline-tag.upload {
+    background: rgba(148, 163, 184, 0.16);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.timeline-tag.rfid {
+    background: rgba(148, 163, 184, 0.16);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.timeline-tag.alert {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.timeline-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.timeline-count {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.6);
+    margin-left: 5px;
+}
+
+/* ========== RFID核验与事件融合样式 ========== */
+.rfid-merged-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+}
+
+.rfid-section {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rfid-top-compact {
+    flex: 0 0 auto;
+}
+
+.rfid-progress-compact {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.rfid-progress-head-compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.rfid-counts-compact {
+    display: flex;
+    gap: 8px;
+}
+
+.rfid-count-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 212, 255, 0.14);
+    background: rgba(0, 0, 0, 0.18);
+    font-size: 11px;
+}
+
+.rfid-count-mini.passed {
+    border-color: rgba(94, 234, 212, 0.3);
+}
+
+.rfid-count-mini.blocked {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.rfid-count-mini .count-num {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Consolas', monospace;
+}
+
+.rfid-count-mini.passed .count-num {
+    color: #5eead4;
+}
+
+.rfid-count-mini.blocked .count-num {
+    color: #ef4444;
+}
+
+.rfid-count-mini .count-label {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.rfid-latest-compact {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.rfid-latest-compact.passed {
+    border-color: rgba(16, 185, 129, 0.45);
+}
+
+.rfid-latest-compact.blocked {
+    border-color: rgba(239, 68, 68, 0.45);
+}
+
+.rfid-latest-header-compact {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.15);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+.rfid-latest-header-compact .rfid-latest-title {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.rfid-latest-header-compact .rfid-latest-state {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.rfid-main-result-compact {
+    padding: 10px 12px;
+    font-size: 26px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.rfid-main-result-compact.passed {
+    color: #5eead4;
+}
+
+.rfid-main-result-compact.blocked {
+    color: #ef4444;
+}
+
+.rfid-latest-body-compact {
+    padding: 6px 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
+}
+
+.card-row-compact {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    font-size: 14px;
+}
+
+.card-row-compact .card-label {
+    color: rgba(103, 197, 255, 0.65);
+    font-size: 13px;
+}
+
+.card-row-compact .card-value {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.card-row-compact.reason-row {
+    grid-column: 1 / -1;
+}
+
+.rfid-demo-buttons-compact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(0, 212, 255, 0.1);
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.rfid-demo-btn-compact {
+    padding: 8px 10px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(148, 163, 184, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rfid-demo-btn-compact:hover {
+    border-color: rgba(0, 212, 255, 0.35);
+    background: rgba(148, 163, 184, 0.16);
+}
+
+.rfid-demo-btn-compact.danger {
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.rfid-demo-btn-compact.danger:hover {
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* 事件时间线部分 - 融合在RFID面板内 */
+.timeline-section {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.timeline-section-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    background: rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.timeline-section-title {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.timeline-key-status-mini {
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #5eead4;
+}
+
+.timeline-key-status-mini.warning {
+    background: rgba(251, 191, 36, 0.15);
+    color: #fbbf24;
+}
+
+.timeline-key-status-mini.alert {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+.timeline-container-compact {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 8px;
+}
+
+.timeline-container-compact::-webkit-scrollbar {
+    width: 3px;
+}
+
+.timeline-container-compact::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.timeline-container-compact::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.25);
+    border-radius: 2px;
+}
+
+.timeline-container-compact .timeline-item {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+    font-size: 13px;
+}
+
+.timeline-container-compact .timeline-time {
+    font-size: 12px;
+    min-width: 42px;
+}
+
+.timeline-container-compact .timeline-tag {
+    font-size: 10px;
+    padding: 2px 6px;
+}
+
+.timeline-container-compact .timeline-text {
+    font-size: 13px;
+}
+
+/* ========== 极地风力监测数据样式 ========== */
+.wind-badge {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.wind-chart-container {
+    flex: 1;
+    min-height: 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    padding: 0;
+}
+
+.wind-current-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.wind-card-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wind-direction-row {
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 212, 255, 0.12);
+}
+
+.wind-icon {
+    font-size: 24px;
+}
+
+.wind-info {
+    flex: 1;
+}
+
+.wind-name {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.7);
+}
+
+.wind-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+}
+
+.wind-value.warning {
+    color: #fbbf24;
+}
+
+.wind-value.alert {
+    color: #ef4444;
+}
+
+.wind-direction-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #67c5ff;
+    font-family: 'Consolas', monospace;
+}
+
+.wind-level {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.wind-level-label {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.6);
+}
+
+.wind-level-value {
+    font-size: 16px;
+    font-weight: bold;
+    color: #5eead4;
+    padding: 2px 10px;
+    background: rgba(94, 234, 212, 0.15);
+    border: 1px solid rgba(94, 234, 212, 0.3);
+    border-radius: 4px;
+}
+
+.wind-level-value.warning {
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.15);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+.wind-level-value.alert {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* 风向罗盘图标 */
+.wind-compass {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compass-icon {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 3px rgba(103, 197, 255, 0.4));
+}
+
+.compass-ring {
+    fill: none;
+    stroke: rgba(103, 197, 255, 0.3);
+    stroke-width: 1;
+}
+
+.compass-needle {
+    fill: #67c5ff;
+    filter: drop-shadow(0 0 2px rgba(103, 197, 255, 0.6));
+    transform-origin: 12px 12px;
+    transition: transform 0.5s ease-out;
+}
+
+/* ========== 传感器控制按钮 ========== */
+.sensor-ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 4px 12px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 212, 255, 0.5);
+    background: rgba(0, 80, 140, 0.5);
+    color: #67c5ff;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 0 6px rgba(0, 212, 255, 0.25);
+}
+
+.sensor-ctrl-btn:hover {
+    border-color: rgba(0, 234, 255, 0.7);
+    background: rgba(0, 100, 160, 0.6);
+    color: #00eaff;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.45);
+}
+
+.sensor-ctrl-btn .ctrl-icon {
+    font-size: 12px;
+    opacity: 0.9;
+    transition: opacity 0.25s ease;
+}
+
+.sensor-ctrl-btn:hover .ctrl-icon {
+    opacity: 1;
+}
+
+/* ========== 传感器控制抽屉 ========== */
+.sensor-drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 10, 30, 0.5);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.sensor-drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sensor-drawer {
+    position: fixed;
+    top: 0;
+    right: -380px;
+    width: 360px;
+    height: 100%;
+    background: 
+        linear-gradient(135deg, rgba(0, 30, 60, 0.95), rgba(0, 20, 45, 0.98)),
+        repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(0, 212, 255, 0.02) 20px, rgba(0, 212, 255, 0.02) 21px),
+        repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(0, 212, 255, 0.02) 20px, rgba(0, 212, 255, 0.02) 21px);
+    border-left: 1px solid rgba(0, 212, 255, 0.4);
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.5), -2px 0 10px rgba(0, 212, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+}
+
+.sensor-drawer.active {
+    right: 0;
+}
+
+/* ===== A. 顶部信息区 ===== */
+.drawer-info-section {
+    padding: 20px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    background: linear-gradient(180deg, rgba(0, 50, 90, 0.4), rgba(0, 30, 60, 0.3));
+    position: relative;
+}
+
+.drawer-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: rgba(0, 40, 80, 0.4);
+    color: #67c5ff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.drawer-close-btn:hover {
+    border-color: rgba(0, 212, 255, 0.6);
+    background: rgba(0, 60, 100, 0.5);
+    color: #00eaff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+.drawer-info-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding-right: 40px;
+}
+
+.drawer-info-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.drawer-sensor-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00eaff;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+}
+
+.drawer-sensor-type {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.6);
+    padding: 2px 8px;
+    background: rgba(0, 100, 150, 0.2);
+    border-radius: 4px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.drawer-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.drawer-status.online {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #5eead4;
+}
+
+.drawer-status.offline {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+.drawer-status .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 6px currentColor;
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.drawer-device-id {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.6);
+    font-family: 'Consolas', monospace;
+    margin-bottom: 12px;
+}
+
+/* IP地址选择器 */
+.drawer-ip-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0, 30, 60, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.ip-label {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.7);
+    white-space: nowrap;
+}
+
+.ip-select {
+    flex: 1;
+    padding: 6px 10px;
+    background: rgba(0, 20, 45, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 5px;
+    color: #00eaff;
+    font-size: 12px;
+    font-family: 'Consolas', monospace;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.ip-select:hover {
+    border-color: rgba(0, 212, 255, 0.5);
+}
+
+.ip-select:focus {
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
+}
+
+.ip-connect-btn {
+    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(0, 150, 200, 0.4), rgba(0, 100, 150, 0.4));
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 5px;
+    color: #00eaff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ip-connect-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 180, 230, 0.5), rgba(0, 130, 180, 0.5));
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.ip-connect-btn:active {
+    transform: scale(0.97);
+}
+
+.ip-connect-btn.connecting {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.drawer-current-value {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 8px;
+}
+
+.current-value-box {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.current-label {
+    font-size: 11px;
+    color: rgba(103, 197, 255, 0.6);
+    margin-right: 8px;
+}
+
+.current-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+    line-height: 1;
+}
+
+.current-unit {
+    font-size: 14px;
+    color: rgba(103, 197, 255, 0.8);
+    margin-left: 2px;
+}
+
+.current-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 1px solid rgba(0, 212, 255, 0.15);
+    padding-left: 20px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-label {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.5);
+    min-width: 56px;
+}
+
+.meta-value {
+    font-size: 12px;
+    color: #67c5ff;
+    font-family: 'Consolas', monospace;
+}
+
+/* 传感器切换器 */
+.sensor-switcher {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.sensor-switch-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(0, 40, 80, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(103, 197, 255, 0.6);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.25s;
+}
+
+.sensor-switch-btn:hover {
+    background: rgba(0, 60, 100, 0.4);
+    border-color: rgba(0, 212, 255, 0.35);
+    color: #67c5ff;
+}
+
+.sensor-switch-btn.active {
+    background: rgba(0, 150, 200, 0.25);
+    border-color: rgba(0, 234, 255, 0.5);
+    color: #00eaff;
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+}
+
+.switch-icon {
+    font-size: 16px;
+}
+
+.switch-label {
+    font-weight: 500;
+}
+
+/* 双值显示区 */
+.drawer-dual-value {
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 8px;
+}
+
+.dual-value-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.dual-value-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(0, 40, 70, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.1);
+}
+
+.dual-value-box.temperature {
+    border-left: 3px solid #ff6b6b;
+}
+
+.dual-value-box.humidity {
+    border-left: 3px solid #4ecdc4;
+}
+
+.dual-value-icon {
+    font-size: 24px;
+    opacity: 0.9;
+}
+
+.dual-value-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dual-value-label {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.6);
+}
+
+.dual-value-data {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.dual-value-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00eaff;
+    font-family: 'Consolas', monospace;
+    text-shadow: 0 0 10px rgba(0, 234, 255, 0.3);
+    line-height: 1;
+}
+
+.dual-value-unit {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.7);
+}
+
+.dual-meta {
+    flex-direction: row;
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid rgba(0, 212, 255, 0.1);
+    padding-top: 10px;
+    justify-content: space-between;
+}
+
+.sync-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #4ecdc4 !important;
+}
+
+.sync-dot {
+    width: 6px;
+    height: 6px;
+    background: #4ecdc4;
+    border-radius: 50%;
+    animation: syncPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes syncPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* 警告行 */
+.param-warning {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(255, 170, 0, 0.12);
+    border: 1px solid rgba(255, 170, 0, 0.3);
+    border-radius: 6px;
+    width: 100%;
+}
+
+.warning-icon {
+    font-size: 14px;
+    color: #ffaa00;
+}
+
+.warning-text {
+    font-size: 12px;
+    color: #ffcc44;
+    line-height: 1.4;
+}
+
+/* ===== B. 参数编辑区 ===== */
+.drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+.drawer-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.drawer-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.drawer-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 2px;
+}
+
+.param-group {
+    margin-bottom: 16px;
+}
+
+.param-group-header {
+    margin-bottom: 10px;
+}
+
+.param-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #00eaff;
+    margin-bottom: 4px;
+}
+
+.param-group-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: linear-gradient(180deg, #00d4ff, #0080ff);
+    border-radius: 2px;
+}
+
+.param-group-desc {
+    display: block;
+    font-size: 11px;
+    color: rgba(148, 163, 184, 0.8);
+    padding-left: 11px;
+}
+
+.param-card {
+    background: rgba(0, 30, 60, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.param-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+    transition: all 0.2s;
+}
+
+.param-row:last-child {
+    border-bottom: none;
+}
+
+.param-row:hover {
+    background: rgba(0, 50, 90, 0.25);
+}
+
+.param-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.param-label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.param-hint {
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.7);
+}
+
+.param-hint.warning {
+    color: rgba(251, 191, 36, 0.85);
+}
+
+.param-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.param-input {
+    width: 72px;
+    padding: 7px 10px;
+    background: rgba(0, 20, 45, 0.7);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    color: #00eaff;
+    font-size: 14px;
+    font-family: 'Consolas', monospace;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.param-input:focus {
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
+}
+
+.param-input.invalid {
+    border-color: rgba(239, 68, 68, 0.6);
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.2);
+}
+
+.param-unit {
+    font-size: 12px;
+    color: rgba(103, 197, 255, 0.7);
+    min-width: 24px;
+}
+
+.param-tooltip {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(0, 100, 150, 0.3);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: rgba(103, 197, 255, 0.7);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.param-tooltip:hover {
+    background: rgba(0, 120, 180, 0.4);
+    color: #00eaff;
+}
+
+.param-tooltip:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    right: 0;
+    width: 180px;
+    padding: 8px 10px;
+    background: rgba(0, 20, 40, 0.95);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.4;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.param-action-btn {
+    padding: 7px 16px;
+    background: rgba(0, 80, 140, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 6px;
+    color: #67c5ff;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.param-action-btn:hover {
+    background: rgba(0, 100, 160, 0.5);
+    border-color: rgba(0, 212, 255, 0.6);
+    color: #00eaff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+/* 下拉选择框 */
+.param-select {
+    padding: 7px 28px 7px 12px;
+    background: rgba(0, 20, 45, 0.7);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    color: #00eaff;
+    font-size: 13px;
+    font-family: 'Consolas', monospace;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2367c5ff' d='M2 4l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
+
+.param-select:focus {
+    border-color: rgba(0, 234, 255, 0.6);
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.25);
+}
+
+.param-select option {
+    background: #0a1628;
+    color: #00eaff;
+    padding: 8px;
+}
+
+/* 滑块样式 */
+.slider-row {
+    padding: 8px 14px 14px !important;
+}
+
+.param-slider-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.param-slider {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(0, 60, 100, 0.4);
+    border-radius: 3px;
+    outline: none;
+}
+
+.param-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #00d4ff, #0080ff);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+    transition: all 0.2s;
+}
+
+.param-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.7);
+}
+
+.slider-marks {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2px;
+}
+
+.slider-marks span {
+    font-size: 10px;
+    color: rgba(103, 197, 255, 0.6);
+    font-family: 'Consolas', monospace;
+}
+
+/* 滤波等级按钮组 */
+.filter-level-btns {
+    display: flex;
+    gap: 4px;
+}
+
+.filter-btn {
+    padding: 6px 14px;
+    background: rgba(0, 40, 80, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.25);
+    border-radius: 4px;
+    color: rgba(103, 197, 255, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background: rgba(0, 60, 100, 0.5);
+    border-color: rgba(0, 212, 255, 0.4);
+    color: #67c5ff;
+}
+
+.filter-btn.active {
+    background: rgba(0, 150, 200, 0.3);
+    border-color: rgba(0, 234, 255, 0.6);
+    color: #00eaff;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.3);
+}
+
+/* 参数规格表 */
+.param-spec-table {
+    background: rgba(0, 20, 45, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.12);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.spec-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 0.8fr 1fr;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.08);
+}
+
+.spec-row:last-child {
+    border-bottom: none;
+}
+
+.spec-row.spec-header {
+    background: rgba(0, 60, 100, 0.3);
+}
+
+.spec-row.spec-header .spec-col {
+    font-size: 11px;
+    font-weight: 600;
+    color: #67c5ff;
+}
+
+.spec-col {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.spec-col.code {
+    font-family: 'Consolas', monospace;
+    color: #00eaff;
+    font-size: 10px;
+}
+
+/* 自定义输入行 */
+.custom-input-row {
+    background: rgba(0, 40, 70, 0.2);
+}
+
+/* 预览行 */
+.preview-row {
+    background: rgba(0, 80, 120, 0.15);
+}
+
+/* 开关样式 */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 22px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(100, 100, 100, 0.3);
+    border: 1px solid rgba(100, 100, 100, 0.4);
+    border-radius: 22px;
+    transition: all 0.3s;
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: '';
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background: #94a3b8;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: rgba(0, 180, 200, 0.3);
+    border-color: rgba(0, 212, 255, 0.5);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(22px);
+    background: #00eaff;
+    box-shadow: 0 0 8px rgba(0, 234, 255, 0.6);
+}
+
+.toggle-label {
+    font-size: 11px;
+    color: #5eead4;
+    min-width: 40px;
+}
+
+/* ===== C. 底部操作区 ===== */
+.drawer-footer {
+    padding: 14px 20px;
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(0, 25, 50, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.footer-actions-row {
+    display: flex;
+    gap: 8px;
+}
+
+.footer-actions-row.primary-actions {
+    gap: 10px;
+}
+
+.drawer-btn {
+    flex: 1;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.drawer-btn .btn-icon {
+    font-size: 12px;
+}
+
+.drawer-btn.btn-secondary {
+    background: rgba(60, 80, 100, 0.25);
+    border: 1px solid rgba(100, 120, 140, 0.35);
+    color: #94a3b8;
+}
+
+.drawer-btn.btn-secondary:hover {
+    background: rgba(70, 90, 110, 0.35);
+    border-color: rgba(120, 140, 160, 0.5);
+    color: #cbd5e1;
+}
+
+.drawer-btn.btn-cancel {
+    background: rgba(100, 100, 100, 0.2);
+    border: 1px solid rgba(100, 100, 100, 0.4);
+    color: #94a3b8;
+}
+
+.drawer-btn.btn-cancel:hover {
+    background: rgba(100, 100, 100, 0.3);
+    border-color: rgba(150, 150, 150, 0.5);
+    color: #e2e8f0;
+}
+
+.drawer-btn.btn-apply {
+    background: rgba(0, 80, 140, 0.4);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    color: #67c5ff;
+}
+
+.drawer-btn.btn-apply:hover {
+    background: rgba(0, 100, 160, 0.5);
+    border-color: rgba(0, 212, 255, 0.6);
+    color: #00eaff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.drawer-btn.btn-send {
+    background: linear-gradient(135deg, rgba(0, 150, 180, 0.5), rgba(0, 100, 140, 0.5));
+    border: 1px solid rgba(0, 234, 255, 0.5);
+    color: #00eaff;
+}
+
+.drawer-btn.btn-send:hover {
+    background: linear-gradient(135deg, rgba(0, 180, 210, 0.6), rgba(0, 130, 170, 0.6));
+    border-color: rgba(0, 234, 255, 0.7);
+    box-shadow: 0 0 15px rgba(0, 234, 255, 0.4);
+}
+
+/* 结果反馈 */
+.footer-result {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.footer-result.show {
+    display: flex;
+}
+
+.footer-result.success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.footer-result.success .result-icon {
+    color: #5eead4;
+}
+
+.footer-result.success .result-text {
+    color: #5eead4;
+}
+
+.footer-result.error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.footer-result.error .result-icon {
+    color: #fca5a5;
+}
+
+.footer-result.error .result-text {
+    color: #fca5a5;
+}
+
+.result-time {
+    margin-left: auto;
+    font-size: 10px;
+    color: rgba(148, 163, 184, 0.6);
+    font-family: 'Consolas', monospace;
+}

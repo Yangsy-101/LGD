@@ -1,0 +1,1651 @@
+/*
+ * Precision command-center page system
+ * Loaded last so the complete page follows one visual and responsive hierarchy.
+ */
+
+:root {
+    --command-bg: #040c13;
+    --command-panel: rgba(7, 23, 34, .97);
+    --command-panel-raised: rgba(10, 31, 44, .97);
+    --command-line: rgba(111, 190, 211, .2);
+    --command-line-strong: rgba(99, 215, 235, .42);
+    --command-copy: #edf6f7;
+    --command-copy-soft: #b8cdd3;
+    --command-muted: #7895a0;
+    --command-cyan: #57d5ec;
+    --command-green: #63ddb0;
+    --command-amber: #f3a35c;
+    --command-red: #ff7968;
+    --command-radius: 10px;
+    --command-gap: clamp(9px, .72vw, 13px);
+    --command-shadow: 0 18px 42px rgba(0, 0, 0, .24);
+}
+
+html:has(body.emergency-modal-open),
+body.scene-dashboard-mode.emergency-modal-open {
+    overflow: hidden !important;
+    overscroll-behavior: none;
+}
+
+html {
+    color-scheme: dark;
+}
+
+body.scene-dashboard-mode .skip-link {
+    position: fixed;
+    z-index: 100000;
+    top: 8px;
+    left: 12px;
+    padding: 9px 13px;
+    border: 1px solid rgba(87, 213, 236, .7);
+    border-radius: 6px;
+    background: #071e2a;
+    color: #edfafa;
+    font-size: .82rem;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0;
+    transform: translateY(-140%);
+    transition: opacity .16s ease, transform .16s ease;
+}
+
+body.scene-dashboard-mode .skip-link:focus-visible {
+    opacity: 1;
+    outline: 2px solid #57d5ec;
+    outline-offset: 2px;
+    transform: translateY(0);
+}
+
+body.scene-dashboard-mode button {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(87, 213, 236, .16);
+}
+
+body.scene-dashboard-mode h1,
+body.scene-dashboard-mode h2 {
+    text-wrap: balance;
+}
+
+body.scene-dashboard-mode {
+    color: var(--command-copy);
+    background:
+        radial-gradient(circle at 74% -12%, rgba(54, 168, 194, .14), transparent 36%),
+        linear-gradient(rgba(86, 159, 181, .022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(86, 159, 181, .022) 1px, transparent 1px),
+        var(--command-bg);
+    background-size: auto, 34px 34px, 34px 34px, auto;
+}
+
+body.scene-dashboard-mode .container.command-shell,
+body.scene-dashboard-mode.responsive-dashboard .container.command-shell,
+body.scene-dashboard-mode.embedded-view .container.command-shell {
+    max-width: 2300px;
+    max-height: none;
+    padding: clamp(8px, .72vw, 13px) !important;
+    gap: var(--command-gap) !important;
+}
+
+/* Page masthead */
+body.scene-dashboard-mode .header.command-header {
+    min-height: 68px;
+    height: 68px;
+    padding: 7px 14px !important;
+    border-color: var(--command-line);
+    border-radius: var(--command-radius);
+    background:
+        linear-gradient(100deg, rgba(12, 38, 52, .96), rgba(5, 18, 28, .98) 68%),
+        #07151f;
+    box-shadow: var(--command-shadow), inset 0 1px rgba(255, 255, 255, .035);
+}
+
+body.scene-dashboard-mode .header.command-header::after {
+    top: -132px;
+    left: 39%;
+    width: 510px;
+    height: 220px;
+    border-color: rgba(87, 213, 236, .13);
+}
+
+body.scene-dashboard-mode .page-back-button {
+    min-width: 76px;
+    min-height: 44px;
+    height: 44px;
+    padding-inline: 13px;
+    border-color: rgba(114, 205, 224, .32);
+    background: rgba(4, 20, 30, .7);
+    font-size: .82rem;
+    transition: border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+body.scene-dashboard-mode .page-back-button:hover {
+    border-color: rgba(107, 221, 241, .58);
+    background: rgba(18, 65, 82, .5);
+    color: #f1fbfc;
+}
+
+body.scene-dashboard-mode .title-section {
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: min(52vw, 720px);
+    display: grid !important;
+    justify-items: center;
+    transform: translate(-50%, -50%) !important;
+    text-align: center;
+}
+
+body.scene-dashboard-mode .main-title {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+    color: #e9f5f7;
+    font-size: clamp(2.1rem, 2.8vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: .14em;
+    line-height: 1.04;
+    white-space: nowrap;
+    text-shadow: 0 0 24px rgba(99, 211, 231, .24);
+}
+
+body.scene-dashboard-mode .header-right {
+    gap: 12px;
+}
+
+body.scene-dashboard-mode .status-indicator {
+    min-width: 130px;
+    min-height: 43px;
+    padding: 5px 12px;
+    border: 1px solid rgba(104, 187, 205, .16);
+    border-radius: 7px;
+    background: rgba(3, 16, 25, .55);
+}
+
+body.scene-dashboard-mode .status-copy small {
+    font-size: .66rem;
+}
+
+body.scene-dashboard-mode .status-copy strong {
+    font-size: .84rem;
+}
+
+body.scene-dashboard-mode .current-time {
+    min-width: 92px;
+}
+
+body.scene-dashboard-mode .current-time > span {
+    font-size: clamp(1.05rem, 1.08vw, 1.2rem);
+}
+
+body.scene-dashboard-mode .current-time small {
+    font-size: .75rem;
+}
+
+body.scene-dashboard-mode .current-time,
+body.scene-dashboard-mode .current-time > span,
+body.scene-dashboard-mode .current-time small,
+body.scene-dashboard-mode .history-table,
+body.scene-dashboard-mode .history-record-id,
+body.scene-dashboard-mode .history-time-copy,
+body.scene-dashboard-mode .latency-badge,
+body.scene-dashboard-mode .environment-reading {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Asymmetric page composition: telemetry is the decision surface. */
+body.scene-dashboard-mode .dashboard-workspace {
+    gap: var(--command-gap);
+}
+
+body.scene-dashboard-mode .primary-workspace {
+    grid-template-columns: minmax(250px, .86fr) minmax(290px, 1fr) minmax(640px, 2.25fr);
+    gap: var(--command-gap);
+}
+
+body.scene-dashboard-mode .dashboard-panel {
+    position: relative;
+    isolation: isolate;
+    border-color: var(--command-line);
+    border-radius: var(--command-radius);
+    background:
+        linear-gradient(145deg, rgba(9, 29, 42, .98), rgba(5, 17, 27, .985));
+    box-shadow: var(--command-shadow), inset 0 1px rgba(255, 255, 255, .025);
+}
+
+body.scene-dashboard-mode .dashboard-panel::after {
+    right: 12px;
+    width: 58px;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, transparent, rgba(87, 213, 236, .9));
+    box-shadow: 0 0 10px rgba(87, 213, 236, .22);
+}
+
+body.scene-dashboard-mode .panel-heading {
+    min-height: 60px;
+    height: 60px;
+    padding: 8px 11px;
+    gap: 11px;
+    border-bottom-color: var(--command-line);
+    background:
+        linear-gradient(90deg, rgba(62, 151, 171, .105), transparent 48%),
+        linear-gradient(180deg, rgba(10, 31, 44, .96), rgba(6, 23, 34, .94));
+}
+
+body.scene-dashboard-mode .section-index {
+    width: 34px;
+    flex-basis: 34px;
+    border-right-color: rgba(111, 190, 211, .2);
+    color: var(--command-cyan);
+    font-family: var(--ops-font-display);
+    font-size: clamp(.78rem, .84vw, .9rem);
+    font-weight: 750;
+    letter-spacing: .05em;
+}
+
+body.scene-dashboard-mode .panel-title-copy {
+    justify-content: center;
+}
+
+body.scene-dashboard-mode .panel-title-copy h2,
+body.scene-dashboard-mode .panel-telemetry .panel-title-copy h2 {
+    overflow: visible;
+    color: var(--command-copy);
+    font-size: clamp(1.04rem, 1.42vw, 1.55rem);
+    font-weight: 760;
+    letter-spacing: .025em;
+    line-height: 1.15;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .panel-meta {
+    min-height: 29px;
+    padding-inline: 10px;
+    border-color: rgba(87, 213, 236, .24);
+    background: rgba(87, 213, 236, .07);
+    font-size: .73rem;
+    box-shadow: inset 0 1px rgba(255, 255, 255, .025);
+}
+
+body.scene-dashboard-mode .panel-caption {
+    min-height: 36px;
+    padding-inline: 11px;
+    border-top-color: var(--command-line);
+    color: #7e9aa5;
+    font-size: clamp(.63rem, .7vw, .72rem);
+}
+
+body.scene-dashboard-mode .panel-caption i {
+    color: #63c8dc;
+}
+
+body.scene-dashboard-mode .panel-architecture .panel-body.scaled-container {
+    padding: 7px;
+    background:
+        radial-gradient(circle at 50% 42%, rgba(38, 113, 138, .1), transparent 48%),
+        linear-gradient(rgba(76, 143, 165, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(76, 143, 165, .04) 1px, transparent 1px),
+        #06131e;
+    background-size: auto, 25px 25px, 25px 25px, auto;
+}
+
+body.scene-dashboard-mode .map-stage {
+    margin: 8px;
+    border-color: rgba(107, 190, 210, .24);
+    border-radius: 8px;
+    box-shadow:
+        0 12px 28px rgba(0, 0, 0, .16),
+        inset 0 0 0 1px rgba(255, 255, 255, .018);
+}
+
+body.scene-dashboard-mode .map-stage::before {
+    content: "";
+    position: absolute;
+    z-index: 452;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(90deg, rgba(78, 217, 239, .8), transparent) top left / 54px 1px no-repeat,
+        linear-gradient(rgba(78, 217, 239, .8), transparent) top left / 1px 54px no-repeat,
+        linear-gradient(270deg, rgba(78, 217, 239, .5), transparent) bottom right / 42px 1px no-repeat,
+        linear-gradient(0deg, rgba(78, 217, 239, .5), transparent) bottom right / 1px 42px no-repeat;
+}
+
+body.scene-dashboard-mode #nanjingMap .leaflet-control-zoom a {
+    width: 44px;
+    height: 44px;
+    font-size: 18px;
+    line-height: 44px;
+    transition: color .16s ease, background .16s ease;
+}
+
+body.scene-dashboard-mode #nanjingMap .leaflet-control-zoom a:hover {
+    background: rgba(18, 61, 78, .96) !important;
+    color: #71e3f4 !important;
+}
+
+body.scene-dashboard-mode #nanjingMap .map-node-popup {
+    min-width: 150px;
+    display: grid;
+    gap: 4px;
+    overflow-wrap: anywhere;
+}
+
+body.scene-dashboard-mode #nanjingMap .map-node-popup strong {
+    color: #17333e;
+    font-size: .9rem;
+}
+
+body.scene-dashboard-mode #nanjingMap .map-node-popup span {
+    color: #36545e;
+    font-size: .76rem;
+    line-height: 1.35;
+}
+
+body.scene-dashboard-mode #nanjingMap .custom-map-marker {
+    width: 44px !important;
+    height: 48px !important;
+    outline: none;
+}
+
+body.scene-dashboard-mode #nanjingMap .custom-map-marker:focus-visible {
+    outline: 3px solid rgba(87, 213, 236, .92);
+    outline-offset: 2px;
+    border-radius: 50%;
+}
+
+/* Telemetry hierarchy and glyph-safe primary status. */
+body.scene-dashboard-mode .panel-telemetry {
+    border-color: rgba(95, 202, 222, .38);
+    box-shadow:
+        0 20px 46px rgba(0, 0, 0, .28),
+        0 0 0 1px rgba(75, 197, 220, .035),
+        inset 0 1px rgba(255, 255, 255, .03);
+}
+
+body.scene-dashboard-mode .panel-telemetry .panel-heading {
+    border-bottom-color: rgba(95, 202, 222, .24);
+}
+
+body.scene-dashboard-mode .scene-telemetry {
+    --telemetry-gap: calc(8px * var(--telemetry-scale, 1));
+    padding: calc(10px * var(--telemetry-scale, 1)) !important;
+}
+
+body.scene-dashboard-mode .scene-switcher,
+body.scene-dashboard-mode .scene-context-row,
+body.scene-dashboard-mode .scene-metric-card,
+body.scene-dashboard-mode .forest-environment,
+body.scene-dashboard-mode .scene-time-grid,
+body.scene-dashboard-mode .scene-trend-card {
+    box-shadow:
+        inset 0 1px rgba(255, 255, 255, .025),
+        0 8px 18px rgba(0, 0, 0, .1);
+}
+
+body.scene-dashboard-mode .scene-switch {
+    cursor: pointer;
+    transition: color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+
+body.scene-dashboard-mode .scene-switch:not(.is-active):hover {
+    background: rgba(58, 139, 160, .075);
+}
+
+body.scene-dashboard-mode .scene-switch:focus-visible,
+body.scene-dashboard-mode .scene-command-grid:focus-visible,
+body.scene-dashboard-mode .fixed-topology-globe:focus-visible,
+body.scene-dashboard-mode .page-back-button:focus-visible {
+    outline: 2px solid rgba(87, 213, 236, .88);
+    outline-offset: 2px;
+}
+
+body.scene-dashboard-mode .scene-switcher {
+    height: calc(50px * var(--telemetry-scale, 1));
+}
+
+body.scene-dashboard-mode .scene-switch span {
+    font-size: clamp(.72rem, 1.08cqw, .94rem);
+}
+
+body.scene-dashboard-mode .scene-switch strong {
+    font-size: clamp(.94rem, 1.48cqw, 1.22rem);
+}
+
+body.scene-dashboard-mode .scene-context-row {
+    height: calc(66px * var(--telemetry-scale, 1));
+}
+
+body.scene-dashboard-mode .scene-context-copy small,
+body.scene-dashboard-mode .scene-payload small {
+    font-size: clamp(.69rem, .92cqw, .82rem);
+}
+
+body.scene-dashboard-mode .scene-context-copy strong {
+    overflow: visible;
+    font-size: clamp(1.04rem, 1.68cqw, 1.45rem);
+    line-height: 1.25;
+    text-overflow: clip;
+}
+
+body.scene-dashboard-mode .scene-payload b {
+    font-size: clamp(.82rem, 1.2cqw, 1.08rem);
+}
+
+body.scene-dashboard-mode .scene-reading-value {
+    min-height: 0;
+    align-items: center;
+    padding-block: .08em .11em;
+    overflow: visible;
+}
+
+body.scene-dashboard-mode .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-scene="ocean"] .scene-reading-value strong {
+    max-width: 100%;
+    padding-block: .07em .11em;
+    overflow: visible;
+    color: #f5fbfb;
+    font-size: clamp(2.45rem, 5.1cqw, 4.8rem);
+    font-weight: 700;
+    letter-spacing: -.045em;
+    line-height: 1.08;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-reading-value em {
+    padding-bottom: .35em;
+    flex: 0 0 auto;
+    font-size: clamp(1rem, 1.4cqw, 1.3rem);
+    font-weight: 750;
+    letter-spacing: .02em;
+    line-height: 1;
+}
+
+/* In the alarm scene the value is a complete status phrase; the separate
+   unit label would only repeat "status" and can collide in shallow cells. */
+body.scene-dashboard-mode .scene-telemetry[data-scene="forest"] .scene-reading-value em {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-reading-label {
+    font-size: clamp(.82rem, 1.18cqw, 1.02rem);
+}
+
+body.scene-dashboard-mode .scene-verdict {
+    font-size: clamp(.78rem, .98cqw, .88rem);
+}
+
+body.scene-dashboard-mode .latest-record-id {
+    padding-top: 5px;
+    font-size: clamp(.76rem, .94cqw, .86rem);
+}
+
+body.scene-dashboard-mode .forest-environment-item small,
+body.scene-dashboard-mode .scene-time-item small {
+    font-size: clamp(.82rem, 1.02cqw, .94rem);
+}
+
+body.scene-dashboard-mode .forest-environment-item strong {
+    padding-block: .05em .1em;
+    overflow: visible;
+    font-size: clamp(1.48rem, 2.65cqw, 2.7rem);
+    line-height: 1.08;
+}
+
+body.scene-dashboard-mode .forest-environment-item em {
+    margin-left: 2px;
+    font-size: clamp(.86rem, 1.12cqw, 1.08rem);
+    font-weight: 700;
+    line-height: 1;
+}
+
+body.scene-dashboard-mode .environment-reading small,
+body.scene-dashboard-mode .history-scene-metric small {
+    color: currentColor;
+    font-size: .9em;
+    font-weight: 700;
+    letter-spacing: .015em;
+    opacity: .82;
+}
+
+body.scene-dashboard-mode .trend-axis-title,
+body.scene-dashboard-mode .trend-series-legend b {
+    font-size: clamp(.75rem, .9cqw, .88rem);
+    font-weight: 700;
+}
+
+/* Environment timestamps are operational data, not footnotes. Keep both the
+   label and value readable even in the compact 1366px command layout. */
+body.scene-dashboard-mode .forest-environment-time {
+    min-height: 42px;
+    padding: 5px 8px 3px;
+    gap: clamp(10px, 1.4cqw, 16px);
+}
+
+body.scene-dashboard-mode .forest-environment-time > span {
+    min-width: 0;
+    padding-inline: 3px;
+    grid-template-columns: 20px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 0;
+}
+
+body.scene-dashboard-mode .forest-environment-time > span:first-child {
+    border-right: 1px solid rgba(111, 190, 211, .14);
+}
+
+body.scene-dashboard-mode .forest-environment-time i {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: center;
+    color: #52d8ee;
+    font-size: clamp(.9rem, 1.12cqw, 1.06rem);
+}
+
+body.scene-dashboard-mode .forest-environment-time small {
+    grid-column: 2;
+    grid-row: 1;
+    display: block !important;
+    overflow: visible;
+    color: #8aa5af;
+    font-size: clamp(.76rem, .92cqw, .88rem);
+    font-weight: 600;
+    line-height: 1.08;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .forest-environment-time strong {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    overflow: visible;
+    color: #edf7f8;
+    font-family: var(--ops-font-display);
+    font-size: clamp(1.05rem, 1.32cqw, 1.24rem);
+    font-weight: 750;
+    letter-spacing: .015em;
+    line-height: 1.1;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-time-item strong {
+    overflow: visible;
+    font-size: clamp(1.25rem, 1.62cqw, 1.52rem);
+    font-weight: 750;
+    letter-spacing: .015em;
+    line-height: 1.16;
+    text-overflow: clip;
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title > i {
+    width: calc(42px * var(--telemetry-scale, 1));
+    height: calc(42px * var(--telemetry-scale, 1));
+    font-size: clamp(.92rem, 1.24cqw, 1.14rem);
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title small {
+    font-size: clamp(.76rem, .94cqw, .88rem);
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title strong {
+    font-size: clamp(1.06rem, 1.34cqw, 1.28rem);
+}
+
+body.scene-dashboard-mode .scene-time-item > i {
+    width: calc(42px * var(--telemetry-scale, 1));
+    height: calc(42px * var(--telemetry-scale, 1));
+    font-size: clamp(.9rem, 1.18cqw, 1.08rem);
+}
+
+body.scene-dashboard-mode .trend-header strong {
+    font-size: clamp(.98rem, 1.28cqw, 1.25rem);
+}
+
+body.scene-dashboard-mode .trend-header small,
+body.scene-dashboard-mode .trend-axis-title {
+    font-size: clamp(.7rem, .76cqw, .78rem);
+}
+
+body.scene-dashboard-mode .trend-delta {
+    font-size: clamp(.7rem, .76cqw, .8rem);
+}
+
+body.scene-dashboard-mode .trend-coordinate-tick {
+    font-size: clamp(.75rem, .84cqw, .84rem);
+}
+
+body.scene-dashboard-mode .trend-time-tick,
+body.scene-dashboard-mode .trend-footer {
+    font-size: clamp(.72rem, .8cqw, .82rem);
+}
+
+/* Compact telemetry receives enough vertical room for full CJK glyph boxes. */
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] {
+    --telemetry-gap: 6px;
+    padding: 7px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-switcher {
+    height: 38px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-context-row {
+    height: 48px;
+    padding-inline: 10px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-command-grid {
+    grid-template-areas:
+        "metric environment time"
+        "trend trend trend";
+    grid-template-columns: minmax(174px, .76fr) minmax(220px, 1fr) minmax(232px, 1.04fr);
+    grid-template-rows: minmax(96px, .78fr) minmax(166px, 1.22fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-command-grid {
+    grid-template-areas:
+        "metric time"
+        "trend trend";
+    grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-metric-card {
+    grid-area: metric;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-reading {
+    grid-template-areas:
+        "label verdict"
+        "value value"
+        "frame frame";
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-metric-card {
+    padding: 7px 9px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading {
+    grid-template-rows: auto minmax(44px, 1fr) minmax(19px, auto);
+    gap: 0 7px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-reading-value strong {
+    padding-block: .03em .06em;
+    font-size: clamp(2.1rem, 5.1cqw, 2.45rem);
+    line-height: 1.06;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .latest-record-id {
+    padding-top: 1px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-item strong {
+    font-size: clamp(1.55rem, 3.9cqw, 2.12rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment {
+    padding: 6px;
+    grid-template-rows: minmax(44px, 1fr) 36px;
+    gap: 4px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time {
+    min-height: 36px;
+    padding: 4px 7px 3px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-grid {
+    grid-area: time;
+    padding: 6px;
+    grid-template-columns: 1fr;
+    gap: 3px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item {
+    min-height: 0;
+    padding: 3px 7px;
+    grid-template-columns: minmax(68px, .78fr) minmax(0, 1fr);
+    grid-template-rows: 1fr;
+    gap: 6px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item > i,
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .time-heading {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item small,
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item strong {
+    grid-row: 1;
+    align-self: center;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item small {
+    grid-column: 1;
+    font-size: clamp(.72rem, 1.15cqw, .82rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item strong {
+    grid-column: 2;
+    justify-self: end;
+    font-size: clamp(.9rem, 1.48cqw, 1.08rem);
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-trend-card {
+    padding: 7px 10px 6px !important;
+    gap: 3px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-chart-wrap {
+    min-height: 102px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time > span {
+    grid-template-columns: 18px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 7px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time strong {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item strong {
+    font-size: clamp(1.16rem, 2.12cqw, 1.42rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item small {
+    font-size: clamp(.78rem, 1.45cqw, .9rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-header strong {
+    font-size: clamp(.94rem, 1.85cqw, 1.12rem);
+}
+
+/* Compact trend plots do not have enough vertical distance for five large
+   labels. Keep the meaningful max / midpoint / min ticks instead of letting
+   glyph boxes overlap. */
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-coordinate-tick:nth-child(even),
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-time-tick:nth-child(even) {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"][data-scene="ocean"] .scene-reading-value strong {
+    max-width: calc(100% - 4px);
+    font-size: clamp(2.35rem, 3.35cqw, 3.2rem);
+}
+
+/* Records become a readable operational log instead of a fine-print footer. */
+body.scene-dashboard-mode .panel-trends {
+    height: clamp(198px, 25vh, 228px);
+    min-height: 198px;
+}
+
+body.scene-dashboard-mode .history-panel-body {
+    padding: 8px;
+}
+
+body.scene-dashboard-mode .history-tables-grid {
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, .94fr);
+    gap: 8px;
+}
+
+body.scene-dashboard-mode[data-current-scene="ocean"] .history-tables-grid {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+body.scene-dashboard-mode .history-dataset-card {
+    border-color: rgba(111, 190, 211, .22);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(8, 27, 39, .96), rgba(4, 17, 27, .95));
+    box-shadow: 0 10px 22px rgba(0, 0, 0, .13), inset 0 1px rgba(255, 255, 255, .02);
+}
+
+body.scene-dashboard-mode .history-dataset-heading {
+    min-height: 36px;
+    height: 36px;
+    padding-inline: 11px;
+    border-bottom-color: rgba(111, 190, 211, .2);
+    background:
+        linear-gradient(90deg, rgba(240, 164, 93, .08), transparent 34%),
+        rgba(10, 32, 44, .96);
+}
+
+body.scene-dashboard-mode .environment-history-dataset .history-dataset-heading {
+    background:
+        linear-gradient(90deg, rgba(84, 210, 237, .09), transparent 34%),
+        rgba(10, 32, 44, .96);
+}
+
+body.scene-dashboard-mode .history-dataset-heading i {
+    font-size: .78rem;
+}
+
+body.scene-dashboard-mode .history-dataset-heading strong {
+    overflow: visible;
+    color: #dcebed;
+    font-size: .82rem;
+    font-weight: 700;
+    text-overflow: clip;
+}
+
+body.scene-dashboard-mode .history-dataset-heading small,
+body.scene-dashboard-mode .history-dataset-heading small b {
+    font-size: .72rem;
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table {
+    color: #c8d9de;
+    font-size: clamp(.8rem, .82vw, .9rem);
+}
+
+body.scene-dashboard-mode .primary-history-dataset .history-table {
+    min-width: 0;
+    table-layout: fixed;
+}
+
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(1) { width: 12%; }
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(2) { width: 15%; }
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(3),
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(4) { width: 21.5%; }
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(5) { width: 17%; }
+body.scene-dashboard-mode .primary-history-dataset .history-table th:nth-child(6) { width: 13%; }
+
+body.scene-dashboard-mode .history-record-id,
+body.scene-dashboard-mode .history-scene-metric,
+body.scene-dashboard-mode .history-link-online {
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table th,
+body.scene-dashboard-mode .history-dataset-card .history-table td {
+    padding-inline: clamp(6px, .55vw, 10px);
+}
+
+body.scene-dashboard-mode .history-record-id {
+    display: block;
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+body.scene-dashboard-mode .history-time {
+    gap: 5px;
+    line-height: 1.08;
+    white-space: normal;
+}
+
+body.scene-dashboard-mode .history-time-copy {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+}
+
+body.scene-dashboard-mode .history-time-copy small,
+body.scene-dashboard-mode .history-time-copy b {
+    display: block;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .history-time-copy small {
+    color: #849ca6;
+    font-size: .92em;
+    font-weight: 550;
+}
+
+body.scene-dashboard-mode .history-time-copy b {
+    color: #d8e6e9;
+    font-size: .98em;
+    font-weight: 650;
+}
+
+body.scene-dashboard-mode .latency-badge {
+    min-width: 0;
+    padding-inline: 6px;
+    font-size: clamp(.82rem, .82vw, .94rem);
+    font-weight: 700;
+}
+
+body.scene-dashboard-mode .history-link-online {
+    font-size: .88em;
+}
+
+body.scene-dashboard-mode .environment-history-table th:nth-child(1) { width: 16%; }
+body.scene-dashboard-mode .environment-history-table th:nth-child(2),
+body.scene-dashboard-mode .environment-history-table th:nth-child(3) { width: 10%; }
+body.scene-dashboard-mode .environment-history-table th:nth-child(4),
+body.scene-dashboard-mode .environment-history-table th:nth-child(5) { width: 32%; }
+
+/* A 720px-high command screen has eight fewer vertical pixels than the usual
+   compact deck after the masthead and record rail. Reclaim a slim slice from
+   the log and keep every primary frame/status line inside its card. */
+@media (min-width: 1181px) and (max-height: 740px) {
+    body.scene-dashboard-mode .panel-trends {
+        height: 190px;
+        min-height: 190px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-command-grid {
+        grid-template-columns: minmax(200px, .88fr) minmax(210px, .98fr) minmax(224px, 1fr);
+        grid-template-rows: 100px minmax(145px, 1fr);
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-metric-card {
+        padding: 5px 7px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-value strong,
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-reading-value strong {
+        font-size: clamp(1.95rem, 4.7cqw, 2.25rem);
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading {
+        grid-template-rows: 29px minmax(35px, 1fr) 19px;
+        gap: 0 6px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-label {
+        line-height: 1.08;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-label i {
+        width: 24px;
+        height: 24px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .latest-record-id {
+        min-height: 19px;
+        padding-top: 2px;
+        font-size: .7rem;
+        line-height: 1.2;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-chart-wrap {
+        min-height: 82px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-footer {
+        min-height: 13px;
+        padding-top: 1px;
+        line-height: 1.05;
+    }
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table thead tr,
+body.scene-dashboard-mode .history-dataset-card .history-table thead th {
+    height: 34px;
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table thead th {
+    color: #91aab3;
+    font-size: clamp(.75rem, .74vw, .82rem);
+    font-weight: 700;
+    letter-spacing: .075em;
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table tbody tr,
+body.scene-dashboard-mode .history-dataset-card .history-table tbody td {
+    height: 44px;
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table tbody tr:nth-child(even) {
+    background: rgba(55, 128, 148, .018);
+}
+
+body.scene-dashboard-mode .history-dataset-card .history-table tbody tr:hover {
+    background: rgba(87, 213, 236, .075);
+}
+
+body.scene-dashboard-mode .history-expand-toggle {
+    display: none;
+}
+
+/* Medium widths use two support panels above a full-width telemetry deck. */
+@media (max-width: 1180px) {
+    body.scene-dashboard-mode .panel-title-copy h2,
+    body.scene-dashboard-mode .panel-telemetry .panel-title-copy h2 {
+        font-size: clamp(1.18rem, 2.15vw, 1.5rem);
+    }
+
+    html:has(body.scene-dashboard-mode),
+    body.scene-dashboard-mode {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+
+    body.scene-dashboard-mode .container.command-shell,
+    body.scene-dashboard-mode.responsive-dashboard .container.command-shell,
+    body.scene-dashboard-mode.embedded-view .container.command-shell {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .dashboard-workspace {
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .primary-workspace {
+        height: auto;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows:
+            clamp(360px, 45vw, 430px)
+            minmax(clamp(580px, 70vw, 680px), auto);
+    }
+
+    body.scene-dashboard-mode .panel-architecture,
+    body.scene-dashboard-mode .panel-map {
+        min-height: 0;
+    }
+
+    body.scene-dashboard-mode .panel-telemetry {
+        min-height: clamp(580px, 70vw, 680px);
+        grid-column: 1 / -1;
+    }
+
+    body.scene-dashboard-mode .panel-trends {
+        height: clamp(500px, 58vw, 620px);
+        min-height: clamp(500px, 58vw, 620px);
+    }
+
+    body.scene-dashboard-mode .history-tables-grid {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    body.scene-dashboard-mode[data-current-scene="ocean"] .history-tables-grid {
+        grid-template-rows: minmax(0, 1fr);
+    }
+
+    body.scene-dashboard-mode .history-dataset-card {
+        min-height: 0;
+    }
+}
+
+/* Narrow pages keep typography readable and scroll vertically instead of clipping it. */
+@media (max-width: 760px) {
+    body.scene-dashboard-mode .header.command-header {
+        min-height: 64px;
+        height: 64px;
+    }
+
+    body.scene-dashboard-mode .title-section {
+        position: static !important;
+        width: auto;
+        margin-right: auto;
+        justify-items: start;
+        transform: none !important;
+        text-align: left;
+    }
+
+    body.scene-dashboard-mode .main-title {
+        font-size: clamp(1.18rem, 4.6vw, 1.55rem);
+        letter-spacing: .08em;
+    }
+
+    body.scene-dashboard-mode .status-indicator,
+    body.scene-dashboard-mode .header-separator {
+        display: none;
+    }
+
+    body.scene-dashboard-mode .current-time {
+        min-width: 76px;
+    }
+
+    body.scene-dashboard-mode .primary-workspace {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows:
+            clamp(320px, 92vw, 400px)
+            clamp(320px, 92vw, 400px)
+            minmax(clamp(720px, 205vw, 820px), auto);
+    }
+
+    body.scene-dashboard-mode .panel-architecture,
+    body.scene-dashboard-mode .panel-map,
+    body.scene-dashboard-mode .panel-telemetry {
+        grid-column: auto;
+    }
+
+    body.scene-dashboard-mode .panel-telemetry {
+        height: auto;
+        min-height: 0;
+        overflow: visible !important;
+    }
+
+    body.scene-dashboard-mode .panel-telemetry .panel-heading {
+        flex: 0 0 auto;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] {
+        height: auto;
+        min-height: 0;
+        flex: 0 0 auto;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .panel-trends {
+        height: auto;
+        min-height: 0;
+        overflow: visible !important;
+    }
+
+    body.scene-dashboard-mode .history-panel-body {
+        height: auto;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .history-tables-grid {
+        height: auto;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        grid-auto-rows: auto;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .history-table-shell {
+        height: auto;
+        min-height: 0;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .history-dataset-heading {
+        min-height: 44px;
+        height: 44px;
+        padding-inline: 13px;
+    }
+
+    body.scene-dashboard-mode .history-dataset-heading strong {
+        font-size: .95rem;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table,
+    body.scene-dashboard-mode .environment-history-table {
+        width: 100%;
+        min-width: 0 !important;
+        display: block;
+        table-layout: auto;
+        font-size: .82rem;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table thead {
+        display: none;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody {
+        padding: 9px;
+        display: grid;
+        gap: 9px;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody tr {
+        height: auto;
+        min-height: 0;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 5px 9px;
+        border: 1px solid rgba(111, 190, 211, .14);
+        border-radius: 6px;
+        background: rgba(8, 28, 40, .62);
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody td {
+        width: auto !important;
+        height: auto;
+        min-width: 0;
+        min-height: 42px;
+        padding: 5px 7px !important;
+        display: grid;
+        align-content: center;
+        gap: 4px;
+        overflow: visible;
+        border: 0;
+        text-overflow: clip;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody td::before {
+        color: #7895a0;
+        font-size: .66rem;
+        font-weight: 650;
+        letter-spacing: .06em;
+        line-height: 1.2;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody td:first-child {
+        grid-column: 1 / -1;
+        min-height: 38px;
+        border-bottom: 1px solid rgba(111, 190, 211, .1);
+    }
+
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(1)::before { content: "记录编号"; }
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(2)::before { content: "火情状态"; }
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(3)::before { content: "采集时间"; }
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(4)::before { content: "入库时间"; }
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(5)::before { content: "链路时差"; }
+    body.scene-dashboard-mode .primary-history-dataset tbody td:nth-child(6)::before { content: "卫星链路"; }
+
+    body.scene-dashboard-mode[data-current-scene="ocean"] .primary-history-dataset tbody td:nth-child(2)::before {
+        content: "当前风速";
+    }
+
+    body.scene-dashboard-mode .environment-history-dataset tbody td:nth-child(1)::before { content: "记录编号"; }
+    body.scene-dashboard-mode .environment-history-dataset tbody td:nth-child(2)::before { content: "温度"; }
+    body.scene-dashboard-mode .environment-history-dataset tbody td:nth-child(3)::before { content: "湿度"; }
+    body.scene-dashboard-mode .environment-history-dataset tbody td:nth-child(4)::before { content: "环境采集时间"; }
+    body.scene-dashboard-mode .environment-history-dataset tbody td:nth-child(5)::before { content: "环境入库时间"; }
+
+    body.scene-dashboard-mode .history-time-copy small {
+        font-size: .72rem;
+    }
+
+    body.scene-dashboard-mode .history-time-copy b,
+    body.scene-dashboard-mode .history-record-id,
+    body.scene-dashboard-mode .history-scene-metric,
+    body.scene-dashboard-mode .latency-badge,
+    body.scene-dashboard-mode .history-link-online,
+    body.scene-dashboard-mode .environment-reading {
+        font-size: .84rem;
+    }
+
+    body.scene-dashboard-mode .environment-reading small,
+    body.scene-dashboard-mode .history-scene-metric small {
+        font-size: .9em;
+    }
+
+    body.scene-dashboard-mode .history-empty-row {
+        grid-template-columns: minmax(0, 1fr) !important;
+    }
+
+    body.scene-dashboard-mode .history-empty-row td {
+        grid-column: 1 / -1;
+    }
+
+    body.scene-dashboard-mode .history-empty-row td::before {
+        content: none !important;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card:not(.is-expanded) .history-table tbody tr:nth-child(n + 5) {
+        display: none;
+    }
+
+    body.scene-dashboard-mode .history-expand-toggle {
+        min-height: 44px;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 0;
+        border-top: 1px solid rgba(111, 190, 211, .15);
+        background: linear-gradient(180deg, rgba(12, 39, 53, .9), rgba(6, 25, 36, .94));
+        color: #9edce8;
+        font-family: var(--ops-font-body);
+        font-size: .8rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background-color .16s ease, color .16s ease;
+    }
+
+    body.scene-dashboard-mode .history-expand-toggle[hidden] {
+        display: none;
+    }
+
+    body.scene-dashboard-mode .history-expand-toggle:hover {
+        background: rgba(27, 77, 94, .72);
+        color: #eaf9fb;
+    }
+
+    body.scene-dashboard-mode .history-expand-toggle:focus-visible {
+        outline: 2px solid #57d5ec;
+        outline-offset: -3px;
+    }
+
+    body.scene-dashboard-mode .history-expand-toggle i {
+        transition: transform .18s ease;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card.is-expanded .history-expand-toggle i {
+        transform: rotate(180deg);
+    }
+}
+
+@media (max-width: 390px) {
+    body.scene-dashboard-mode .header.command-header {
+        padding-inline: 8px !important;
+        gap: 7px;
+    }
+
+    body.scene-dashboard-mode .page-back-button {
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        padding: 0;
+    }
+
+    body.scene-dashboard-mode .page-back-button span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    body.scene-dashboard-mode .title-section {
+        min-width: 0;
+    }
+
+    body.scene-dashboard-mode .main-title {
+        font-size: clamp(1.08rem, 5.35vw, 1.18rem);
+        letter-spacing: .035em;
+    }
+
+    body.scene-dashboard-mode .current-time {
+        min-width: 70px;
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody tr {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body.scene-dashboard-mode .history-dataset-card .history-table tbody td {
+        grid-column: 1;
+    }
+}
+
+/* Very short desktop windows use safe vertical scrolling; no panel is sacrificed. */
+@media (max-height: 640px) and (min-width: 1181px) {
+    html:has(body.scene-dashboard-mode),
+    body.scene-dashboard-mode {
+        height: auto;
+        min-height: 100%;
+        overflow-y: auto;
+    }
+
+    body.scene-dashboard-mode .container.command-shell {
+        height: auto;
+        min-height: 760px;
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .dashboard-workspace {
+        overflow: visible;
+    }
+
+    body.scene-dashboard-mode .primary-workspace {
+        height: 470px;
+        min-height: 470px;
+        flex: 0 0 470px;
+    }
+
+    body.scene-dashboard-mode .panel-trends {
+        height: 205px;
+        min-height: 205px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.scene-dashboard-mode .dashboard-panel,
+    body.scene-dashboard-mode .header.command-header {
+        animation: none;
+    }
+
+    body.scene-dashboard-mode .skip-link,
+    body.scene-dashboard-mode .history-expand-toggle,
+    body.scene-dashboard-mode .history-expand-toggle i,
+    body.scene-dashboard-mode .status-pulse::after,
+    body.scene-dashboard-mode .bg-animation * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Fixed star-to-ground link: pure DOM/CSS, independent from the X6 editor. */
+body.scene-dashboard-mode .architecture-graph-wrapper {
+    container-type: size;
+    isolation: isolate;
+    border-color: rgba(87, 213, 236, .18);
+    background:
+        radial-gradient(circle at 50% 25%, rgba(22, 113, 151, .16), transparent 38%),
+        radial-gradient(circle at 50% 78%, rgba(27, 104, 134, .1), transparent 38%),
+        linear-gradient(180deg, rgba(6, 21, 33, .98), rgba(4, 16, 27, .99));
+}
+
+body.scene-dashboard-mode .fixed-topology {
+    --fixed-label-size: clamp(17px, min(6.6cqw, 6.2cqh), 30px);
+    --fixed-globe-size: min(76cqw, 37.5cqh, 340px);
+    --fixed-gateway-width: min(82cqw, 42.5cqh, 360px);
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: clamp(8px, 2.8cqh, 26px) clamp(10px, 3cqw, 22px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+}
+
+body.scene-dashboard-mode .fixed-topology::before,
+body.scene-dashboard-mode .fixed-topology::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    width: min(92%, 560px);
+    aspect-ratio: 1;
+    border: 1px solid rgba(76, 190, 218, .045);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+
+body.scene-dashboard-mode .fixed-topology::before {
+    top: -34%;
+}
+
+body.scene-dashboard-mode .fixed-topology::after {
+    bottom: -48%;
+}
+
+body.scene-dashboard-mode .fixed-topology-node {
+    position: relative;
+    z-index: 2;
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(4px, 1cqh, 9px);
+}
+
+body.scene-dashboard-mode .fixed-topology-globe-shell {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--fixed-globe-size);
+    height: var(--fixed-globe-size);
+    max-width: 100%;
+    aspect-ratio: 1;
+    border: 1px solid rgba(72, 207, 235, .12);
+    border-radius: clamp(10px, 3cqw, 18px);
+    overflow: hidden;
+    background: rgba(8, 23, 40, .82);
+    box-shadow:
+        0 18px 34px rgba(0, 0, 0, .18),
+        0 0 34px rgba(35, 169, 207, .07),
+        inset 0 0 28px rgba(52, 188, 222, .035);
+}
+
+body.scene-dashboard-mode .fixed-topology-globe {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border: 0;
+    border-radius: inherit;
+    background: #0f172a;
+    box-shadow: 0 0 26px rgba(27, 158, 202, .09);
+}
+
+body.scene-dashboard-mode .fixed-topology-globe::before {
+    display: none;
+}
+
+body.scene-dashboard-mode .fixed-topology-globe canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+body.scene-dashboard-mode .fixed-topology-label {
+    max-width: 100%;
+    color: #dff4f7;
+    font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: var(--fixed-label-size);
+    font-weight: 800;
+    line-height: 1.18;
+    letter-spacing: .035em;
+    text-align: center;
+    white-space: nowrap;
+    overflow: visible;
+    text-shadow:
+        0 2px 0 rgba(0, 15, 25, .52),
+        0 0 18px rgba(77, 207, 232, .17);
+}
+
+body.scene-dashboard-mode .fixed-topology-node--satellite .fixed-topology-label {
+    color: #8ce6f4;
+}
+
+body.scene-dashboard-mode .fixed-topology-node--gateway .fixed-topology-label {
+    color: #e5f1f3;
+}
+
+body.scene-dashboard-mode .fixed-topology-link {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 72px;
+    width: 32px;
+    min-height: clamp(28px, 7cqh, 58px);
+    max-height: 92px;
+    margin-block: clamp(4px, 1.2cqh, 10px);
+}
+
+body.scene-dashboard-mode .fixed-topology-link::before {
+    content: "";
+    position: absolute;
+    inset: -8px 4px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(45, 211, 241, .08), transparent 30%, transparent 70%, rgba(45, 211, 241, .045));
+    filter: blur(4px);
+}
+
+body.scene-dashboard-mode .fixed-topology-link__flow {
+    position: absolute;
+    top: 7px;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(
+        to bottom,
+        #55ddfa 0,
+        #55ddfa 9px,
+        transparent 9px,
+        transparent 18px
+    );
+    background-size: 100% 18px;
+    filter: drop-shadow(0 0 4px rgba(58, 211, 242, .76));
+    transform: translateX(-50%);
+    animation: fixed-topology-flow .7s linear infinite;
+}
+
+body.scene-dashboard-mode .fixed-topology-link__arrow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-right: 6px solid transparent;
+    border-bottom: 9px solid #55ddfa;
+    border-left: 6px solid transparent;
+    filter: drop-shadow(0 0 5px rgba(58, 211, 242, .8));
+    transform: translateX(-50%);
+}
+
+body.scene-dashboard-mode .fixed-topology-gateway-frame {
+    flex: 0 0 auto;
+    width: var(--fixed-gateway-width);
+    max-width: 100%;
+    aspect-ratio: 400 / 327;
+    display: grid;
+    place-items: center;
+    padding: clamp(3px, .8cqw, 6px);
+    border: 1px solid rgba(86, 199, 224, .11);
+    border-radius: clamp(8px, 2.4cqw, 14px);
+    background: linear-gradient(145deg, rgba(15, 40, 55, .42), rgba(5, 19, 31, .18));
+    box-shadow:
+        0 16px 30px rgba(0, 0, 0, .16),
+        0 0 28px rgba(42, 164, 198, .055);
+}
+
+body.scene-dashboard-mode .fixed-topology-gateway-frame img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+    border-radius: clamp(4px, 1.4cqw, 8px);
+    pointer-events: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .22));
+}
+
+@keyframes fixed-topology-flow {
+    from { background-position: 0 0; }
+    to { background-position: 0 -18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.scene-dashboard-mode .fixed-topology-link__flow {
+        animation: none;
+    }
+}
+
+body.scene-dashboard-mode.embedded-view {
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body.scene-dashboard-mode.embedded-view .container.command-shell {
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+}

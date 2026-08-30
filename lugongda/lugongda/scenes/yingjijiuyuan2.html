@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧工厂子场景-应急救援场景 - 泛在物联网管控系统</title>
+
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/scenePage.css" />
+    <link rel="stylesheet" href="../css/yingjijiuyuan.css?v=20260527-device-fire-access" />
+    <link rel="stylesheet" href="../css/modify.css" />
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+            <div class="screen-bg">
+                <a href="../main.html" class="back-button">
+                    <span class="back-button-icon">←</span>
+                    <span>返回主页面</span>
+                </a>
+                <div class="header">
+                    <img src="../images/hand.png" class="hand-img" />
+                    <div class="scene-page-title"><span>智慧工厂子场景-应急救援场景</span></div>
+                </div>
+
+                <div class="yjy-scene-grid">
+                    <div class="yjy-panel yjy-video-panel">
+                        <div class="yjy-panel-title">
+                            <span>火灾应急检测</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-fire-video">
+                            <div class="yjy-video-content">
+                                <div class="yjy-video-stage">
+                                    <canvas id="yjy-fire-canvas" class="yjy-video-player" style="display:none;"></canvas>
+                                    <video id="yjy-fire-video-player" class="yjy-video-player" controls playsinline></video>
+                                    <img id="yjy-fire-ws-frame" class="yjy-ws-frame" />
+                                    <button class="yjy-video-select-btn" id="yjy-fire-video-select" type="button">选择文件</button>
+                                    <input class="yjy-video-file" id="yjy-fire-video-file" type="file" accept="video/*" />
+                                    <div class="yjy-placeholder" id="yjy-fire-video-placeholder">
+                                        <div class="yjy-placeholder-icon">🎥</div>
+                                        <div class="yjy-placeholder-text">接入指定IP摄像头实时流</div>
+                                        <div class="yjy-placeholder-hint">选择本地视频文件</div>
+                                    </div>
+                                </div>
+                                <div class="yjy-video-bar">
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-fire-btn-start" type="button">开始火灾检测</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-fire-btn-stop" type="button">结束火灾检测</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-capture-panel">
+                        <div class="yjy-panel-title">
+                            <span>火灾检测数据</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-fire-capture">
+                            <div class="yjy-capture-layout">
+                                <div class="yjy-capture-stage">
+                                    <img class="yjy-capture-image" id="yjy-capture-image" />
+                                    <div class="yjy-capture-data-list" id="yjy-capture-data-list"></div>
+                                    <div class="yjy-capture-placeholder" id="yjy-capture-placeholder">
+                                        <div class="yjy-placeholder-icon">📷</div>
+                                        <div class="yjy-placeholder-text">实时火灾截图</div>
+                                        <div class="yjy-placeholder-hint"></div>
+                                    </div>
+                                </div>
+                                <div class="yjy-capture-actions">
+                                    <button class="yjy-ctrl-btn" id="yjy-btn-toggle-mode" type="button">显示火灾数据</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-btn-start-all" type="button">开始显示</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-btn-stop-all" type="button">结束显示</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-overview-panel">
+                        <div class="yjy-panel-title">
+                            <span>应急救援画面</span>
+                        </div>
+                        <div class="yjy-panel-content" id="yjy-global-overview">
+                            <div class="yjy-video-content">
+                                <div class="yjy-video-stage">
+                                    <canvas id="yjy-overview-canvas" class="yjy-video-player" style="display:none;"></canvas>
+                                    <video id="yjy-overview-video-player" class="yjy-video-player" controls playsinline></video>
+                                    <img id="yjy-overview-ws-frame" class="yjy-ws-frame" />
+                                    <button class="yjy-video-select-btn" id="yjy-overview-video-select" type="button">选择文件</button>
+                                    <input class="yjy-video-file" id="yjy-overview-video-file" type="file" accept="video/*" />
+                                    <div class="yjy-placeholder" id="yjy-overview-video-placeholder">
+                                        <div class="yjy-placeholder-icon">🎥</div>
+                                        <div class="yjy-placeholder-text">接入指定IP摄像头实时流</div>
+                                        <div class="yjy-placeholder-hint">选择本地视频文件</div>
+                                    </div>
+                                </div>
+                                <div class="yjy-video-bar">
+                                    <select class="yjy-overview-mode-select" id="yjy-overview-mode-select" aria-label="应急救援画面来源">
+                                        <option value="factory" selected>开启工厂全局画面</option>
+                                        <option value="device">设备管控联动</option>
+                                    </select>
+                                    <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-overview-btn-start" type="button">开启工厂全局画面</button>
+                                    <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-overview-btn-stop" type="button">结束总览画面</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-info-panel">
+                        <div class="yjy-panel-title">
+                            <span id="yjy-env-panel-title">工厂传感器检测数据</span>
+                            <span class="yjy-data-badge" id="yjy-data-badge">
+                                <span class="yjy-badge-source">实时</span>
+                                <span class="yjy-badge-interval">3s</span>
+                            </span>
+                            <button class="yjy-title-switch" id="yjy-env-panel-switch" type="button" title="切换" aria-label="切换检测数据面板">⇄</button>
+                        </div>
+                        <div class="yjy-panel-content yjy-log-panel">
+                            <div class="yjy-sensor-chart-container" id="yjy-temp-humi-view">
+                                <div class="yjy-env-summary" id="yjy-env-summary">
+                                    <div class="yjy-env-card"><span class="yjy-env-label">温度</span><strong id="yjy-env-temp">--</strong></div>
+                                    <div class="yjy-env-card"><span class="yjy-env-label">湿度</span><strong id="yjy-env-humi">--</strong></div>
+                                    <div class="yjy-env-card"><span class="yjy-env-label">烟感</span><strong id="yjy-env-smoke">--</strong></div>
+                                </div>
+                                <div id="yjy-sensor-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="yjy-sensor-chart-container" id="yjy-smoke-view">
+                                <div id="yjy-smoke-chart" style="width: 100%; height: 100%;"></div>
+                            </div>
+                            <div class="yjy-device-pass-view" id="yjy-device-pass-view" style="display: none;">
+                                <div class="yjy-device-log-list" id="yjy-device-pass-log">
+                                    <div class="yjy-pass-log-item info">[--:--:--] 等待设备管控日志...</div>
+                                </div>
+                            </div>
+                            <div class="yjy-sensor-actions">
+                                <button class="yjy-ctrl-btn yjy-btn-start" id="yjy-env-btn-start" type="button">开始接收数据</button>
+                                <button class="yjy-ctrl-btn yjy-btn-stop" id="yjy-env-btn-stop" type="button">结束数据保留</button>
+                            </div>
+                            <div class="yjy-log-list" id="yjy-fire-info-list" style="display: none;"></div>
+                        </div>
+                    </div>
+
+                    <div class="yjy-panel yjy-linkage-panel">
+                        <div class="yjy-panel-title">
+                            <span>救援设备</span>
+                        </div>
+                        <div class="yjy-panel-content">
+                            <div class="yjy-linkage-list">
+                                <div class="yjy-linkage-card" data-device="beacon">
+                                    <div class="yjy-linkage-card-header"><span class="yjy-linkage-name">报警灯</span></div>
+                                    <div class="yjy-linkage-options">
+                                        <div class="yjy-linkage-option" data-state="on"><span class="yjy-linkage-text">开启</span><span class="yjy-linkage-check">✓</span></div>
+                                        <div class="yjy-linkage-option active" data-state="off"><span class="yjy-linkage-text">关闭</span><span class="yjy-linkage-check">✓</span></div>
+                                    </div>
+                                </div>
+                                <div class="yjy-linkage-card" data-device="valve">
+                                    <div class="yjy-linkage-card-header"><span class="yjy-linkage-name">水阀</span></div>
+                                    <div class="yjy-linkage-options">
+                                        <div class="yjy-linkage-option" data-state="on"><span class="yjy-linkage-text">开启</span><span class="yjy-linkage-check">✓</span></div>
+                                        <div class="yjy-linkage-option active" data-state="off"><span class="yjy-linkage-text">关闭</span><span class="yjy-linkage-check">✓</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/scenePage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <!-- 网关 MJPEG 双路视频流接收器 -->
+    <script src="../../../newjs/newjs3.js"></script>
+    <!-- 网关检测图片接收器 (端口 10006) -->
+    <script src="../../../newjs/newjs3_photo_sensor.js"></script>
+    <!-- 网关传感器数据接收器 (端口 10011) -->
+    <script src="../../../newjs/newjs3_sensor.js"></script>
+    <!-- 原有场景逻辑 -->
+    <script src="../js/yingjijiuyuan.js?v=20260527-device-fire-access"></script>
+    <script src="../js/modify.js"></script>
+    <!-- 用 MjpegReceiver 替换原有视频拉流按钮逻辑 -->
+    <script>
+        (function() {
+            window._fireReceiver = null;
+            window._overviewReceiver = null;
+            window._deviceLinkageReceiver = null;
+
+            // ★ 设备管控监控画面配置（端口 10004，与 shebeiguanong2.html 同源）
+            var DEVICE_LINKAGE_CONFIG = {
+                host: '192.168.0.233',
+                port: 10004,
+                streamPath: '/stream',
+                canvasId: 'yjy-overview-canvas',
+                placeholderId: 'yjy-overview-video-placeholder',
+                frameTimeoutMs: 5000,
+                maxJpegSizeBytes: 200 * 1024,
+                maxRetries: 20,
+                retryBaseDelayMs: 500,
+                retryMaxDelayMs: 10000,
+            };
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+            function timeStamp() {
+                var d = new Date();
+                return '[' + [d.getHours(), d.getMinutes(), d.getSeconds()].map(pad).join(':') + ']';
+            }
+
+            function bindVideoButtons() {
+                // ===== 火灾应急检测 (port 10002) =====
+                var fireStart = document.getElementById('yjy-fire-btn-start');
+                var fireStop  = document.getElementById('yjy-fire-btn-stop');
+                var firePH = document.getElementById('yjy-fire-video-placeholder');
+
+                if (fireStart) {
+                    var fs = fireStart.cloneNode(true);
+                    fireStart.parentNode.replaceChild(fs, fireStart);
+                    fs.addEventListener('click', function() {
+                        if (window._fireReceiver && window._fireReceiver.running) return;
+                        if (firePH) {
+                            firePH.style.display = 'flex';
+                            var icon = firePH.querySelector('.yjy-placeholder-icon');
+                            var text = firePH.querySelector('.yjy-placeholder-text');
+                            var hint = firePH.querySelector('.yjy-placeholder-hint');
+                            if (icon) icon.textContent = '📡';
+                            if (text) text.textContent = timeStamp() + ' 开始从网关 (' + FIRE_CONFIG.host + ') 拉取 MJPEG 视频流';
+                            if (hint) hint.textContent = '端口 ' + FIRE_CONFIG.port + ' · 正在连接...';
+                        }
+                        window._fireReceiver = new MjpegReceiver(FIRE_CONFIG);
+                        window._fireReceiver.start();
+                    });
+                }
+
+                if (fireStop) {
+                    var fst = fireStop.cloneNode(true);
+                    fireStop.parentNode.replaceChild(fst, fireStop);
+                    fst.addEventListener('click', function() {
+                        if (window._fireReceiver) { window._fireReceiver.stop(); window._fireReceiver = null; }
+                        var cvs = document.getElementById('yjy-fire-canvas');
+                        if (cvs) cvs.style.display = 'none';
+                        if (firePH) {
+                            firePH.style.display = 'flex';
+                            var icon = firePH.querySelector('.yjy-placeholder-icon');
+                            var text = firePH.querySelector('.yjy-placeholder-text');
+                            var hint = firePH.querySelector('.yjy-placeholder-hint');
+                            if (icon) icon.textContent = '🎥';
+                            if (text) text.textContent = '接入指定IP摄像头实时流';
+                            if (hint) hint.textContent = '选择本地视频文件';
+                        }
+                    });
+                }
+
+                // ===== 应急救援画面 (port 10003 / 10004 设备管控联动) =====
+                var ovStart = document.getElementById('yjy-overview-btn-start');
+                var ovStop  = document.getElementById('yjy-overview-btn-stop');
+                var ovSelect = document.getElementById('yjy-overview-mode-select');
+                var ovPH = document.getElementById('yjy-overview-video-placeholder');
+                var ovCanvas = document.getElementById('yjy-overview-canvas');
+
+                // 根据下拉框更新按钮文案
+                function syncOverviewButtonText() {
+                    if (!ovSelect || !ovStart) return;
+                    ovStart.textContent = ovSelect.value === 'device'
+                        ? '开启设备管控监控画面'
+                        : '开启工厂全局画面';
+                }
+
+                // 获取当前选中的视频源配置
+                function getActiveOverviewConfig() {
+                    return (ovSelect && ovSelect.value === 'device')
+                        ? DEVICE_LINKAGE_CONFIG
+                        : OVERVIEW_CONFIG;
+                }
+
+                // 停止当前应急救援画面（工厂或设备管控）
+                function stopCurrentOverview() {
+                    if (window._overviewReceiver) { window._overviewReceiver.stop(); window._overviewReceiver = null; }
+                    if (window._deviceLinkageReceiver) { window._deviceLinkageReceiver.stop(); window._deviceLinkageReceiver = null; }
+                }
+
+                // 下拉框切换 → 停止当前流 + 更新按钮文案
+                if (ovSelect) {
+                    var osel = ovSelect.cloneNode(true);
+                    ovSelect.parentNode.replaceChild(osel, ovSelect);
+                    ovSelect = osel;
+                    osel.addEventListener('change', function() {
+                        stopCurrentOverview();
+                        // ★ 同步 YingJiJiuYuanScene 状态，切换模式时清理旧状态
+                        if (YingJiJiuYuanScene.overviewMode === 'device') {
+                            YingJiJiuYuanScene.deactivateDeviceLinkageBusiness();
+                        }
+                        YingJiJiuYuanScene.wsOverview.running = false;
+                        syncOverviewButtonText();
+                        // 重置画面区域
+                        if (ovCanvas) ovCanvas.style.display = 'none';
+                        if (ovPH) {
+                            ovPH.style.display = 'flex';
+                            var icon = ovPH.querySelector('.yjy-placeholder-icon');
+                            var text = ovPH.querySelector('.yjy-placeholder-text');
+                            var hint = ovPH.querySelector('.yjy-placeholder-hint');
+                            if (icon) icon.textContent = '🎥';
+                            if (text) text.textContent = '接入指定IP摄像头实时流';
+                            if (hint) hint.textContent = '选择本地视频文件';
+                        }
+                    });
+                    syncOverviewButtonText();
+                }
+
+                if (ovStart) {
+                    var os = ovStart.cloneNode(true);
+                    ovStart.parentNode.replaceChild(os, ovStart);
+                    ovStart = os;  // ★ 修复：替换后重新指向新元素，否则 syncOverviewButtonText 修改的是已脱离 DOM 的旧按钮
+                    os.addEventListener('click', function() {
+                        var cfg = getActiveOverviewConfig();
+                        var running = (cfg.port === 10004)
+                            ? (window._deviceLinkageReceiver && window._deviceLinkageReceiver.running)
+                            : (window._overviewReceiver && window._overviewReceiver.running);
+                        if (running) return;
+
+                        stopCurrentOverview();
+
+                        if (ovPH) {
+                            ovPH.style.display = 'flex';
+                            var icon = ovPH.querySelector('.yjy-placeholder-icon');
+                            var text = ovPH.querySelector('.yjy-placeholder-text');
+                            var hint = ovPH.querySelector('.yjy-placeholder-hint');
+                            if (icon) icon.textContent = '📡';
+                            if (text) text.textContent = timeStamp() + ' 开始从网关 (' + cfg.host + ') 拉取 MJPEG 视频流';
+                            if (hint) hint.textContent = '端口 ' + cfg.port + ' · 正在连接...';
+                        }
+                        var recv = new MjpegReceiver(cfg);
+                        if (cfg.port === 10004) {
+                            window._deviceLinkageReceiver = recv;
+                        } else {
+                            window._overviewReceiver = recv;
+                        }
+                        recv.start();
+                        // ★ 同步 YingJiJiuYuanScene 状态，确保设备管控日志轮询可正常启动
+                        YingJiJiuYuanScene.wsOverview.running = true;
+                        YingJiJiuYuanScene.overviewMode = (cfg.port === 10004) ? 'device' : 'factory';
+                        if (cfg.port === 10004) {
+                            YingJiJiuYuanScene.activateDeviceLinkageBusiness();
+                        }
+                    });
+                }
+
+                if (ovStop) {
+                    var ost = ovStop.cloneNode(true);
+                    ovStop.parentNode.replaceChild(ost, ovStop);
+                    ost.addEventListener('click', function() {
+                        stopCurrentOverview();
+                        // ★ 同步 YingJiJiuYuanScene 状态，清理设备管控联动
+                        YingJiJiuYuanScene.wsOverview.running = false;
+                        if (YingJiJiuYuanScene.overviewMode === 'device') {
+                            YingJiJiuYuanScene.deactivateDeviceLinkageBusiness();
+                        }
+                        if (ovCanvas) ovCanvas.style.display = 'none';
+                        if (ovPH) {
+                            ovPH.style.display = 'flex';
+                            var icon = ovPH.querySelector('.yjy-placeholder-icon');
+                            var text = ovPH.querySelector('.yjy-placeholder-text');
+                            var hint = ovPH.querySelector('.yjy-placeholder-hint');
+                            if (icon) icon.textContent = '🎥';
+                            if (text) text.textContent = '接入指定IP摄像头实时流';
+                            if (hint) hint.textContent = '选择本地视频文件';
+                        }
+                    });
+                }
+
+                console.log('[yingjijiuyuan2] 双路 MJPEG 接收器已绑定');
+                console.log('  火灾检测: ' + FIRE_CONFIG.host + ':' + FIRE_CONFIG.port);
+                console.log('  应急救援: ' + OVERVIEW_CONFIG.host + ':' + OVERVIEW_CONFIG.port);
+                console.log('  设备管控联动: ' + DEVICE_LINKAGE_CONFIG.host + ':' + DEVICE_LINKAGE_CONFIG.port);
+            }
+
+            // ===== 火灾检测截图/数据 (端口 10005) =====
+            function bindPhotoSensorButtons() {
+                window._yjySnapshot = null;
+                window._yjySensor = null;
+                window._yjyDataMode = false;   // false=截图模式, true=数据模式
+
+                // "开始显示" 按钮 → 启动截图轮询
+                var startAllBtn = document.getElementById('yjy-btn-start-all');
+                if (startAllBtn) {
+                    var ns = startAllBtn.cloneNode(true);
+                    startAllBtn.parentNode.replaceChild(ns, startAllBtn);
+                    ns.addEventListener('click', function() {
+                        window._yjyDataMode = false;
+                        if (!window._yjySnapshot) {
+                            window._yjySnapshot = new YJYSnapshotReceiver(YJY_CONFIG);
+                        }
+                        window._yjySnapshot.start();
+                        // 更新切换按钮文案
+                        var toggle = document.getElementById('yjy-btn-toggle-mode');
+                        if (toggle) toggle.textContent = '显示火灾数据';
+                        if (typeof YingJiJiuYuanScene !== 'undefined' && YingJiJiuYuanScene.addEvent) {
+                            YingJiJiuYuanScene.addEvent('upload',
+                                '从网关 (' + YJY_CONFIG.host + ':' + YJY_CONFIG.port + ') 拉取检测截图');
+                        }
+                    });
+                }
+
+                // "结束显示" 按钮 → 停止截图轮询
+                var stopAllBtn = document.getElementById('yjy-btn-stop-all');
+                if (stopAllBtn) {
+                    var nst = stopAllBtn.cloneNode(true);
+                    stopAllBtn.parentNode.replaceChild(nst, stopAllBtn);
+                    nst.addEventListener('click', function() {
+                        if (window._yjySnapshot) { window._yjySnapshot.stop(); }
+                        if (window._yjySensor) { window._yjySensor.stop(); }
+                    });
+                }
+
+                // ★ "显示火灾数据/截图" 切换按钮
+                var toggleBtn = document.getElementById('yjy-btn-toggle-mode');
+                if (toggleBtn) {
+                    var nt = toggleBtn.cloneNode(true);
+                    toggleBtn.parentNode.replaceChild(nt, toggleBtn);
+                    nt.addEventListener('click', function() {
+                        window._yjyDataMode = !window._yjyDataMode;
+                        if (window._yjyDataMode) {
+                            // 数据模式
+                            nt.textContent = '显示火灾截图';
+                            YJY_renderFireDataList();
+                        } else {
+                            // 截图模式
+                            nt.textContent = '显示火灾数据';
+                            YJY_renderSnapshotMode();
+                            // 恢复最新截图显示
+                            var img = document.getElementById('yjy-capture-image');
+                            var ph = document.getElementById('yjy-capture-placeholder');
+                            var dl = document.getElementById('yjy-capture-data-list');
+                            if (dl) dl.style.display = 'none';
+                            if (window._yjySnapshot && window._yjySnapshot.lastBlobUrl) {
+                                if (img) { img.src = window._yjySnapshot.lastBlobUrl; img.style.display = 'block'; }
+                                if (ph) ph.style.display = 'none';
+                            } else {
+                                if (img) img.style.display = 'none';
+                                if (ph) ph.style.display = 'flex';
+                            }
+                        }
+                    });
+                }
+
+                // "开始接收数据" 按钮 → 根据当前面板模式分发
+                var envStartBtn = document.getElementById('yjy-env-btn-start');
+                if (envStartBtn) {
+                    var ne = envStartBtn.cloneNode(true);
+                    envStartBtn.parentNode.replaceChild(ne, envStartBtn);
+                    ne.setAttribute('type', 'button'); // cloneNode 不一定继承 type 属性
+                    ne.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // ★ 根据面板模式分发：device 模式启动日志轮询，sensor 模式启动传感器
+                        if (YingJiJiuYuanScene.envPanelMode === 'device') {
+                            YingJiJiuYuanScene.startPassLogPolling();
+                        } else {
+                            if (!window._yjySensor) {
+                                window._yjySensor = new YJYSensorReceiver(YJY_SENSOR_CONFIG);
+                            }
+                            window._yjySensor.start();
+                        }
+                    });
+                }
+
+                // "结束数据保留" 按钮 → 根据当前面板模式分发
+                var envStopBtn = document.getElementById('yjy-env-btn-stop');
+                if (envStopBtn) {
+                    var nes = envStopBtn.cloneNode(true);
+                    envStopBtn.parentNode.replaceChild(nes, envStopBtn);
+                    nes.setAttribute('type', 'button');
+                    nes.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // ★ 根据面板模式分发：device 模式停止日志轮询，sensor 模式停止传感器
+                        if (YingJiJiuYuanScene.envPanelMode === 'device') {
+                            YingJiJiuYuanScene.stopPassLogPolling();
+                        } else {
+                            if (window._yjySensor) { window._yjySensor.stop(); }
+                        }
+                    });
+                }
+
+                console.log('[yingjijiuyuan2] 截图接收器已绑定, 端口: ' + YJY_CONFIG.port + ' | 传感器接收器已绑定, 端口: ' + YJY_SENSOR_CONFIG.port);
+            }
+
+            // ===== 救援设备联动 — 状态切换时上报 JSON 到 47.99.47.169:11501 =====
+            // ★ 注意：modify.js 会在 DOMContentLoaded 时把 .yjy-linkage-list 替换为
+            //    .linkage-table-layout，因此必须绑定在稳定的父级 .yjy-linkage-panel 上，
+            //    并兼容两种 DOM 结构。
+            function bindDeviceLinkageUpload() {
+                var DEVICE_UPLOAD_URL = 'http://47.99.47.169:11501';
+                var DEVICE_KEY_MAP = {
+                    beacon: 'baojingdeng',
+                    valve: 'shuifa'
+                };
+
+                // 绑定在不会被 modify.js 替换的稳定父级上
+                var linkagePanel = document.querySelector('.yjy-linkage-panel');
+                if (!linkagePanel) return;
+
+                // 收集所有设备的当前状态（兼容原始 .yjy-linkage-card 和替换后的 .linkage-table-row）
+                function collectAllDeviceStates() {
+                    var payload = {};
+                    var htmlKeys = Object.keys(DEVICE_KEY_MAP);
+                    for (var i = 0; i < htmlKeys.length; i++) {
+                        var htmlDevice = htmlKeys[i];
+                        var jsonKey = DEVICE_KEY_MAP[htmlDevice];
+
+                        // 先尝试 modify.js 替换后的结构 .linkage-table-row
+                        var row = linkagePanel.querySelector('.linkage-table-row[data-device="' + htmlDevice + '"]');
+                        if (row) {
+                            var activeBtn = row.querySelector('.linkage-status-btn.active');
+                            var state = activeBtn ? activeBtn.getAttribute('data-state') : 'off';
+                            payload[jsonKey] = { status: state === 'on' ? 1 : 0 };
+                        } else {
+                            // 回退到原始结构 .yjy-linkage-card
+                            var card = linkagePanel.querySelector('.yjy-linkage-card[data-device="' + htmlDevice + '"]');
+                            if (card) {
+                                var activeOpt = card.querySelector('.yjy-linkage-option.active');
+                                var state = activeOpt ? activeOpt.getAttribute('data-state') : 'off';
+                                payload[jsonKey] = { status: state === 'on' ? 1 : 0 };
+                            } else {
+                                payload[jsonKey] = { status: 0 };
+                            }
+                        }
+                    }
+                    return payload;
+                }
+
+                // ★ 判断是否处于 FIRE 自动触发的 30 秒屏蔽窗口内
+                function isInFireCooldown() {
+                    if (typeof window.__lastFireAutoTime !== 'number') return false;
+                    var elapsed = Date.now() - window.__lastFireAutoTime;
+                    return elapsed < 30000; // 30 秒内不上传
+                }
+
+                // 在稳定父级上使用事件委托，兼容两种按钮选择器
+                linkagePanel.addEventListener('click', function(e) {
+                    // 兼容原始 .yjy-linkage-option 和 modify.js 替换后的 .linkage-status-btn
+                    var opt = null;
+                    if (e.target && e.target.closest) {
+                        opt = e.target.closest('.linkage-status-btn') || e.target.closest('.yjy-linkage-option');
+                    }
+                    if (!opt) return;
+
+                    var device = opt.getAttribute('data-device');
+                    var state = opt.getAttribute('data-state');
+                    if (!device || !state) return;
+
+                    // ★ 手动点击两套逻辑：
+                    //    - 收到 FIRE 后 30 秒内：仅切换 UI，不上传服务器
+                    //    - 未收到 FIRE 或超过 30 秒：正常上传到云服务器
+                    if (isInFireCooldown()) {
+                        var elapsed = Date.now() - window.__lastFireAutoTime;
+                        console.log('[DeviceUpload] FIRE 冷却中 (' + Math.round(elapsed / 1000) + 's/30s)，跳过上传。设备状态仅本地切换。');
+                        return;
+                    }
+
+                    // 收集全部设备状态并上报
+                    var payload = collectAllDeviceStates();
+                    console.log('[DeviceUpload] 上报全部设备状态: ' + JSON.stringify(payload));
+
+                    fetch(DEVICE_UPLOAD_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    }).then(function(resp) {
+                        console.log('[DeviceUpload] 上报成功, HTTP ' + resp.status);
+                    }).catch(function(err) {
+                        console.warn('[DeviceUpload] 上报失败:', err.message);
+                    });
+                });
+
+                console.log('[yingjijiuyuan2] 设备联动上报已绑定 (stable panel), 目标: ' + DEVICE_UPLOAD_URL);
+            }
+
+            // ★ 页面刷新诊断：捕获谁触发了页面卸载
+            window.addEventListener('beforeunload', function(e) {
+                console.log('[DIAG] 页面即将刷新/离开！时间: ' + new Date().toLocaleTimeString());
+                console.log('[DIAG] 当前 URL: ' + window.location.href);
+                // 不阻止，只记录
+            });
+
+            function bindAll() {
+                bindVideoButtons();
+                bindPhotoSensorButtons();
+                bindDeviceLinkageUpload();
+                console.log('[yingjijiuyuan2] 全部绑定完成');
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(bindAll, 50);
+                });
+            } else {
+                setTimeout(bindAll, 50);
+            }
+        })();
+    </script>
+
+</body>
+</html>

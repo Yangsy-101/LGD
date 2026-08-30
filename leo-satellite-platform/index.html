@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#040c13">
+    <title>天启卫星链路</title>
+    <link rel="icon" href="data:,">
+    <meta name="description" content="实时监控溧水森林与海南远洋远域的卫星火情、风速、采集时间、入库时间与链路时延">
+    <link rel="stylesheet" href="assets/css/dashboard-base.css?v=20260809_layers_v1">
+    <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css?v=6.4.0-local">
+    <link href="assets/vendor/leaflet/leaflet.css?v=20260423_latest" rel="stylesheet">
+    <script defer src="assets/vendor/leaflet/leaflet.js?v=20260423_latest"></script>
+    <link rel="stylesheet" href="assets/css/dashboard-page.css?v=20260817_ingest_notice_v2">
+    <link rel="stylesheet" href="assets/css/dashboard-adaptive.css?v=20260810_audit_fixes_v13">
+</head>
+
+
+<body>
+    <a class="skip-link" href="#dashboardMain">跳转到监控主内容</a>
+
+    <!-- 背景动画 -->
+    <div class="bg-animation">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+        <div class="stars3"></div>
+    </div>
+
+    <div class="container command-shell">
+        <header class="header command-header">
+            <div class="header-brand">
+                <button type="button" class="page-back-button" id="pageBackButton" aria-label="返回上一级" title="返回上一级">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    <span>返回</span>
+                </button>
+                <div class="title-section">
+                    <h1 class="main-title">天启卫星链路</h1>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <div class="status-indicator" id="connectionStatus" role="status" aria-live="polite">
+                    <span class="status-pulse" aria-hidden="true"><span class="status-dot online"></span></span>
+                    <span class="status-copy"><small>卫星链路</small><strong id="connectionStatusText">正在确认</strong></span>
+                </div>
+                <div class="header-separator" aria-hidden="true"></div>
+                <div class="current-time">
+                    <span id="currentTime">--:--:--</span>
+                    <small id="currentDate">----</small>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-workspace" id="dashboardMain" tabindex="-1">
+            <section class="primary-workspace" aria-label="实时监控工作区">
+                <section class="dashboard-panel panel-architecture">
+                    <header class="panel-heading">
+                        <span class="section-index">01</span>
+                        <span class="panel-title-copy">
+                            <h2>卫星物联网链路拓扑</h2>
+                        </span>
+                    </header>
+                    <div class="panel-body scaled-container">
+                        <div class="architecture-graph-wrapper">
+                            <div id="fixedTopology" class="fixed-topology" aria-label="天启低轨星座与自研感知接入网关固定链路">
+                                <section class="fixed-topology-node fixed-topology-node--satellite" aria-label="天启低轨星座节点">
+                                    <div class="fixed-topology-globe-shell">
+                                        <div id="fixedSatelliteGlobe" class="satellite-globe-container fixed-topology-globe" role="button" tabindex="0" aria-label="卫星星座三维视图，双击切换轨道显示，拖动旋转，滚轮缩放" aria-pressed="true" title="双击切换轨道显示">
+                                            <div class="globe-loading" role="status" aria-live="polite">
+                                                <div class="globe-loading-spinner"></div>
+                                                <span>正在加载 3D 地球…</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="fixed-topology-label">天启低轨星座</div>
+                                </section>
+
+                                <div class="fixed-topology-link" aria-hidden="true">
+                                    <span class="fixed-topology-link__flow"></span>
+                                    <span class="fixed-topology-link__arrow"></span>
+                                </div>
+
+                                <section class="fixed-topology-node fixed-topology-node--gateway" aria-label="自研感知接入网关节点">
+                                    <div class="fixed-topology-gateway-frame">
+                                        <img src="assets/images/layout/layout_img_c638544e987b4f0895a66311846016ae.png" alt="自研感知接入网关" width="407" height="332" fetchpriority="high" draggable="false">
+                                    </div>
+                                    <div class="fixed-topology-label">自研感知接入网关</div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="dashboard-panel panel-map" tabindex="-1">
+                    <header class="panel-heading">
+                        <span class="section-index">02</span>
+                        <span class="panel-title-copy">
+                            <h2>监测点地理分布</h2>
+                        </span>
+                        <span class="panel-meta compact"><b id="mapNodeCount">--</b> 个节点</span>
+                    </header>
+                    <div class="map-stage">
+                        <div id="nanjingMap" class="map-display-full" role="region" aria-label="监测点交互地图"></div>
+                        <div class="map-coordinate-grid" aria-hidden="true"></div>
+                        </div>
+                    <footer class="panel-caption map-caption">
+                        <span id="currentAccessPointName">等待节点数据</span>
+                    </footer>
+                </section>
+
+                <section class="dashboard-panel panel-telemetry">
+                    <header class="panel-heading">
+                        <span class="section-index">03</span>
+                        <span class="panel-title-copy">
+                            <h2>节点遥测监控</h2>
+                        </span>
+                    </header>
+
+                    <div class="telemetry-body scene-telemetry" id="sceneTelemetry" data-scene="forest">
+                        <div class="scene-switcher" role="tablist" aria-label="监测场景切换" aria-orientation="horizontal">
+                            <button type="button" class="scene-switch is-active" id="sceneTabGateway1" data-gateway="gateway1" role="tab" aria-selected="true" aria-controls="sceneDataPanel" tabindex="0">
+                                <span>溧水</span><strong>森林</strong><i aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="scene-switch" id="sceneTabGateway2" data-gateway="gateway2" role="tab" aria-selected="false" aria-controls="sceneDataPanel" tabindex="-1">
+                                <span>海南</span><strong>远洋</strong><i aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        <div class="scene-context-row">
+                            <span class="scene-context-icon" id="sceneContextIcon" aria-hidden="true"><i class="fas fa-tree" aria-hidden="true"></i></span>
+                            <span class="scene-context-copy">
+                                <small id="sceneContextKicker">卫星遥测任务</small>
+                                <strong id="sceneContextTitle">溧水森林防火</strong>
+                            </span>
+                            <span class="scene-payload"><small>监测载荷</small><b id="scenePayload">火情 · 温湿度</b></span>
+                        </div>
+
+                        <div class="scene-command-grid" id="sceneDataPanel" role="tabpanel" aria-labelledby="sceneTabGateway1" tabindex="0">
+                            <section class="scene-metric-card" id="sceneMetricCard" aria-label="主要遥测状态">
+                                <div class="scene-reading">
+                                    <span class="scene-reading-label"><i id="primaryMetricIcon" class="fas fa-fire-flame-curved" aria-hidden="true"></i><b id="primaryMetricLabel">当前火情</b></span>
+                                    <span class="scene-reading-value"><strong id="primaryMetricValue">--</strong><em id="primaryMetricUnit">状态</em></span>
+                                    <span class="latest-record-id">数据编号 <strong id="latestRecordId">--</strong></span>
+                                    <span class="scene-verdict" id="sceneVerdict"><i aria-hidden="true"></i>等待遥测</span>
+                                </div>
+                            </section>
+
+                            <section class="forest-environment" id="forestEnvironment" aria-label="森林温湿度">
+                                <header class="scene-subcard-heading environment-heading">
+                                    <span class="scene-subcard-title"><i class="fas fa-seedling" aria-hidden="true"></i><span><small>环境实况</small><strong>温湿度遥测</strong></span></span>
+                                    <em>最新样本</em>
+                                </header>
+                                <span class="forest-environment-item temperature">
+                                    <i class="fas fa-temperature-half" aria-hidden="true"></i>
+                                    <small>环境温度</small>
+                                    <strong id="forestTemperature">--</strong><em>°C</em>
+                                </span>
+                                <span class="forest-environment-item humidity">
+                                    <i class="fas fa-droplet" aria-hidden="true"></i>
+                                    <small>相对湿度</small>
+                                    <strong id="forestHumidity">--</strong><em>%RH</em>
+                                </span>
+                                <span class="forest-environment-time">
+                                    <span><i class="far fa-clock" aria-hidden="true"></i><small>环境采集时间</small><strong id="forestCollectedTime">--</strong></span>
+                                    <span><i class="fas fa-database" aria-hidden="true"></i><small>环境入库时间</small><strong id="forestUpdatedTime">--</strong></span>
+                                </span>
+                            </section>
+
+                            <section class="scene-time-grid" aria-label="遥测时间链路">
+                                <header class="scene-subcard-heading time-heading">
+                                    <span class="scene-subcard-title"><i class="fas fa-timeline" aria-hidden="true"></i><span><small>传输链路</small><strong>时间校验</strong></span></span>
+                                    <em>端到端</em>
+                                </header>
+                                <div class="scene-time-item">
+                                    <i class="far fa-clock" aria-hidden="true"></i><span><small id="latestCollectedLabel">采集时间</small><strong id="latestCollectedTime">--</strong></span>
+                                </div>
+                                <div class="scene-time-item">
+                                    <i class="fas fa-database" aria-hidden="true"></i><span><small id="latestReceivedLabel">入库时间</small><strong id="latestReceivedTime">--</strong></span>
+                                </div>
+                                <div class="scene-time-item latency">
+                                    <i class="fas fa-wave-square" aria-hidden="true"></i><span><small id="latestLatencyLabel">链路时差</small><strong id="latestLatency">--</strong></span>
+                                </div>
+                            </section>
+
+                            <section class="trend-card scene-trend-card" aria-label="当前场景历史趋势">
+                                <header class="trend-header">
+                                    <span><small id="sceneTrendKicker">环境趋势</small><strong id="sceneTrendTitle">森林温湿度历史</strong></span>
+                                    <span class="trend-delta stable" id="trendDelta">--</span>
+                                </header>
+                                <div class="trend-chart-wrap">
+                                    <svg id="sceneTrendChart" viewBox="0 0 320 110" preserveAspectRatio="none" role="img" aria-label="当前场景最近遥测趋势">
+                                        <defs>
+                                            <linearGradient id="sceneTrendAreaGradient" x1="0" x2="0" y1="0" y2="1">
+                                                <stop id="sceneTrendGradientStart" offset="0%" stop-color="#f0a45d" stop-opacity=".38"></stop>
+                                                <stop offset="100%" stop-color="#f0a45d" stop-opacity="0"></stop>
+                                            </linearGradient>
+                                        </defs>
+                                        <g class="trend-grid trend-grid-standard" aria-hidden="true">
+                                            <line x1="0" y1="18" x2="320" y2="18"></line>
+                                            <line x1="0" y1="54" x2="320" y2="54"></line>
+                                            <line x1="0" y1="90" x2="320" y2="90"></line>
+                                        </g>
+                                        <g class="trend-grid trend-grid-detailed" aria-hidden="true">
+                                            <line x1="30" y1="10" x2="290" y2="10"></line>
+                                            <line x1="30" y1="28" x2="290" y2="28"></line>
+                                            <line x1="30" y1="46" x2="290" y2="46"></line>
+                                            <line x1="30" y1="64" x2="290" y2="64"></line>
+                                            <line x1="30" y1="82" x2="290" y2="82"></line>
+                                            <line x1="30" y1="10" x2="30" y2="82"></line>
+                                            <line x1="95" y1="10" x2="95" y2="82"></line>
+                                            <line x1="160" y1="10" x2="160" y2="82"></line>
+                                            <line x1="225" y1="10" x2="225" y2="82"></line>
+                                            <line x1="290" y1="10" x2="290" y2="82"></line>
+                                        </g>
+                                        <path id="sceneTrendArea" class="trend-area" d=""></path>
+                                        <path id="sceneTrendLine" class="trend-line" d=""></path>
+                                        <path id="sceneTrendSecondaryLine" class="trend-line trend-line-secondary" d=""></path>
+                                        <circle id="sceneTrendPoint" class="trend-point" cx="0" cy="0" r="3"></circle>
+                                        <circle id="sceneTrendSecondaryPoint" class="trend-point trend-point-secondary" cx="0" cy="0" r="3"></circle>
+                                    </svg>
+                                    <span class="trend-axis-label trend-axis-max trend-axis-primary" id="trendMax">--</span>
+                                    <span class="trend-axis-label trend-axis-min trend-axis-primary" id="trendMin">--</span>
+                                    <span class="trend-axis-label trend-axis-max trend-axis-secondary" id="trendSecondaryMax">--</span>
+                                    <span class="trend-axis-label trend-axis-min trend-axis-secondary" id="trendSecondaryMin">--</span>
+                                    <div class="trend-coordinate-scale temperature" id="trendTemperatureTicks" aria-label="温度坐标刻度"></div>
+                                    <div class="trend-coordinate-scale humidity" id="trendHumidityTicks" aria-label="湿度坐标刻度"></div>
+                                    <div class="trend-time-axis" id="trendTimeTicks" aria-label="采样时间坐标"></div>
+                                    <span class="trend-axis-title primary" id="trendPrimaryAxisTitle">温度（°C）</span>
+                                    <span class="trend-axis-title secondary" id="trendSecondaryAxisTitle">相对湿度（%RH）</span>
+                                    <span class="trend-axis-title horizontal" id="trendHorizontalAxisTitle">采样时间（HH:mm）</span>
+                                </div>
+                                <footer class="trend-footer">
+                                    <span>最近 <b id="trendSampleCount">0</b> 个样本</span>
+                                    <span class="trend-series-legends">
+                                        <span class="trend-series-legend primary"><i aria-hidden="true"></i><b id="trendLegend">温度 °C</b></span>
+                                        <span class="trend-series-legend secondary" id="trendSecondaryLegend"><i aria-hidden="true"></i><b id="trendSecondaryLegendText">湿度 %RH</b></span>
+                                    </span>
+                                </footer>
+                            </section>
+                        </div>
+
+                    </div>
+                </section>
+            </section>
+
+            <section class="dashboard-panel panel-trends">
+                <div class="panel-body history-panel-body">
+                    <div class="history-tables-grid" id="historyTablesGrid">
+                        <section class="history-dataset-card primary-history-dataset" aria-labelledby="primaryHistoryTitle">
+                            <header class="history-dataset-heading">
+                                <span><i class="fas fa-fire-flame-curved" id="primaryHistoryIcon" aria-hidden="true"></i><strong id="primaryHistoryTitle">火情记录</strong></span>
+                                <small><b id="primaryHistoryCount">0</b> 条</small>
+                            </header>
+                            <div class="history-table-shell">
+                                <table class="history-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">记录编号</th>
+                                            <th scope="col" id="historyMetricColumn">火情状态</th>
+                                            <th scope="col">采集时间</th>
+                                            <th scope="col">入库时间</th>
+                                            <th scope="col">链路时差</th>
+                                            <th scope="col">卫星链路</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historyTableBody">
+                                        <tr class="history-empty-row"><td colspan="6">正在读取卫星遥测记录…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="history-expand-toggle" data-history-target="primary" aria-controls="historyTableBody" aria-expanded="false">
+                                <span>查看全部记录</span><i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                        </section>
+
+                        <section class="history-dataset-card environment-history-dataset" id="environmentHistoryPanel" aria-labelledby="environmentHistoryTitle">
+                            <header class="history-dataset-heading">
+                                <span><i class="fas fa-temperature-half" aria-hidden="true"></i><strong id="environmentHistoryTitle">温湿度记录</strong></span>
+                                <small><b id="environmentHistoryCount">0</b> 条</small>
+                            </header>
+                            <div class="history-table-shell">
+                                <table class="history-table environment-history-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">记录编号</th>
+                                            <th scope="col">温度</th>
+                                            <th scope="col">湿度</th>
+                                            <th scope="col">环境采集时间</th>
+                                            <th scope="col">环境入库时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="environmentHistoryTableBody">
+                                        <tr class="history-empty-row"><td colspan="5">正在读取温湿度记录…</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="history-expand-toggle" data-history-target="environment" aria-controls="environmentHistoryTableBody" aria-expanded="false">
+                                <span>查看全部记录</span><i class="fas fa-chevron-down" aria-hidden="true"></i>
+                            </button>
+                        </section>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script>
+        (function () {
+            if (typeof window === 'undefined' || !window.location) return;
+            const { protocol, hostname, port, origin, pathname } = window.location;
+            const normalizeApiBase = (value) => String(value || '').replace(/\/$/, '');
+
+            let resolvedBase = '';
+
+            // Local file mode: use default backend directly.
+            if (protocol === 'file:') {
+                resolvedBase = 'http://127.0.0.1:8090';
+            }
+
+            // Deployed under reverse proxy path (/project2-0 -> backend).
+            if (!resolvedBase && origin && origin !== 'null' && /^\/project2-0(\/|$)/.test(pathname)) {
+                resolvedBase = `${origin}/project2-0`;
+            }
+
+            // 普通 HTTP 访问始终使用当前页面同源后端，避免拓扑图单独回退到其他端口。
+            if (!resolvedBase && origin && origin !== 'null') {
+                resolvedBase = origin;
+            }
+
+            if (resolvedBase) {
+                const normalizedBase = normalizeApiBase(resolvedBase);
+                window.__PROJECT20_API_BASE__ = normalizedBase;
+                window.__API_BASE__ = normalizedBase;
+                return;
+            }
+
+            // Backward compatibility for legacy global variable names.
+            if (window.__PROJECT20_API_BASE__) {
+                window.__PROJECT20_API_BASE__ = normalizeApiBase(window.__PROJECT20_API_BASE__);
+                if (!window.__API_BASE__) window.__API_BASE__ = window.__PROJECT20_API_BASE__;
+            } else if (window.__API_BASE__) {
+                window.__API_BASE__ = normalizeApiBase(window.__API_BASE__);
+                window.__PROJECT20_API_BASE__ = window.__API_BASE__;
+            }
+        })();
+    </script>
+    <script defer src="assets/js/map_logic.js?v=20260810_map_a11y_v2"></script>
+    <script defer src="assets/js/scene_app.js?v=20260817_ingest_notice_v3"></script>
+    <script>
+        (function () {
+            const loadScript = (src, options = {}) => new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = false;
+                if (options.module) {
+                    script.type = 'module';
+                }
+                script.onload = () => resolve(src);
+                script.onerror = () => reject(new Error(`Failed to load ${src}`));
+                document.body.appendChild(script);
+            });
+
+            let topologyVisualPromise = null;
+            const loadTopologyVisual = () => {
+                if (topologyVisualPromise) return topologyVisualPromise;
+                topologyVisualPromise = loadScript('assets/js/satellite_globe.js?v=20260809_guidelines_v1', { module: true })
+            .then(() => loadScript('assets/js/fixed_topology.js?v=20260809_fixed_topology_v3'))
+                    .catch((error) => {
+                        console.warn('[project2-0] fixed topology visual failed:', error);
+                    });
+                return topologyVisualPromise;
+            };
+
+            const scheduleTopologyVisual = () => {
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(() => loadTopologyVisual(), { timeout: 1800 });
+                    return;
+                }
+                window.setTimeout(loadTopologyVisual, 500);
+            };
+
+            window.addEventListener('load', scheduleTopologyVisual, { once: true });
+        })();
+    </script>
+</body>
+
+</html>

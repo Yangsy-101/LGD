@@ -1,0 +1,48 @@
+/**
+ * 场景交互样式模块
+ * 负责场景标题的可点击效果
+ */
+
+/* 可点击标题样式 */
+.clickable-title {
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    user-select: none; /* 防止双击选中文字 */
+}
+
+/* 悬停效果 */
+.clickable-title:hover {
+    color: #00eaff;
+    text-shadow: 0 0 15px rgba(0, 234, 255, 0.8);
+    letter-spacing: 2px;
+}
+
+/* 标题前的装饰线增强 */
+.clickable-title:hover::before {
+    background: #00eaff;
+    box-shadow: 0 0 10px #00eaff;
+    height: 100%; /* 高度稍微拉长一点 */
+}
+
+/* 添加点击时的涟漪效果容器（如果需要更复杂的效果可以在这里扩展） */
+.clickable-title:active {
+    transform: scale(0.98);
+}
+
+/* 右侧添加一个小箭头指示器，仅在悬停时显示 */
+.clickable-title::after {
+    content: "→";
+    position: absolute;
+    right: 10px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    font-family: "Arial", sans-serif;
+    color: #00eaff;
+}
+
+.clickable-title:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}

@@ -1,0 +1,511 @@
+/* 可调参数 */
+:root {
+    --hand-width: 580px;
+    --screen-padding-x: 16px;
+    --panel-gap-x: 10px;            /* 缩小间隙，更紧凑 */
+    --panel-gap-y: 10px;            /* 缩小间隙，更紧凑 */
+    --theme-color: #00eaff;         /* 主题青色 */
+    --theme-color-dim: rgba(0, 234, 255, 0.2);
+    --bg-glass: rgba(6, 26, 56, 0.6); /* 深蓝玻璃底色 */
+    --border-color: rgba(36, 123, 180, 0.4);
+}
+
+/* 动画定义 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 10px rgba(0, 234, 255, 0.1) inset; }
+    50% { box-shadow: 0 0 25px rgba(0, 234, 255, 0.3) inset; }
+    100% { box-shadow: 0 0 10px rgba(0, 234, 255, 0.1) inset; }
+}
+
+/* 背景与全局 */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #02050b; /* 深邃黑底 */
+    font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+}
+
+.screen-bg {
+    width: 100%;
+    height: 100%;
+    /* 叠加网格纹理，增加科技底蕴 */
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        url("../images/bg.jpg") no-repeat center center / cover;
+    background-size: 40px 40px, 40px 40px, cover;
+    position: relative;
+}
+
+/* 顶部区域 */
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 10;
+    /* 顶部渐变光晕 */
+    background: radial-gradient(circle at top, rgba(0, 89, 255, 0.2), transparent 60%);
+}
+
+.hand-img {
+    width: var(--hand-width);
+    height: auto;
+    filter: drop-shadow(0 0 15px rgba(0, 234, 255, 0.4));
+}
+
+.main-title {
+    margin-top: -55px;
+    font-size: 36px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    position: relative;
+    z-index: 10;
+    /* 文字颜色逻辑移交给 span */
+    color: #fff; 
+}
+
+.main-title span {
+    position: relative;
+    z-index: 2; /* 确保文字在最上层 */
+    /* 炫光文字效果 */
+    background: linear-gradient(to bottom, #ffffff, #bde6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 标题底板装饰 */
+.main-title::before {
+    content: "";
+    position: absolute;
+    /* 调整位置和大小，让底板更大 */
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120%;
+    height: 140%; 
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 40, 100, 0.9) 20%, 
+        rgba(0, 60, 150, 1) 50%, 
+        rgba(0, 40, 100, 0.9) 80%, 
+        transparent 100%
+    );
+    z-index: -1; /* 关键修改：设为负数，强制位于内容之下 */
+    /* 梯形切割 */
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    border-bottom: 2px solid rgba(0, 234, 255, 0.8);
+}
+
+/* 布局容器 - 改为 3 列结构 */
+.grid-container {
+    position: absolute;
+    left: 0; right: 0; top: 85px; bottom: 20px;
+    display: grid;
+    grid-template-columns: 26fr 48fr 26fr; /* 左右窄，中间宽 */
+    column-gap: var(--panel-gap-x);
+    padding: 0 var(--screen-padding-x);
+    /* 移除 grid-template-rows，高度由 column 内部 flex 决定 */
+}
+
+/* 列容器 */
+.column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: var(--panel-gap-y); /* 纵向间隙 */
+}
+
+/* 左右两侧列的高度分配：上小下大 */
+.column-left .panel-top,
+.column-right .panel-top {
+    flex: 4.5;
+}
+
+.column-left .panel-bottom,
+.column-right .panel-bottom {
+    flex: 5.5;
+}
+
+/* 中间列的高度分配：上大下小 */
+.column-center .panel-top {
+    flex: 4.1; /* 关系拓扑图变高 */
+}
+
+.column-center .panel-bottom {
+    flex: 3; /* 网关分布图变矮 */
+}
+
+
+/* =========================================
+   科技感面板核心样式
+   ========================================= */
+.panel {
+    position: relative;
+    box-sizing: border-box;
+    opacity: 0; /* 初始隐藏，配合动画 */
+    animation: fadeIn 0.8s ease-out forwards;
+    width: 100%; /* 确保填满 column */
+}
+
+/* 依次延迟动画，产生阶梯感 */
+.column-left .panel-top    { animation-delay: 0.1s; }
+.column-left .panel-bottom { animation-delay: 0.2s; }
+.column-center .panel-top  { animation-delay: 0.3s; }
+.column-center .panel-bottom { animation-delay: 0.4s; }
+.column-right .panel-top   { animation-delay: 0.5s; }
+.column-right .panel-bottom { animation-delay: 0.6s; }
+
+
+.panel-body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 30px rgba(0, 132, 255, 0.1) inset;
+    /* 倒角效果：使用 clip-path 切掉四个角 */
+    clip-path: polygon(
+        15px 0, 100% 0, 
+        100% calc(100% - 15px), calc(100% - 15px) 100%, 
+        0 100%, 0 15px
+    );
+    backdrop-filter: blur(8px);
+    animation: pulseBorder 4s infinite ease-in-out;
+}
+
+/* 四角高亮装饰 - 使用伪元素模拟 */
+.panel::before, .panel::after {
+    content: "";
+    position: absolute;
+    width: 20px; height: 20px;
+    border: 2px solid var(--theme-color);
+    transition: all 0.3s;
+    z-index: 2;
+}
+
+.panel::before {
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+}
+
+.panel::after {
+    bottom: 0; right: 0;
+    border-left: none; border-top: none;
+}
+
+/* 另外两个角通过子元素或者额外伪元素（这里利用 panel-body 的伪元素） */
+.panel-body::before {
+    content: "";
+    position: absolute;
+    top: 0; right: 0;
+    width: 20px; height: 20px;
+    border-top: 2px solid var(--theme-color);
+    border-right: 2px solid var(--theme-color);
+}
+
+.panel-body::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 20px; height: 20px;
+    border-bottom: 2px solid var(--theme-color);
+    border-left: 2px solid var(--theme-color);
+}
+
+/* 标题样式重构 - HUD 风格 */
+.panel-title {
+    position: relative;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 32px;
+    margin: 10px 10px 0 10px;
+    
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 2px;
+    
+    /* 底部渐变线条 */
+    border-bottom: 1px solid rgba(0, 234, 255, 0.3);
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), transparent);
+    
+    display: flex;
+    align-items: center;
+}
+
+/* 标题前的装饰块 */
+.panel-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 4px;
+    background: var(--theme-color);
+    box-shadow: 0 0 8px var(--theme-color);
+}
+
+.panel-title::after {
+    content: "///";
+    position: absolute;
+    right: 10px;
+    color: rgba(0, 234, 255, 0.3);
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* 内容区域 */
+.panel-content {
+    position: absolute;
+    top: 55px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    overflow: hidden;
+    /* 临时网格背景，方便用户感知区域，如果填充图表可移除 */
+    background-image: radial-gradient(rgba(0, 234, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+/* 布局位置微调 */
+.panel-left-top { grid-column: 1 / 2; grid-row: 1 / 2; }
+.panel-center-top { grid-column: 2 / 3; grid-row: 1 / 2; }
+.panel-right-top { grid-column: 3 / 4; grid-row: 1 / 2; }
+.panel-left-bottom { grid-column: 1 / 2; grid-row: 2 / 3; }
+.panel-center-bottom { grid-column: 2 / 3; grid-row: 2 / 3; }
+.panel-right-bottom { grid-column: 3 / 4; grid-row: 2 / 3; }
+
+/* =========================================
+   响应式布局 - 屏幕自适应
+   ========================================= */
+
+/* 超大屏幕 (1920px+) */
+@media (min-width: 1920px) {
+    :root {
+        --hand-width: 650px;
+        --screen-padding-x: 20px;
+        --panel-gap-x: 12px;
+        --panel-gap-y: 12px;
+    }
+    
+    .main-title {
+        font-size: 40px;
+    }
+    
+    .panel-title {
+        font-size: 20px;
+        height: 40px;
+        line-height: 40px;
+    }
+}
+
+/* 大屏幕 (1600px - 1919px) */
+@media (min-width: 1600px) and (max-width: 1919px) {
+    :root {
+        --hand-width: 580px;
+        --screen-padding-x: 16px;
+        --panel-gap-x: 10px;
+        --panel-gap-y: 10px;
+    }
+    
+    .main-title {
+        font-size: 36px;
+    }
+    
+    .panel-title {
+        font-size: 18px;
+    }
+}
+
+/* 中等屏幕 (1366px - 1599px) */
+@media (min-width: 1366px) and (max-width: 1599px) {
+    :root {
+        --hand-width: 500px;
+        --screen-padding-x: 12px;
+        --panel-gap-x: 8px;
+        --panel-gap-y: 8px;
+    }
+    
+    .main-title {
+        font-size: 32px;
+        margin-top: -48px;
+    }
+    
+    .panel-title {
+        font-size: 16px;
+        height: 32px;
+        line-height: 32px;
+        padding-left: 28px;
+    }
+    
+    .panel-content {
+        top: 48px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+    }
+    
+    .grid-container {
+        top: 75px;
+        bottom: 20px;
+    }
+}
+
+/* 较小屏幕 (1280px - 1365px) */
+@media (min-width: 1280px) and (max-width: 1365px) {
+    :root {
+        --hand-width: 450px;
+        --screen-padding-x: 10px;
+        --panel-gap-x: 6px;
+        --panel-gap-y: 6px;
+    }
+    
+    .main-title {
+        font-size: 28px;
+        margin-top: -42px;
+    }
+    
+    .panel-title {
+        font-size: 14px;
+        height: 30px;
+        line-height: 30px;
+        padding-left: 24px;
+        margin: 8px 8px 0 8px;
+    }
+    
+    .panel-content {
+        top: 44px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+    
+    .grid-container {
+        top: 68px;
+        bottom: 20px;
+    }
+}
+
+/* 小屏幕 (1024px - 1279px) */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    :root {
+        --hand-width: 400px;
+        --screen-padding-x: 8px;
+        --panel-gap-x: 5px;
+        --panel-gap-y: 5px;
+    }
+    
+    .main-title {
+        font-size: 24px;
+        margin-top: -38px;
+    }
+    
+    .panel-title {
+        font-size: 13px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 20px;
+        margin: 6px 6px 0 6px;
+        letter-spacing: 1px;
+    }
+    
+    .panel-title::after {
+        display: none;
+    }
+    
+    .panel-content {
+        top: 40px;
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+    }
+    
+    .grid-container {
+        top: 60px;
+        bottom: 20px;
+    }
+    
+    .panel::before, .panel::after,
+    .panel-body::before, .panel-body::after {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+/* 使用 vw/vh 单位实现更平滑的缩放 */
+@media (max-width: 1600px) {
+    .grid-container {
+        grid-template-columns: 25fr 50fr 25fr;
+    }
+}
+
+/* 高度自适应 */
+@media (max-height: 800px) {
+    .grid-container {
+        top: 70px;
+        bottom: 20px;
+    }
+    
+    .main-title {
+        margin-top: -45px;
+    }
+}
+
+@media (max-height: 700px) {
+    .grid-container {
+        top: 60px;
+        bottom: 20px;
+    }
+    
+    :root {
+        --hand-width: 400px;
+    }
+    
+    .main-title {
+        font-size: 26px;
+        margin-top: -40px;
+    }
+    
+    .panel-title {
+        height: 28px;
+        line-height: 28px;
+        font-size: 14px;
+    }
+    
+    .panel-content {
+        top: 42px;
+    }
+}
+
+#screen-scale-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: 
+        linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+        url("../images/bg.jpg") no-repeat center center / cover;
+    background-size: 40px 40px, 40px 40px, cover;
+}
+
+#screen-root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1920px;
+    height: 1080px;
+    transform-origin: 0 0;
+}

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>58所传感器数据接收</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background: #0a1628;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Microsoft YaHei", "PingFang SC", "Consolas", monospace;
+            overflow: hidden;
+        }
+
+        .main-panel {
+            width: 85vw;
+            max-width: 1100px;
+            height: 90vh;
+            background: rgba(8, 24, 48, 0.95);
+            border: 1px solid rgba(0, 180, 255, 0.25);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== 标题栏 ===== */
+        .panel-header {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(0, 100, 180, 0.1);
+            border-bottom: 1px solid rgba(0, 180, 255, 0.15);
+            font-size: 16px;
+            font-weight: 600;
+            color: #d0e8ff;
+            letter-spacing: 1px;
+        }
+
+        .panel-header .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #555;
+            margin-left: auto;
+            transition: all 0.3s;
+        }
+        .panel-header .dot.on  { background: #00ff88; box-shadow: 0 0 8px rgba(0,255,136,0.6); }
+        .panel-header .dot.err { background: #ff4444; box-shadow: 0 0 8px rgba(255,68,68,0.6); }
+
+        /* ===== 状态栏 ===== */
+        .status-bar {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 10px;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(0, 180, 255, 0.08);
+            flex-wrap: wrap;
+        }
+
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+        .status-tag.info    { background: rgba(0,140,220,0.15); color: #7cc8f0; border: 1px solid rgba(0,140,220,0.2); }
+        .status-tag.success { background: rgba(0,180,100,0.12); color: #4ade80; border: 1px solid rgba(0,180,100,0.2); }
+        .status-tag.warning { background: rgba(220,160,0,0.12); color: #facc15; border: 1px solid rgba(220,160,0,0.2); }
+        .status-tag.error   { background: rgba(200,40,40,0.15); color: #f87171; border: 1px solid rgba(200,40,40,0.2); }
+
+        /* ===== 数据展示区（主体） ===== */
+        .data-display {
+            flex: 1 1 auto;
+            margin: 8px 16px;
+            padding: 14px 18px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 180, 255, 0.12);
+            border-radius: 6px;
+            min-height: 0;
+        }
+
+        .data-display::-webkit-scrollbar { width: 5px; }
+        .data-display::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 3px; }
+        .data-display::-webkit-scrollbar-thumb { background: rgba(0,180,255,0.25); border-radius: 3px; }
+
+        .data-block {
+            margin-bottom: 6px;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 2px solid rgba(0, 200, 120, 0.5);
+            font-family: "Consolas", "Microsoft YaHei", monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #c0d8f0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .data-block .data-time {
+            color: rgba(100, 160, 200, 0.6);
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+        .data-block .data-json {
+            color: #a8d8c0;
+        }
+
+        .empty-placeholder {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(160, 200, 240, 0.25);
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== 底部按钮 ===== */
+        .panel-footer {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 12px 20px;
+            border-top: 1px solid rgba(0, 180, 255, 0.15);
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border-radius: 5px;
+            border: 1px solid;
+            font-size: 14px;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            font-weight: 500;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .btn-start {
+            background: rgba(0, 150, 100, 0.2);
+            border-color: rgba(0, 220, 130, 0.4);
+            color: #4ade80;
+        }
+        .btn-start:hover:not(:disabled) {
+            background: rgba(0, 170, 110, 0.3);
+            border-color: rgba(0, 240, 150, 0.55);
+            color: #6ee7a0;
+        }
+        .btn-start:disabled {
+            background: rgba(100, 100, 100, 0.08);
+            border-color: rgba(100, 100, 100, 0.15);
+            color: rgba(150, 150, 150, 0.35);
+            cursor: not-allowed;
+        }
+
+        .btn-stop {
+            background: rgba(170, 35, 35, 0.15);
+            border-color: rgba(255, 80, 80, 0.3);
+            color: #f87171;
+        }
+        .btn-stop:hover:not(:disabled) {
+            background: rgba(190, 45, 45, 0.25);
+            border-color: rgba(255, 100, 100, 0.5);
+            color: #fca5a5;
+        }
+        .btn-stop:disabled {
+            background: rgba(100, 100, 100, 0.08);
+            border-color: rgba(100, 100, 100, 0.15);
+            color: rgba(150, 150, 150, 0.35);
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-panel">
+        <!-- 标题栏 -->
+        <div class="panel-header">
+            <span>📡 58所传感器数据接收 — 端口 10008</span>
+            <div class="dot" id="status-dot" title="未连接"></div>
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar" id="status-bar">
+            <span class="status-tag info" id="tag-status">🔗 等待连接</span>
+            <span class="status-tag info" id="tag-count">📬 接收: 0 次</span>
+            <span class="status-tag info" id="tag-size">📦 大小: --</span>
+            <span class="status-tag info" id="tag-time">🕐 最近: --</span>
+        </div>
+
+        <!-- 数据展示区 -->
+        <div class="data-display" id="data-display">
+            <div class="empty-placeholder" id="empty-placeholder">点击「开始接收」获取传感器原始数据</div>
+        </div>
+
+        <!-- 按钮 -->
+        <div class="panel-footer">
+            <button class="btn btn-start" id="btn-start">▶ 开始接收58所传感器数据</button>
+            <button class="btn btn-stop" id="btn-stop" disabled>⏹ 结束接收</button>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var GATEWAY = { host: '192.168.0.233', port: 10008, endpoint: '/latest.json', interval: 2000 };
+        var POLL_URL = 'http://' + GATEWAY.host + ':' + GATEWAY.port + GATEWAY.endpoint;
+        var MAX_BLOCKS = 15;
+
+        // DOM
+        var dataDisplay = document.getElementById('data-display');
+        var emptyEl     = document.getElementById('empty-placeholder');
+        var btnStart    = document.getElementById('btn-start');
+        var btnStop     = document.getElementById('btn-stop');
+        var statusDot   = document.getElementById('status-dot');
+        var tagStatus   = document.getElementById('tag-status');
+        var tagCount    = document.getElementById('tag-count');
+        var tagSize     = document.getElementById('tag-size');
+        var tagTime     = document.getElementById('tag-time');
+
+        var running = false, timer = null, abortCtrl = null;
+        var msgCount = 0;
+        var lastRawText = '';   // 去重用
+
+        function pad(n) { return String(n).padStart(2, '0'); }
+        function ts() {
+            var d = new Date();
+            return [d.getHours(), d.getMinutes(), d.getSeconds()].map(pad).join(':');
+        }
+
+        // ==================== 格式化字节大小 ====================
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        // ==================== 添加数据块到展示区 ====================
+        function addDataBlock(rawText) {
+            if (emptyEl) emptyEl.style.display = 'none';
+
+            // 尝试格式化 JSON（美化缩进），失败则保留原样
+            var displayText = rawText;
+            try {
+                displayText = JSON.stringify(JSON.parse(rawText), null, 2);
+            } catch(e) {
+                // 不是合法 JSON，原样显示
+            }
+
+            var block = document.createElement('div');
+            block.className = 'data-block';
+
+            var timeDiv = document.createElement('div');
+            timeDiv.className = 'data-time';
+            timeDiv.textContent = '── ' + ts() + ' ──';
+
+            var jsonDiv = document.createElement('div');
+            jsonDiv.className = 'data-json';
+            jsonDiv.textContent = displayText;
+
+            block.appendChild(timeDiv);
+            block.appendChild(jsonDiv);
+            dataDisplay.appendChild(block);
+
+            // 限制最多显示条数
+            var blocks = dataDisplay.querySelectorAll('.data-block');
+            while (blocks.length > MAX_BLOCKS) {
+                blocks[0].remove();
+                blocks = dataDisplay.querySelectorAll('.data-block');
+            }
+
+            dataDisplay.scrollTop = dataDisplay.scrollHeight;
+        }
+
+        // ==================== 轮询获取数据 ====================
+        function poll() {
+            if (!running) return;
+            abortCtrl = new AbortController();
+
+            fetch(POLL_URL + '?t=' + Date.now(), { cache: 'no-store', signal: abortCtrl.signal })
+                .then(function(r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
+                .then(function(rawText) {
+                    if (!running) return;
+
+                    // 去重：内容没变就跳过
+                    if (rawText === lastRawText) return;
+                    lastRawText = rawText;
+
+                    msgCount++;
+                    var now = ts();
+
+                    // 更新状态栏
+                    tagStatus.textContent = '🔗 已连接';
+                    tagStatus.className = 'status-tag success';
+                    tagCount.textContent = '📬 接收: ' + msgCount + ' 次';
+                    tagCount.className = 'status-tag success';
+                    tagSize.textContent = '📦 大小: ' + formatSize(rawText.length);
+                    tagSize.className = 'status-tag success';
+                    tagTime.textContent = '🕐 最近: ' + now;
+                    tagTime.className = 'status-tag success';
+
+                    // 展示原始数据
+                    addDataBlock(rawText);
+                    statusDot.className = 'dot on';
+                })
+                .catch(function(e) {
+                    if (!running) return;
+                    if (e.name === 'AbortError') return;
+
+                    tagStatus.textContent = '🔗 连接失败';
+                    tagStatus.className = 'status-tag error';
+                    tagCount.className = 'status-tag warning';
+
+                    // 错误也显示在数据区
+                    if (emptyEl) emptyEl.style.display = 'none';
+                    var block = document.createElement('div');
+                    block.className = 'data-block';
+                    block.style.borderLeftColor = 'rgba(255,80,80,0.5)';
+                    block.style.color = '#fca5a5';
+                    block.textContent = '[' + ts() + '] 请求失败: ' + e.message;
+                    dataDisplay.appendChild(block);
+                    dataDisplay.scrollTop = dataDisplay.scrollHeight;
+
+                    statusDot.className = 'dot err';
+                })
+                .finally(function() {
+                    abortCtrl = null;
+                    if (running) timer = setTimeout(poll, GATEWAY.interval);
+                });
+        }
+
+        // ==================== 按钮 ====================
+        btnStart.addEventListener('click', function() {
+            if (running) return;
+            running = true;
+            msgCount = 0;
+            lastRawText = '';
+            btnStart.disabled = true;
+            btnStop.disabled = false;
+            statusDot.className = 'dot on';
+
+            // 清空展示区
+            dataDisplay.querySelectorAll('.data-block').forEach(function(b) { b.remove(); });
+
+            tagStatus.textContent = '🔗 连接中...';
+            tagStatus.className = 'status-tag info';
+            tagCount.textContent = '📬 接收: 0 次';
+            tagCount.className = 'status-tag info';
+            tagSize.textContent = '📦 大小: --';
+            tagSize.className = 'status-tag info';
+            tagTime.textContent = '🕐 最近: --';
+            tagTime.className = 'status-tag info';
+
+            if (emptyEl) emptyEl.style.display = 'none';
+
+            // 起始提示
+            var block = document.createElement('div');
+            block.className = 'data-block';
+            block.style.borderLeftColor = 'rgba(0,180,255,0.5)';
+            block.style.color = '#7cc8f0';
+            block.textContent = '开始从网关 (' + GATEWAY.host + ':' + GATEWAY.port + GATEWAY.endpoint + ') 接收原始数据...';
+            dataDisplay.appendChild(block);
+
+            poll();
+        });
+
+        btnStop.addEventListener('click', function() {
+            if (!running) return;
+            running = false;
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            if (timer) { clearTimeout(timer); timer = null; }
+            if (abortCtrl) { abortCtrl.abort(); abortCtrl = null; }
+            statusDot.className = 'dot';
+
+            tagStatus.textContent = '🔗 已停止';
+            tagStatus.className = 'status-tag info';
+            tagCount.textContent = '📬 共接收: ' + msgCount + ' 次';
+            tagCount.className = 'status-tag info';
+
+            // 结束提示
+            var block = document.createElement('div');
+            block.className = 'data-block';
+            block.style.borderLeftColor = 'rgba(0,180,255,0.5)';
+            block.style.color = '#7cc8f0';
+            block.textContent = '已停止接收（共接收 ' + msgCount + ' 次）';
+            dataDisplay.appendChild(block);
+            dataDisplay.scrollTop = dataDisplay.scrollHeight;
+        });
+    })();
+    </script>
+
+</body>
+</html>

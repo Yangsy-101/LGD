@@ -1,0 +1,1310 @@
+/*
+ * Responsive telemetry command layout
+ * The component is driven by its own measured size (see scene_app.js),
+ * so it remains balanced inside full pages, iframes and split-screen shells.
+ */
+
+body.scene-dashboard-mode .panel-telemetry {
+    --telemetry-bg: #061620;
+    --telemetry-surface: rgba(8, 27, 39, .9);
+    --telemetry-surface-raised: rgba(10, 34, 47, .94);
+    --telemetry-line: rgba(117, 188, 207, .16);
+    --telemetry-line-strong: rgba(117, 205, 224, .28);
+    --telemetry-copy: #e6f1f3;
+    --telemetry-copy-soft: #adc3cb;
+    --telemetry-muted: #718d99;
+    --telemetry-gap: calc(9px * var(--telemetry-scale, 1));
+}
+
+body.scene-dashboard-mode .panel-telemetry .panel-heading {
+    position: relative;
+    z-index: 2;
+    border-bottom-color: rgba(91, 191, 214, .16);
+    background:
+        linear-gradient(90deg, rgba(52, 151, 176, .09), transparent 38%),
+        rgba(7, 24, 35, .92);
+}
+
+body.scene-dashboard-mode .panel-telemetry .panel-title-copy h2 {
+    font-size: clamp(1rem, 1.55cqw, 1.28rem);
+    font-weight: 700;
+    letter-spacing: .045em;
+}
+
+body.scene-dashboard-mode .panel-telemetry .section-index {
+    font-size: clamp(.7rem, 1cqw, .82rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry {
+    position: relative;
+    isolation: isolate;
+    container: telemetry / inline-size;
+    min-width: 0;
+    min-height: 0;
+    padding: calc(12px * var(--telemetry-scale, 1)) !important;
+    display: grid !important;
+    grid-template-areas:
+        "switch"
+        "context"
+        "command" !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    gap: var(--telemetry-gap) !important;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 10% 0%, rgba(var(--scene-accent-rgb), .065), transparent 30%),
+        linear-gradient(rgba(70, 155, 180, .022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(70, 155, 180, .022) 1px, transparent 1px),
+        var(--telemetry-bg);
+    background-size: auto, 36px 36px, 36px 36px, auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(112deg, transparent 0 72%, rgba(var(--scene-accent-rgb), .035) 72% 72.5%, transparent 72.5%);
+    content: "";
+}
+
+/* Scene selector: one deliberate segmented control instead of two loose cards. */
+body.scene-dashboard-mode .scene-switcher {
+    grid-area: switch;
+    min-width: 0;
+    min-height: 0;
+    height: calc(48px * var(--telemetry-scale, 1));
+    padding: 3px;
+    gap: 3px;
+    border: 1px solid var(--telemetry-line);
+    border-radius: 7px;
+    background: rgba(3, 15, 24, .7);
+}
+
+body.scene-dashboard-mode .scene-switch {
+    min-height: 0;
+    padding: 0 calc(14px * var(--telemetry-scale, 1));
+    grid-template-columns: auto auto 1fr;
+    align-items: center;
+    gap: 7px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    box-shadow: none;
+}
+
+body.scene-dashboard-mode .scene-switch::before {
+    width: 3px;
+    height: 44%;
+    border-radius: 3px;
+    background: transparent;
+    content: "";
+    transition: background .2s ease, box-shadow .2s ease;
+}
+
+body.scene-dashboard-mode .scene-switch::after {
+    right: 12px;
+    bottom: 0;
+    left: 12px;
+    height: 1px;
+}
+
+body.scene-dashboard-mode .scene-switch span {
+    color: var(--telemetry-muted);
+    font-size: clamp(.72rem, 1.2cqw, .96rem);
+}
+
+body.scene-dashboard-mode .scene-switch strong {
+    color: var(--telemetry-copy-soft);
+    font-size: clamp(.9rem, 1.62cqw, 1.22rem);
+    font-weight: 700;
+    letter-spacing: .015em;
+}
+
+body.scene-dashboard-mode .scene-switch i {
+    top: 50%;
+    right: calc(14px * var(--telemetry-scale, 1));
+    width: 6px;
+    height: 6px;
+    transform: translateY(-50%);
+}
+
+body.scene-dashboard-mode .scene-switch.is-active {
+    border: 0;
+    background:
+        linear-gradient(90deg, rgba(var(--scene-accent-rgb), .14), rgba(var(--scene-accent-rgb), .035)),
+        rgba(9, 31, 42, .72);
+    box-shadow: inset 0 0 0 1px rgba(var(--scene-accent-rgb), .24);
+}
+
+body.scene-dashboard-mode .scene-switch.is-active::before {
+    background: var(--scene-accent);
+    box-shadow: 0 0 9px rgba(var(--scene-accent-rgb), .55);
+}
+
+body.scene-dashboard-mode .scene-switch.is-active::after {
+    background: var(--scene-accent);
+    box-shadow: 0 0 10px rgba(var(--scene-accent-rgb), .42);
+}
+
+/* Mission context bar */
+body.scene-dashboard-mode .scene-context-row {
+    grid-area: context;
+    min-width: 0;
+    min-height: 0;
+    height: calc(64px * var(--telemetry-scale, 1));
+    padding: 0 calc(14px * var(--telemetry-scale, 1));
+    grid-template-columns: calc(42px * var(--telemetry-scale, 1)) minmax(0, 1fr) auto;
+    gap: calc(12px * var(--telemetry-scale, 1));
+    border-color: var(--telemetry-line);
+    border-radius: 7px;
+    background:
+        linear-gradient(90deg, rgba(var(--scene-accent-rgb), .075), transparent 42%),
+        var(--telemetry-surface);
+}
+
+body.scene-dashboard-mode .scene-context-icon {
+    width: calc(42px * var(--telemetry-scale, 1));
+    height: calc(42px * var(--telemetry-scale, 1));
+    border-radius: 6px;
+    font-size: clamp(.82rem, 1.8cqw, 1.1rem);
+    transform: rotate(45deg);
+}
+
+body.scene-dashboard-mode .scene-context-icon i {
+    transform: rotate(-45deg);
+}
+
+body.scene-dashboard-mode .scene-context-copy,
+body.scene-dashboard-mode .scene-payload {
+    min-width: 0;
+    display: grid;
+    align-content: center;
+    gap: 2px;
+}
+
+body.scene-dashboard-mode .scene-context-copy small,
+body.scene-dashboard-mode .scene-payload small {
+    display: block;
+    color: var(--telemetry-muted);
+    font-size: clamp(.7rem, .94cqw, .82rem);
+    font-weight: 600;
+    letter-spacing: .08em;
+}
+
+body.scene-dashboard-mode .scene-context-copy strong {
+    color: var(--telemetry-copy);
+    font-size: clamp(1rem, 1.8cqw, 1.48rem);
+    font-weight: 700;
+    line-height: 1.12;
+}
+
+body.scene-dashboard-mode .scene-payload {
+    min-width: clamp(110px, 20cqw, 210px);
+    padding: 7px 11px 7px 14px;
+    border: 0;
+    border-left: 1px solid var(--telemetry-line);
+    text-align: right;
+}
+
+body.scene-dashboard-mode .scene-payload b {
+    color: var(--scene-accent);
+    font-size: clamp(.78rem, 1.32cqw, 1.12rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+/* Main command matrix. The trend owns remaining height; summary cards stay compact. */
+body.scene-dashboard-mode .scene-command-grid {
+    grid-area: command;
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-areas:
+        "metric environment"
+        "time time"
+        "trend trend";
+    grid-template-columns: minmax(205px, .82fr) minmax(285px, 1.18fr);
+    grid-template-rows:
+        minmax(calc(112px * var(--telemetry-scale, 1)), auto)
+        minmax(calc(66px * var(--telemetry-scale, 1)), auto)
+        minmax(120px, 1fr);
+    gap: var(--telemetry-gap);
+    overflow: hidden;
+}
+
+body.scene-dashboard-mode .scene-metric-card,
+body.scene-dashboard-mode .forest-environment,
+body.scene-dashboard-mode .scene-time-grid,
+body.scene-dashboard-mode .scene-trend-card {
+    position: relative;
+    min-width: 0;
+    min-height: 0 !important;
+    overflow: hidden;
+    border: 1px solid var(--telemetry-line);
+    border-radius: 7px;
+    background: var(--telemetry-surface);
+    box-shadow: inset 0 1px rgba(255, 255, 255, .018);
+}
+
+body.scene-dashboard-mode .scene-metric-card::after,
+body.scene-dashboard-mode .forest-environment::after,
+body.scene-dashboard-mode .scene-time-grid::after,
+body.scene-dashboard-mode .scene-trend-card::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 54px;
+    height: 2px;
+    background: var(--scene-accent);
+    opacity: .65;
+    content: "";
+}
+
+/* Primary decision card */
+body.scene-dashboard-mode .scene-metric-card {
+    grid-area: metric;
+    width: auto;
+    height: auto !important;
+    padding: calc(14px * var(--telemetry-scale, 1));
+    display: block;
+    border-color: rgba(var(--scene-accent-rgb), .2);
+    background:
+        linear-gradient(115deg, rgba(var(--scene-accent-rgb), .1), transparent 48%),
+        var(--telemetry-surface-raised);
+    transition: border-color .24s ease, background .24s ease, box-shadow .24s ease;
+}
+
+body.scene-dashboard-mode .scene-metric-card::before {
+    opacity: .16;
+    background-size: 26px 26px;
+    mask-image: linear-gradient(90deg, #000, transparent 75%);
+}
+
+body.scene-dashboard-mode .scene-metric-card.is-alarm {
+    border-color: rgba(239, 125, 108, .35);
+    background:
+        repeating-linear-gradient(135deg, rgba(239, 125, 108, .025) 0 8px, transparent 8px 16px),
+        linear-gradient(115deg, rgba(239, 125, 108, .13), transparent 55%),
+        var(--telemetry-surface-raised);
+}
+
+body.scene-dashboard-mode .scene-metric-card.is-acknowledged {
+    --scene-accent: #f0a45d;
+    --scene-accent-rgb: 240, 164, 93;
+    border-color: rgba(240, 164, 93, .38);
+    background:
+        linear-gradient(115deg, rgba(240, 164, 93, .15), transparent 56%),
+        var(--telemetry-surface-raised);
+    box-shadow: inset 0 1px rgba(255, 255, 255, .025), 0 0 18px rgba(240, 164, 93, .045);
+}
+
+body.scene-dashboard-mode .scene-metric-card.is-cleared {
+    --scene-accent: #61d7ac;
+    --scene-accent-rgb: 97, 215, 172;
+    border-color: rgba(97, 215, 172, .4);
+    background:
+        linear-gradient(115deg, rgba(97, 215, 172, .15), transparent 56%),
+        var(--telemetry-surface-raised);
+    box-shadow: inset 0 1px rgba(255, 255, 255, .025), 0 0 18px rgba(97, 215, 172, .05);
+}
+
+body.scene-dashboard-mode .scene-metric-card.is-resolved {
+    --scene-accent: #54d2ed;
+    --scene-accent-rgb: 84, 210, 237;
+    border-color: rgba(84, 210, 237, .34);
+    background:
+        linear-gradient(115deg, rgba(84, 210, 237, .13), transparent 56%),
+        var(--telemetry-surface-raised);
+    box-shadow: inset 0 1px rgba(255, 255, 255, .025), 0 0 18px rgba(84, 210, 237, .045);
+}
+
+body.scene-dashboard-mode .scene-metric-card.is-normal {
+    --scene-accent: #61d7ac;
+    --scene-accent-rgb: 97, 215, 172;
+}
+
+body.scene-dashboard-mode .scene-reading {
+    height: 100%;
+    min-height: 0;
+    padding: 0;
+    grid-template-areas:
+        "label verdict"
+        "value value"
+        "frame frame";
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 8px;
+    border: 0;
+}
+
+body.scene-dashboard-mode .scene-reading-label {
+    grid-area: label;
+    gap: 8px;
+    color: var(--telemetry-copy-soft);
+    font-size: clamp(.72rem, 1.16cqw, .98rem);
+    font-weight: 650;
+}
+
+body.scene-dashboard-mode .scene-reading-label i {
+    width: calc(30px * var(--telemetry-scale, 1));
+    height: calc(30px * var(--telemetry-scale, 1));
+    border: 0;
+    border-radius: 5px;
+    background: rgba(var(--scene-accent-rgb), .11);
+    font-size: clamp(.72rem, 1.35cqw, .9rem);
+}
+
+body.scene-dashboard-mode .scene-verdict {
+    grid-area: verdict;
+    align-self: center;
+    justify-self: end;
+    padding: 4px 7px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: clamp(.58rem, .82cqw, .74rem);
+    opacity: .9;
+    transform: none;
+}
+
+body.scene-dashboard-mode .scene-reading-value {
+    grid-area: value;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 7px;
+}
+
+body.scene-dashboard-mode .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-scene="ocean"] .scene-reading-value strong {
+    overflow: hidden;
+    color: #f2f8f8;
+    font-size: clamp(2.25rem, 4.65cqw, 4.65rem);
+    line-height: .94;
+    text-align: left;
+    text-overflow: ellipsis;
+}
+
+/* Longer workflow phrases retain the visual hierarchy without ever being
+   cropped in shallow cards or embedded narrow layouts. */
+body.scene-dashboard-mode .scene-metric-card.has-long-status[data-workflow-status] .scene-reading-value strong {
+    font-size: clamp(1.75rem, 4.8cqw, 4.1rem);
+    letter-spacing: -.065em;
+}
+
+body.scene-dashboard-mode .scene-reading-value em {
+    font-size: clamp(1rem, 1.4cqw, 1.3rem);
+}
+
+body.scene-dashboard-mode .latest-record-id {
+    grid-area: frame;
+    min-width: 0;
+    padding-top: 6px;
+    overflow: hidden;
+    border-top: 1px solid var(--telemetry-line);
+    color: var(--telemetry-muted);
+    font-size: clamp(.7rem, .82cqw, .78rem);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .latest-record-id strong {
+    color: #9ccfda;
+}
+
+body.scene-dashboard-mode .scene-verdict.is-acknowledged {
+    color: #f0a45d;
+}
+
+body.scene-dashboard-mode .scene-verdict.is-cleared {
+    color: #61d7ac;
+}
+
+body.scene-dashboard-mode .scene-verdict.is-resolved {
+    color: #54d2ed;
+}
+
+body.scene-dashboard-mode .latest-record-id,
+body.scene-dashboard-mode .latest-record-id strong,
+body.scene-dashboard-mode .forest-environment-time strong,
+body.scene-dashboard-mode .scene-time-item strong,
+body.scene-dashboard-mode .trend-coordinate-tick,
+body.scene-dashboard-mode .trend-time-tick,
+body.scene-dashboard-mode .trend-delta,
+body.scene-dashboard-mode .trend-footer {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Shared compact subcard headers */
+body.scene-dashboard-mode .scene-subcard-heading {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+body.scene-dashboard-mode .scene-subcard-title {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+body.scene-dashboard-mode .scene-subcard-title > i {
+    width: calc(26px * var(--telemetry-scale, 1));
+    height: calc(26px * var(--telemetry-scale, 1));
+    display: grid;
+    place-items: center;
+    border-radius: 5px;
+    background: rgba(var(--scene-accent-rgb), .09);
+    color: var(--scene-accent);
+    font-size: clamp(.62rem, 1cqw, .76rem);
+}
+
+body.scene-dashboard-mode .scene-subcard-title > span {
+    min-width: 0;
+    display: grid;
+    gap: 1px;
+}
+
+body.scene-dashboard-mode .scene-subcard-title small {
+    color: var(--telemetry-muted);
+    font-size: clamp(.7rem, .76cqw, .78rem);
+    letter-spacing: .08em;
+}
+
+body.scene-dashboard-mode .scene-subcard-title strong {
+    overflow: hidden;
+    color: var(--telemetry-copy-soft);
+    font-size: clamp(.7rem, .94cqw, .86rem);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-subcard-heading > em {
+    color: var(--telemetry-muted);
+    font-size: clamp(.7rem, .72cqw, .76rem);
+    font-style: normal;
+    white-space: nowrap;
+}
+
+/* Environment card */
+body.scene-dashboard-mode .forest-environment {
+    grid-area: environment;
+    height: auto;
+    padding: calc(10px * var(--telemetry-scale, 1));
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: calc(7px * var(--telemetry-scale, 1));
+    background:
+        radial-gradient(circle at 84% 18%, rgba(84, 210, 237, .08), transparent 38%),
+        var(--telemetry-surface);
+}
+
+body.scene-dashboard-mode .forest-environment[hidden] {
+    display: none !important;
+}
+
+body.scene-dashboard-mode .environment-heading {
+    grid-column: 1 / -1;
+}
+
+body.scene-dashboard-mode .forest-environment-item {
+    min-height: 0;
+    padding: 4px calc(8px * var(--telemetry-scale, 1));
+    grid-template-columns: calc(27px * var(--telemetry-scale, 1)) minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    column-gap: 7px;
+    row-gap: 1px;
+    border: 0;
+    border-left: 1px solid rgba(240, 164, 93, .28);
+    border-radius: 0;
+    background: rgba(4, 18, 27, .48);
+}
+
+body.scene-dashboard-mode .forest-environment-item.humidity {
+    border-left-color: rgba(84, 210, 237, .32);
+}
+
+body.scene-dashboard-mode .forest-environment-item > i {
+    width: calc(27px * var(--telemetry-scale, 1));
+    height: calc(27px * var(--telemetry-scale, 1));
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: center;
+    font-size: clamp(.62rem, 1.05cqw, .76rem);
+}
+
+body.scene-dashboard-mode .forest-environment-item small {
+    grid-column: 2 / -1;
+    grid-row: 1;
+    color: var(--telemetry-muted);
+    font-size: clamp(.58rem, .76cqw, .72rem);
+}
+
+body.scene-dashboard-mode .forest-environment-item strong {
+    grid-column: 2;
+    grid-row: 2;
+    align-self: end;
+    color: var(--telemetry-copy);
+    font-size: clamp(1.42rem, 2.72cqw, 2.75rem);
+    line-height: .94;
+}
+
+body.scene-dashboard-mode .forest-environment-item em {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: end;
+    margin-bottom: 2px;
+    font-size: clamp(.86rem, 1.12cqw, 1.08rem);
+    font-weight: 700;
+}
+
+body.scene-dashboard-mode .forest-environment-time {
+    grid-column: 1 / -1;
+    min-width: 0;
+    padding: 5px 7px 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    border: 0;
+    border-top: 1px solid var(--telemetry-line);
+    border-radius: 0;
+    background: transparent;
+}
+
+body.scene-dashboard-mode .forest-environment-time > span {
+    min-width: 0;
+    grid-template-columns: 15px minmax(0, 1fr) auto;
+    gap: 4px;
+}
+
+body.scene-dashboard-mode .forest-environment-time small {
+    font-size: clamp(.53rem, .7cqw, .64rem);
+}
+
+body.scene-dashboard-mode .forest-environment-time strong {
+    font-size: clamp(.6rem, .76cqw, .72rem);
+}
+
+/* End-to-end time rail */
+body.scene-dashboard-mode .scene-time-grid {
+    grid-area: time;
+    height: auto;
+    min-height: calc(92px * var(--telemetry-scale, 1)) !important;
+    padding: calc(12px * var(--telemetry-scale, 1));
+    display: grid;
+    grid-template-columns: minmax(170px, .78fr) repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+    gap: calc(10px * var(--telemetry-scale, 1));
+    background: var(--telemetry-surface);
+}
+
+body.scene-dashboard-mode .time-heading {
+    padding-right: 14px;
+    border-right: 1px solid var(--telemetry-line);
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title {
+    gap: 11px;
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title > i {
+    width: calc(38px * var(--telemetry-scale, 1));
+    height: calc(38px * var(--telemetry-scale, 1));
+    font-size: clamp(.86rem, 1.18cqw, 1.08rem);
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title small {
+    font-size: clamp(.68rem, .82cqw, .8rem);
+}
+
+body.scene-dashboard-mode .time-heading .scene-subcard-title strong {
+    font-size: clamp(.96rem, 1.18cqw, 1.16rem);
+    line-height: 1.15;
+}
+
+body.scene-dashboard-mode .time-heading > em {
+    font-size: clamp(.7rem, .78cqw, .78rem);
+}
+
+body.scene-dashboard-mode .scene-time-item {
+    min-width: 0;
+    min-height: 0;
+    padding: 8px 12px;
+    display: grid;
+    grid-template-columns: calc(38px * var(--telemetry-scale, 1)) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-content: center;
+    gap: 2px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: rgba(4, 18, 27, .55);
+}
+
+body.scene-dashboard-mode .scene-time-item.latency {
+    grid-column: auto;
+    border: 0;
+    background: rgba(38, 96, 79, .12);
+}
+
+body.scene-dashboard-mode .scene-time-item > i {
+    width: calc(38px * var(--telemetry-scale, 1));
+    height: calc(38px * var(--telemetry-scale, 1));
+    grid-column: 1;
+    grid-row: 1 / -1;
+    align-self: center;
+    font-size: clamp(.82rem, 1.14cqw, 1.02rem);
+}
+
+body.scene-dashboard-mode .scene-time-item > span {
+    min-width: 0;
+    display: contents;
+}
+
+body.scene-dashboard-mode .scene-time-item small {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--telemetry-muted);
+    font-size: clamp(.72rem, .88cqw, .84rem);
+    font-weight: 600;
+    line-height: 1.12;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-time-item strong {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start;
+    color: var(--telemetry-copy);
+    overflow: visible;
+    font-size: clamp(1.08rem, 1.42cqw, 1.36rem);
+    font-weight: 750;
+    letter-spacing: .01em;
+    line-height: 1.12;
+    text-overflow: clip;
+}
+
+/* Trend analysis stage */
+body.scene-dashboard-mode .scene-trend-card {
+    grid-area: trend;
+    width: auto;
+    height: auto;
+    padding: calc(12px * var(--telemetry-scale, 1)) calc(14px * var(--telemetry-scale, 1)) calc(9px * var(--telemetry-scale, 1)) !important;
+    display: flex !important;
+    gap: calc(7px * var(--telemetry-scale, 1)) !important;
+    background:
+        linear-gradient(180deg, rgba(10, 32, 45, .92), rgba(5, 19, 29, .92)),
+        var(--telemetry-surface);
+}
+
+body.scene-dashboard-mode .scene-trend-card::before {
+    position: absolute;
+    inset: 45px 14px 34px;
+    pointer-events: none;
+    border: 1px solid rgba(117, 188, 207, .055);
+    content: "";
+}
+
+body.scene-dashboard-mode .trend-header {
+    min-height: calc(34px * var(--telemetry-scale, 1));
+}
+
+body.scene-dashboard-mode .trend-header > span:first-child {
+    padding-left: 10px;
+    border-left: 2px solid var(--scene-accent);
+}
+
+body.scene-dashboard-mode .trend-header small {
+    color: var(--telemetry-muted);
+    font-size: clamp(.7rem, .78cqw, .78rem);
+}
+
+body.scene-dashboard-mode .trend-header strong {
+    color: var(--telemetry-copy);
+    font-size: clamp(.95rem, 1.36cqw, 1.32rem);
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+body.scene-dashboard-mode .trend-delta {
+    padding: 5px 9px;
+    border-color: var(--telemetry-line-strong);
+    border-radius: 4px;
+    background: rgba(5, 18, 27, .72);
+    font-size: clamp(.58rem, .76cqw, .74rem);
+}
+
+body.scene-dashboard-mode .trend-chart-wrap {
+    min-width: 0;
+    min-height: 74px;
+    margin: 0 2px;
+    flex: 1 1 auto;
+}
+
+body.scene-dashboard-mode #sceneTrendChart {
+    overflow: hidden;
+}
+
+body.scene-dashboard-mode .trend-grid line {
+    stroke: rgba(126, 179, 201, .105);
+}
+
+body.scene-dashboard-mode .trend-coordinate-tick {
+    padding: 1px 3px;
+    background: rgba(4, 16, 24, .84);
+    font-size: clamp(.52rem, .72cqw, .7rem);
+}
+
+body.scene-dashboard-mode .trend-time-tick {
+    font-size: clamp(.5rem, .66cqw, .65rem);
+}
+
+body.scene-dashboard-mode .trend-axis-title {
+    font-size: clamp(.58rem, .76cqw, .76rem);
+}
+
+body.scene-dashboard-mode .trend-footer {
+    min-height: calc(22px * var(--telemetry-scale, 1));
+    padding-top: 5px;
+    border-top: 1px solid var(--telemetry-line);
+    color: var(--telemetry-muted);
+    font-size: clamp(.56rem, .72cqw, .7rem);
+}
+
+/* Ocean scene has no environment card; the primary wind reading becomes a full-width summary. */
+body.scene-dashboard-mode .scene-telemetry[data-scene="ocean"] .scene-metric-card {
+    grid-area: 1 / 1 / 2 / -1;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-scene="ocean"] .scene-reading {
+    grid-template-areas:
+        "label value verdict"
+        "frame value verdict";
+    grid-template-columns: minmax(150px, .7fr) minmax(170px, 1fr) auto;
+    grid-template-rows: 1fr 1fr;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-scene="ocean"] .latest-record-id {
+    border-top: 0;
+    padding-top: 0;
+}
+
+/* Spacious embedded/full-width panels: scale summary cards modestly and give the chart the rest. */
+body.scene-dashboard-mode .scene-telemetry[data-density="spacious"] .scene-command-grid {
+    grid-template-rows:
+        minmax(150px, calc(178px * var(--telemetry-scale, 1)))
+        minmax(78px, calc(88px * var(--telemetry-scale, 1)))
+        minmax(250px, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="spacious"] .scene-reading-label i {
+    width: 40px;
+    height: 40px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="spacious"] .trend-chart-wrap {
+    min-height: 220px;
+}
+
+/* Compact dashboard cells (for example 1366×768 split across three panels). */
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-command-grid {
+    grid-template-rows: minmax(82px, .92fr) minmax(45px, .5fr) minmax(86px, 1.08fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-metric-card {
+    padding: 9px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading {
+    grid-template-rows: auto minmax(0, 1fr) minmax(20px, auto);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .latest-record-id {
+    padding-top: 3px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"][data-scene="ocean"] .scene-reading-value strong {
+    font-size: clamp(2.1rem, 5.55cqw, 3.25rem);
+    line-height: .9;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-item strong {
+    font-size: clamp(1.35rem, 3.7cqw, 2.1rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item strong {
+    font-size: clamp(.76rem, 1.65cqw, .94rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-header strong {
+    font-size: clamp(.9rem, 2cqw, 1.08rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-reading-label i {
+    width: 26px;
+    height: 26px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-verdict {
+    padding: 3px 6px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment {
+    padding: 7px;
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 4px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .environment-heading {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-item {
+    min-height: 34px;
+    padding-block: 2px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time {
+    min-height: 22px;
+    padding-top: 3px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time small {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time > span {
+    grid-template-columns: 13px minmax(0, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .forest-environment-time strong {
+    grid-column: 2;
+    justify-self: start;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-grid {
+    padding: 6px 7px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .time-heading {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-time-item {
+    padding-block: 2px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-trend-card {
+    padding: 7px 10px 5px !important;
+    gap: 3px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .scene-trend-card::before {
+    inset: 32px 10px 24px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-header {
+    min-height: 24px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-header small {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-chart-wrap {
+    min-height: 42px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-density="compact"] .trend-footer {
+    min-height: 15px;
+    padding-top: 2px;
+}
+
+/* Near-square or tall command surfaces: keep decision cards compact and
+   route all surplus height to the analysis stage. */
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-command-grid {
+    grid-template-areas:
+        "metric environment"
+        "time time"
+        "trend trend";
+    grid-template-columns: minmax(280px, .88fr) minmax(340px, 1.12fr);
+    grid-template-rows: minmax(150px, 180px) minmax(82px, 96px) minmax(360px, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"][data-scene="ocean"] .scene-reading-value strong {
+    font-size: clamp(2.7rem, 6.6cqw, 4.15rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .forest-environment-item strong {
+    font-size: clamp(1.8rem, 4.25cqw, 2.85rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-item strong {
+    font-size: clamp(1.08rem, 2.05cqw, 1.36rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .trend-header strong {
+    font-size: clamp(1.06rem, 2.15cqw, 1.36rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-grid {
+    padding: 10px;
+    grid-template-columns: minmax(160px, .76fr) repeat(3, minmax(0, 1fr));
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .time-heading {
+    grid-column: auto;
+    padding: 0 12px 0 0;
+    border-right: 1px solid var(--telemetry-line);
+    border-bottom: 0;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-item {
+    padding: 7px 10px;
+    grid-template-columns: 36px minmax(0, 1fr);
+    text-align: left;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-item > i {
+    display: grid;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-item small,
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-time-item strong {
+    grid-column: 2;
+    justify-self: start;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .scene-trend-card {
+    grid-row: auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"] .trend-chart-wrap {
+    min-height: 360px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"][data-scene="ocean"] .scene-metric-card {
+    grid-area: metric;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"][data-scene="ocean"] .scene-command-grid {
+    grid-template-areas:
+        "metric"
+        "time"
+        "trend";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(135px, 160px) minmax(82px, 96px) minmax(400px, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="tall"][data-scene="ocean"] .scene-reading {
+    grid-template-areas:
+        "label verdict"
+        "value value"
+        "frame frame";
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+/* Very wide and shallow containers: place summary cards in one rail and preserve a full chart row. */
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] {
+    grid-template-areas:
+        "switch context"
+        "command command" !important;
+    grid-template-columns: minmax(300px, .8fr) minmax(340px, 1.2fr) !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-switcher,
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-context-row {
+    height: 48px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-command-grid {
+    grid-template-areas:
+        "metric environment time"
+        "trend trend trend";
+    grid-template-columns: minmax(210px, .8fr) minmax(300px, 1.2fr) minmax(260px, 1fr);
+    grid-template-rows: minmax(105px, .78fr) minmax(105px, 1.22fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-metric-card {
+    padding: 10px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-reading {
+    gap: 2px 7px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-reading-label {
+    font-size: .78rem;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-reading-label i {
+    width: 28px;
+    height: 28px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"][data-scene="ocean"] .scene-reading-value strong {
+    font-size: clamp(2.45rem, 3.6cqw, 3.55rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-metric-card.has-long-status[data-workflow-status] .scene-reading-value strong {
+    font-size: clamp(1.65rem, 4.05cqw, 2.75rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .forest-environment-item strong {
+    font-size: clamp(1.6rem, 2.15cqw, 2.2rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-time-item strong {
+    font-size: clamp(1rem, 1.28cqw, 1.18rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .trend-header strong {
+    font-size: clamp(1rem, 1.35cqw, 1.2rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .scene-time-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .time-heading {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="shallow"] .forest-environment-time {
+    display: none;
+}
+
+/* Portrait containers: a readable vertical flow, with scrolling only when physically necessary. */
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] .scene-command-grid {
+    height: auto;
+    overflow: visible;
+    grid-template-areas:
+        "metric"
+        "environment"
+        "time"
+        "trend";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(300px, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] .scene-metric-card {
+    min-height: 145px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] .forest-environment {
+    min-height: 155px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] .scene-time-grid {
+    min-height: 80px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="portrait"] .scene-trend-card {
+    min-height: 300px !important;
+}
+
+/* Narrow cards/iframes: keep touch targets and text legible; stack only the dense pieces. */
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] {
+    padding: 8px !important;
+    gap: 7px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-switcher {
+    height: 44px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-switch {
+    padding-inline: 8px;
+    grid-template-columns: 3px minmax(0, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-switch span,
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-switch i {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-context-row {
+    height: 54px;
+    padding-inline: 10px;
+    grid-template-columns: 34px minmax(0, 1fr);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-context-icon {
+    width: 34px;
+    height: 34px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-payload {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-command-grid {
+    height: auto;
+    overflow: visible;
+    grid-template-areas:
+        "metric"
+        "environment"
+        "time"
+        "trend";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto 280px;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-metric-card {
+    min-height: 130px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"][data-scene="ocean"] .scene-reading {
+    grid-template-areas:
+        "label verdict"
+        "value value"
+        "frame frame";
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"][data-scene="ocean"] .latest-record-id {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-switch strong {
+    font-size: 1rem;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-context-copy small {
+    font-size: .66rem;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-context-copy strong {
+    font-size: 1.08rem;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-reading-label {
+    font-size: .8rem;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-reading-value strong,
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"][data-scene="ocean"] .scene-reading-value strong {
+    font-size: clamp(2.25rem, 9.2cqw, 3rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-metric-card.has-long-status[data-workflow-status] .scene-reading-value strong {
+    font-size: clamp(1.8rem, 8cqw, 2.8rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .forest-environment-item strong {
+    font-size: clamp(1.55rem, 6.2cqw, 2rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .trend-header strong {
+    font-size: clamp(1rem, 4cqw, 1.2rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .forest-environment {
+    min-height: 150px !important;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-grid {
+    padding: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .time-heading {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .trend-chart-wrap {
+    min-height: 0;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item {
+    min-height: 68px;
+    padding: 8px 4px;
+    grid-template-columns: 1fr;
+    text-align: center;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item > i {
+    display: none;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item small,
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item strong {
+    grid-column: 1;
+    justify-self: center;
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item small {
+    font-size: clamp(.75rem, 3.6cqw, .84rem);
+}
+
+body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item strong {
+    font-size: clamp(1.125rem, 5.1cqw, 1.3rem);
+}
+
+@media (max-width: 430px) {
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item {
+        min-height: 58px;
+        grid-template-columns: 34px minmax(0, 1fr);
+        padding: 7px 10px;
+        text-align: left;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item > i {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        grid-column: 1;
+        grid-row: 1 / -1;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item small,
+    body.scene-dashboard-mode .scene-telemetry[data-layout="narrow"] .scene-time-item strong {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+/* CSS-only fallbacks before ResizeObserver runs. */
+@media (max-width: 920px) {
+    body.scene-dashboard-mode .scene-telemetry:not([data-layout]) {
+        overflow-y: auto;
+    }
+
+    body.scene-dashboard-mode .scene-telemetry:not([data-layout]) .scene-command-grid {
+        grid-template-areas: "metric" "environment" "time" "trend";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto minmax(260px, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.scene-dashboard-mode .scene-metric-card {
+        animation: none;
+        transition: none;
+    }
+}

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>泛在物联网管控大屏</title>
+
+    <!-- 样式文件 -->
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/topology-react.css" />
+    <link rel="stylesheet" href="css/sceneButtons.css" />
+    <link rel="stylesheet" href="css/deviceStatus.css" />
+    <link rel="stylesheet" href="css/forest-fire-overview.css" />
+    <link rel="stylesheet" href="css/ocean-iot-overview.css" />
+    <link rel="stylesheet" href="css/modify.css" />
+    <!-- Heavy scene pages and topology libraries are loaded lazily after the first screen paints. -->
+    
+    <style>
+        /* 拓扑图容器样式 */
+        #topology-react-container {
+            width: 100%;
+            height: 100%;
+            min-height: 0;
+        }
+
+        /* 大屏等比缩放容器（基准 1920x1080） */
+        #screen-scale-wrapper {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #screen-root {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1920px;
+            height: 1080px;
+            transform-origin: 0 0;
+        }
+
+        /* 工厂场景选择器样式 */
+        .factory-scene-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 6px;
+            height: 100%;
+        }
+
+        .factory-scene-item {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(0, 234, 255, 0.06) 0%, rgba(0, 150, 200, 0.03) 100%);
+            border: 1.5px solid rgba(0, 234, 255, 0.2);
+            border-radius: 8px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .scene-item-header {
+            padding: 8px 12px;
+            background: rgba(0, 234, 255, 0.08);
+            border-bottom: 1px solid rgba(0, 234, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .scene-item-header:hover {
+            background: rgba(0, 234, 255, 0.15);
+        }
+
+        .scene-item-header:active {
+            transform: scale(0.98);
+        }
+
+        .scene-item-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #00eaff;
+            text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
+            letter-spacing: 0.5px;
+        }
+
+        .scene-item-body {
+            flex: 1;
+            padding: 6px;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .scene-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            width: 100%;
+        }
+
+        .scene-info-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 6px;
+            border: 1px solid rgba(0, 234, 255, 0.15);
+            gap: 6px;
+        }
+
+        .scene-info-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            height: 100%;
+            padding: 8px 4px;
+        }
+
+        .scene-info-label {
+            font-size: 15px;
+            color: #e8f0ff;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        .scene-info-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #00eaff;
+            line-height: 1.2;
+            text-shadow: 0 0 10px rgba(0, 234, 255, 0.6);
+        }
+
+        .lazy-view-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(194, 244, 255, 0.82);
+            font-size: 18px;
+            letter-spacing: 1px;
+            background: radial-gradient(circle at center, rgba(0, 234, 255, 0.12), rgba(2, 12, 30, 0.35) 55%, transparent 100%);
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .lazy-view-placeholder.is-hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="screen-scale-wrapper">
+        <div id="screen-root">
+
+    <!-- 整个背景 -->
+    <div class="screen-bg">
+
+        <!-- 顶部 HAND 图片 + 标题 -->
+        <div class="header">
+            <img src="images/hand.png" class="hand-img" />
+            <div class="main-title"><span>新型泛在智能物联网管控演示系统</span></div>
+        </div>
+
+        
+
+        <!-- 三列布局容器 -->
+        <div class="grid-container">
+
+            <!-- 左列 -->
+            <div class="column column-left">
+                <!-- 左上：森林火灾及气象场景 -->
+                <div class="panel panel-top scene-panel" data-scene="forest">
+                    <div class="panel-body">
+                        <div class="panel-title clickable-title">森林火灾及气象场景</div>
+                        <div class="panel-content" id="forest-fire-box"></div>
+                    </div>
+                </div>
+                <!-- 左下：远海远域物联通信场景 -->
+                <div class="panel panel-bottom scene-panel" data-scene="ocean">
+                    <div class="panel-body">
+                        <div class="panel-title clickable-title">远海远域物联通信场景</div>
+                        <div class="panel-content" id="ocean-iot-box"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中列 -->
+            <div class="column column-center">
+                <!-- 中央：系统架构与数据拓扑图（占据全部高度） -->
+                <div class="panel framed" style="flex: 1;">
+                    <div class="panel-body" style="height: 100%;">
+                        <div class="panel-title panel-title--switchable">
+                            <span id="topology-panel-title-text">泛在网关部署分布图</span>
+                            <select id="topology-view-select" class="panel-title__switch" aria-label="切换视图">
+                                <option value="topology">系统架构与数据拓扑图</option>
+                                <option value="map" selected>泛在网关部署分布图</option>
+                            </select>
+                        </div>
+                        <div class="panel-content" id="topology-box">
+                            <div id="topology-view-map" class="topology-view is-active" aria-label="泛在网关部署分布图">
+                                <div id="gateway-map-placeholder" class="lazy-view-placeholder">网关部署分布图加载中...</div>
+                                <iframe id="gateway-map-iframe" class="gateway-map-iframe" data-src="map.html?embed=1&v=20260709" title="泛在网关部署分布图" frameborder="0" loading="lazy"></iframe>
+                            </div>
+                            <div id="topology-view-topology" class="topology-view" aria-label="系统架构与数据拓扑图">
+                                <!-- React 拓扑图容器 -->
+                                <div id="topology-react-placeholder" class="lazy-view-placeholder">拓扑图资源按需加载中...</div>
+                                <div id="topology-react-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右列 -->
+            <div class="column column-right">
+                <!-- 右上：智慧工厂设备管控及周界预警 -->
+                <div class="panel panel-top">
+                    <div class="panel-body">
+                        <div class="panel-title">智慧工厂设备管控及周界预警</div>
+                        <div class="panel-content" id="smart-factory-box">
+                            <div class="factory-scene-selector">
+                                <!-- 应急救援场景 -->
+                                <div class="factory-scene-item">
+                                    <div class="scene-item-header clickable-scene-title" data-scene-url="scenes/yingjijiuyuan2.html">
+                                        <span class="scene-item-title">智慧工厂子场景-应急救援场景</span>
+                                    </div>
+                                    <div class="scene-item-body">
+                                        <div class="scene-info-grid">
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">火灾检测</div>
+                                                    <div class="scene-info-value" id="fire-status">已开启</div>
+                                                </div>
+                                            </div>
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">应急联动</div>
+                                                    <div class="scene-info-value" id="linkage-status">已开启</div>
+                                                </div>
+                                            </div>
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">应急设备</div>
+                                                    <div class="scene-info-value" id="device-status">待机中</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 设备人员管控场景 -->
+                                <div class="factory-scene-item">
+                                    <div class="scene-item-header clickable-scene-title" data-scene-url="scenes/shebeiguanong2.html">
+                                        <span class="scene-item-title">智慧工厂子场景-设备人员管控场景</span>
+                                    </div>
+                                    <div class="scene-item-body">
+                                        <div class="scene-info-grid">
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">在库人员</div>
+                                                    <div class="scene-info-value" id="person-count">10 人</div>
+                                                </div>
+                                            </div>
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">在库设备</div>
+                                                    <div class="scene-info-value" id="device-count">10 台</div>
+                                                </div>
+                                            </div>
+                                            <div class="scene-info-item">
+                                                <div class="scene-info-content">
+                                                    <div class="scene-info-label">周界预警</div>
+                                                    <div class="scene-info-value" id="warning-status">已开启</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 右下：网关设备状态信息 -->
+                <div class="panel panel-bottom">
+                    <div class="panel-body">
+                        <div class="panel-title">网关设备状态信息</div>
+                        <div class="panel-content" id="status-box"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 脚本 -->
+    <script defer src="js/main.js"></script>
+    <script defer src="js/sceneButtons.js"></script>
+    <script defer src="js/deviceStatus.js"></script>
+    <script defer src="js/forest-fire-overview.js"></script>
+    <script defer src="js/ocean-iot-overview.js"></script>
+    <script defer src="js/factory-scene-overview.js"></script>
+    <script defer src="js/modify.js"></script>
+
+    <script>
+        (function () {
+            var mapLoadStarted = false;
+            var topologyLoadStarted = false;
+            var topologyLoadPromise = null;
+
+            function runWhenIdle(fn, timeout) {
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(fn, { timeout: timeout || 1500 });
+                } else {
+                    window.setTimeout(fn, timeout || 300);
+                }
+            }
+
+            function loadScriptOnce(src, options) {
+                var existing = document.querySelector('script[data-lazy-src="' + src + '"]');
+                if (existing) {
+                    return existing.dataset.loaded === '1'
+                        ? Promise.resolve()
+                        : new Promise(function (resolve, reject) {
+                            existing.addEventListener('load', resolve, { once: true });
+                            existing.addEventListener('error', reject, { once: true });
+                        });
+                }
+
+                return new Promise(function (resolve, reject) {
+                    var script = document.createElement('script');
+                    script.src = src;
+                    script.defer = true;
+                    script.dataset.lazySrc = src;
+                    if (options && options.crossOrigin) script.crossOrigin = options.crossOrigin;
+                    if (options && options.type) script.type = options.type;
+                    script.onload = function () {
+                        script.dataset.loaded = '1';
+                        resolve();
+                    };
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            }
+
+            function hidePlaceholder(id) {
+                var el = document.getElementById(id);
+                if (el) el.classList.add('is-hidden');
+            }
+
+            function loadGatewayMap() {
+                var iframe = document.getElementById('gateway-map-iframe');
+                if (!iframe || mapLoadStarted) return;
+                mapLoadStarted = true;
+                iframe.src = iframe.getAttribute('data-src') || 'map.html?embed=1&v=20260709';
+            }
+
+            window.addEventListener('message', function (event) {
+                var data = event && event.data;
+                if (data && data.type === 'lgd-map-ready') {
+                    hidePlaceholder('gateway-map-placeholder');
+                }
+            });
+
+            function loadTopologyComponent() {
+                if (window.__TOPOLOGY_REACT_LOADED__) return Promise.resolve();
+
+                if (window.location.protocol === 'file:') {
+                    return new Promise(function (resolve) {
+                        var script = document.createElement('script');
+                        script.type = 'text/babel';
+                        script.src = 'js/topology-react.js';
+                        script.onload = function () {
+                            window.__TOPOLOGY_REACT_LOADED__ = true;
+                            resolve();
+                        };
+                        document.body.appendChild(script);
+                        if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
+                            window.setTimeout(function () {
+                                window.Babel.transformScriptTags();
+                                window.__TOPOLOGY_REACT_LOADED__ = true;
+                                resolve();
+                            }, 0);
+                        } else {
+                            window.setTimeout(resolve, 300);
+                        }
+                    });
+                }
+
+                return fetch('js/topology-react.js', { cache: 'force-cache' })
+                    .then(function (resp) {
+                        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                        return resp.text();
+                    })
+                    .then(function (source) {
+                        var transformed = window.Babel.transform(source, {
+                            presets: ['react']
+                        }).code;
+                        var script = document.createElement('script');
+                        script.text = transformed;
+                        document.body.appendChild(script);
+                        window.__TOPOLOGY_REACT_LOADED__ = true;
+                    });
+            }
+
+            function loadTopology() {
+                if (topologyLoadStarted) return topologyLoadPromise || Promise.resolve();
+                topologyLoadStarted = true;
+
+                topologyLoadPromise = loadScriptOnce('https://cdn.tailwindcss.com')
+                    .then(function () { return loadScriptOnce('https://unpkg.com/react@18/umd/react.production.min.js', { crossOrigin: 'anonymous' }); })
+                    .then(function () { return loadScriptOnce('https://unpkg.com/react-dom@18/umd/react-dom.production.min.js', { crossOrigin: 'anonymous' }); })
+                    .then(function () { return loadScriptOnce('https://unpkg.com/@babel/standalone/babel.min.js'); })
+                    .then(loadTopologyComponent)
+                    .then(function () {
+                        hidePlaceholder('topology-react-placeholder');
+                    })
+                    .catch(function (err) {
+                        topologyLoadStarted = false;
+                        var placeholder = document.getElementById('topology-react-placeholder');
+                        if (placeholder) placeholder.textContent = '拓扑图资源加载失败，请检查网络';
+                        console.error('拓扑图资源加载失败:', err);
+                    });
+
+                return topologyLoadPromise;
+            }
+
+            function warmSceneDocuments() {
+                ['scenes/forest-fire2.html', 'scenes/ocean-iot2.html', 'scenes/yingjijiuyuan2.html', 'scenes/shebeiguanong2.html']
+                    .forEach(function (href) {
+                        var link = document.createElement('link');
+                        link.rel = 'prefetch';
+                        link.href = href;
+                        link.as = 'document';
+                        document.head.appendChild(link);
+                    });
+            }
+
+            function setTopologyView(mode, options) {
+                var mapView = document.getElementById('topology-view-map');
+                var topoView = document.getElementById('topology-view-topology');
+                var select = document.getElementById('topology-view-select');
+                var titleText = document.getElementById('topology-panel-title-text');
+                var deferLoad = options && options.deferLoad;
+                if (!mapView || !topoView || !select || !titleText) return;
+
+                if (mode === 'topology') {
+                    mapView.classList.remove('is-active');
+                    topoView.classList.add('is-active');
+                    titleText.textContent = '系统架构与数据拓扑图';
+                    select.value = 'topology';
+                    if (!deferLoad) loadTopology();
+                } else {
+                    topoView.classList.remove('is-active');
+                    mapView.classList.add('is-active');
+                    titleText.textContent = '泛在网关部署分布图';
+                    select.value = 'map';
+                    if (!deferLoad) loadGatewayMap();
+                }
+            }
+
+            function init() {
+                var select = document.getElementById('topology-view-select');
+                if (!select) return;
+                setTopologyView(select.value || 'map', { deferLoad: true });
+                select.addEventListener('change', function (e) {
+                    var v = e && e.target ? e.target.value : 'map';
+                    setTopologyView(v);
+                });
+
+                runWhenIdle(function () {
+                    if ((select.value || 'map') === 'map') loadGatewayMap();
+                }, 900);
+                runWhenIdle(warmSceneDocuments, 3500);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+
+    <script>
+        (function () {
+            const BASE_WIDTH = 1920;
+            const BASE_HEIGHT = 1080;
+
+            function applyScreenScale() {
+                const root = document.getElementById('screen-root');
+                if (!root) return;
+
+                const vw = document.documentElement.clientWidth;
+                const vh = document.documentElement.clientHeight;
+
+                const scale = Math.min(vw / BASE_WIDTH, vh / BASE_HEIGHT);
+                document.documentElement.style.setProperty('--screen-scale', String(scale));
+                document.documentElement.style.setProperty('--screen-scale-inv', String(1 / scale));
+                const offsetX = Math.round((vw - BASE_WIDTH * scale) / 2);
+                const offsetY = Math.round((vh - BASE_HEIGHT * scale) / 2);
+
+                root.style.left = `0px`;
+                root.style.top = `0px`;
+                root.style.zoom = '1';
+                root.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+            }
+
+            window.addEventListener('resize', applyScreenScale);
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', applyScreenScale);
+            } else {
+                applyScreenScale();
+            }
+        })();
+    </script>
+
+        </div>
+    </div>
+</body>
+</html>

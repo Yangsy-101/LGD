@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地入口</title>
+    <style>
+        :root {
+            --bg: #08111f;
+            --panel: rgba(10, 26, 44, 0.78);
+            --line: rgba(125, 220, 255, 0.24);
+            --cyan: #34d7ff;
+            --green: #79f2b8;
+            --gold: #ffd36a;
+            --text: #ecfbff;
+            --muted: rgba(236, 251, 255, 0.68);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            background:
+                linear-gradient(120deg, rgba(52, 215, 255, 0.14), transparent 34%),
+                linear-gradient(300deg, rgba(121, 242, 184, 0.1), transparent 36%),
+                linear-gradient(135deg, #06101d 0%, var(--bg) 54%, #101b2a 100%);
+            color: var(--text);
+            font-family: "Microsoft YaHei", "Noto Sans SC", sans-serif;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, transparent, black 16%, black 84%, transparent);
+        }
+
+        .entry-shell {
+            width: min(92vw, 760px);
+            padding: clamp(26px, 5vw, 56px);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: var(--panel);
+            box-shadow: 0 28px 90px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin: 0 0 14px;
+            color: var(--green);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0 0 28px;
+            font-size: 3.6rem;
+            line-height: 1.08;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .system-emblem {
+            width: min(74vw, 360px);
+            aspect-ratio: 1;
+            margin: 0 auto 26px;
+            display: grid;
+            place-items: center;
+            position: relative;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 50%;
+            outline: none;
+        }
+
+        .system-emblem::before,
+        .system-emblem::after {
+            content: "";
+            position: absolute;
+            inset: 7%;
+            border: 1px solid rgba(52, 215, 255, 0.42);
+            border-radius: 50%;
+            transform: rotate(-18deg) scaleX(1.24);
+            transition: border-color 160ms ease, transform 160ms ease;
+        }
+
+        .system-emblem::after {
+            inset: 16%;
+            border-color: rgba(121, 242, 184, 0.34);
+            transform: rotate(28deg) scaleX(1.36);
+        }
+
+        .emblem-core {
+            width: 44%;
+            aspect-ratio: 1;
+            display: grid;
+            place-items: center;
+            position: relative;
+            border: 1px solid rgba(255, 211, 106, 0.48);
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.34), transparent 17%),
+                radial-gradient(circle, rgba(255, 211, 106, 0.25), rgba(52, 215, 255, 0.1) 60%, rgba(8, 17, 31, 0.92) 61%);
+            box-shadow: 0 0 42px rgba(52, 215, 255, 0.3);
+            transition: transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        .emblem-core::before,
+        .emblem-core::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            background: var(--cyan);
+            box-shadow: 0 0 18px rgba(52, 215, 255, 0.68);
+        }
+
+        .emblem-core::before {
+            top: -64px;
+            right: -34px;
+        }
+
+        .emblem-core::after {
+            left: -58px;
+            bottom: -42px;
+            background: var(--green);
+            box-shadow: 0 0 18px rgba(121, 242, 184, 0.62);
+        }
+
+        .system-emblem:hover::before {
+            border-color: rgba(52, 215, 255, 0.78);
+            transform: rotate(-13deg) scaleX(1.28);
+        }
+
+        .system-emblem:hover::after {
+            border-color: rgba(121, 242, 184, 0.62);
+            transform: rotate(22deg) scaleX(1.4);
+        }
+
+        .system-emblem:hover .emblem-core,
+        .system-emblem:focus-visible .emblem-core {
+            transform: scale(1.05);
+            box-shadow: 0 0 54px rgba(52, 215, 255, 0.44);
+        }
+
+        .entry-label {
+            margin: 0;
+            color: var(--muted);
+            font-size: 1.1rem;
+        }
+
+        .entry-label strong {
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.15rem;
+            }
+
+            .entry-label {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="entry-shell">
+        <p class="eyebrow">Local Portal</p>
+        <h1>低轨卫星数据接入</h1>
+        <a class="system-emblem" id="entryLink" href="http://139.196.214.249:8092/" aria-label="进入8092在线服务">
+            <span class="emblem-core"></span>
+        </a>
+        <p class="entry-label"><strong>8092</strong> 在线服务入口</p>
+    </main>
+
+    <script>
+        (function () {
+            const link = document.getElementById('entryLink');
+            if (!link) return;
+            const target = new URL('http://139.196.214.249:8092/');
+            target.searchParams.set('returnUrl', window.location.href);
+            link.href = target.toString();
+        })();
+    </script>
+</body>
+
+</html>
